@@ -1,11 +1,11 @@
 {
   "name": "mochi-rest",
-  "version": "0.0.1",
+  "version": "0.0.1-rc.0",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "scripts": {
-    "clean": "rimraf dist esm",
+    "clean": "rimraf dist",
     "build": "pnpm clean && tsup src/index.ts --format cjs,esm --dts",
     "beta": "pnpm build && VERSION=$(pnpm version prerelease --preid=rc) && pnpm publish && pnpm dist-tag add @consolelabs/mochi-formatter@\"$VERSION\" next",
     "dev": "tsc --watch"
