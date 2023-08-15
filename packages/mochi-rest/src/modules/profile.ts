@@ -1,40 +1,63 @@
-import { API_PROFILE_SERVER_URL } from "../constant";
+import { FullOptions } from "../mochi";
+import {
+  Activity,
+  AnySchema,
+  Code,
+  CodeSchema,
+  ListActivity,
+  Profile,
+  ProfileSchema,
+  getParser,
+} from "../schemas";
 import type { Fetcher } from "../utils";
 import base from "./base";
 
-const api = base.url(API_PROFILE_SERVER_URL, true);
-let profiles = api.url("/profiles");
-
 export class ProfileModule {
   mochi: {
-    getById: Fetcher<string>;
+    getById: Fetcher<string, Profile>;
   };
 
   telegram: {
-    getById: Fetcher<{ telegramId: string; noFetchAmount?: boolean }>;
+    getById: Fetcher<{ telegramId: string; noFetchAmount?: boolean }, Profile>;
   };
 
   activities: {
-    getByUser: Fetcher<{
-      profileId: string;
-      actions: (string | number)[];
-      status?: "new" | "read";
-      page?: number;
-      size?: number;
-    }>;
+    getByUser: Fetcher<
+      {
+        profileId: string;
+        actions: (string | number)[];
+        status?: "new" | "read";
+        page?: number;
+        size?: number;
+      },
+      Array<Activity>
+    >;
     markRead: Fetcher<{ profileId: string; ids: (string | number)[] }>;
   };
 
   connect: {
-    requestCode: Fetcher<string>;
+    requestCode: Fetcher<string, Code>;
   };
 
-  constructor(apiKey?: string) {
-    profiles = profiles.auth(`Bearer ${apiKey}`);
+  constructor({ profileUrl, apiKey, catcher }: FullOptions) {
+    const parse = getParser(catcher);
+    let api = base.url(profileUrl, true);
+
+    if (catcher) {
+      api = api.catcherFallback(catcher);
+    }
+
+    let profiles = api.url("/profiles");
+    if (apiKey) {
+      profiles = profiles.auth(`Bearer ${apiKey}`);
+    }
 
     this.mochi = {
       getById: async function (profileId) {
-        return api.url(`/profiles/${profileId}`).get();
+        return await api
+          .url(`/profiles/${profileId}`)
+          .resolve(parse(ProfileSchema))
+          .get();
       },
     };
 
@@ -43,6 +66,7 @@ export class ProfileModule {
         return api
           .url(`/profiles/get-by-telegram/${telegramId}`)
           .query(noFetchAmount ? { noFetchAmount } : {})
+          .resolve(parse(ProfileSchema))
           .get();
       },
     };
@@ -58,16 +82,23 @@ export class ProfileModule {
         return api
           .url(`/profiles/${profileId}/activities`)
           .query({ actions: actions.join("|"), page, size, status })
+          .resolve(parse(ListActivity))
           .get();
       },
       markRead: async function ({ profileId, ids }) {
-        return api.url(`/profiles/${profileId}/activities`).put({ ids });
+        return api
+          .url(`/profiles/${profileId}/activities`)
+          .resolve(parse(AnySchema))
+          .put({ ids });
       },
     };
 
     this.connect = {
       requestCode: async function (profileId) {
-        return api.url(`/profiles/${profileId}/codes`).post();
+        return api
+          .url(`/profiles/${profileId}/codes`)
+          .resolve(parse(CodeSchema))
+          .post();
       },
     };
   }
