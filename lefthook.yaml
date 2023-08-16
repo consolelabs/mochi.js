@@ -1,8 +1,0 @@
-pre-commit:
-  piped: true
-  commands:
-    format:
-      glob: "*.{js,ts,jsx,tsx}"
-      run: pnpm format
-    git-add:
-      run: git add .
