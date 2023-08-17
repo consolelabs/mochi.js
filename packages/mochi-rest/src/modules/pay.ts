@@ -63,15 +63,15 @@ export class PayModule {
   };
 
   tokens: {
-    getSupported: Fetcher<string | undefined, Array<Token>>;
+    getSupported: Fetcher<string, Array<Token>>;
   };
 
   chains: {
-    getSupported: Fetcher<undefined, Array<Chain>>;
+    getSupported: Fetcher<void, Array<Chain>>;
   };
 
   users: {
-    getLeaderboard: Fetcher<undefined, Leaderboard>;
+    getLeaderboard: Fetcher<void, Leaderboard>;
   };
 
   constructor({ payUrl, apiKey, catcher }: FullOptions) {

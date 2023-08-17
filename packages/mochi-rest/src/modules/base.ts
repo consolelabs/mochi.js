@@ -49,8 +49,8 @@ export default base;
 
 export class BaseModule {
   metadata: {
-    getCopy: Fetcher<string | undefined, Copy>;
-    getCommands: Fetcher<undefined, Array<Command>>;
+    getCopy: Fetcher<string, Copy>;
+    getCommands: Fetcher<void, Array<Command>>;
   };
 
   tip: {
@@ -58,7 +58,7 @@ export class BaseModule {
   };
 
   defi: {
-    getGasTrackers: Fetcher<undefined, Array<Gas>>;
+    getGasTrackers: Fetcher<void, Array<Gas>>;
     searchCoin: Fetcher<{ query: string; chain?: string }, Array<QueryCoin>>;
     getCoin: Fetcher<
       {

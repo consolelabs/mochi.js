@@ -17,7 +17,10 @@ export function getParser(catcher?: (error: WretchError | ZodError) => void) {
   >(schema: S) {
     return async function (
       r: R
-    ): Promise<{ ok: true; data: z.infer<S> } | { ok: false; error: any }> {
+    ): Promise<
+      | { ok: true; data: z.infer<S>; error: null }
+      | { ok: false; data: null; error: any }
+    > {
       const json = await r.json<any>();
       let data = json;
 
@@ -31,6 +34,7 @@ export function getParser(catcher?: (error: WretchError | ZodError) => void) {
         catcher?.(result.error);
         return {
           ok: false,
+          data: null,
           error: result.error,
         };
       }
@@ -38,6 +42,7 @@ export function getParser(catcher?: (error: WretchError | ZodError) => void) {
       return {
         ok: true,
         data: result as z.infer<S>,
+        error: null,
       };
     };
   };

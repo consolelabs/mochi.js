@@ -21,6 +21,14 @@ export class ProfileModule {
     getById: Fetcher<{ telegramId: string; noFetchAmount?: boolean }, Profile>;
   };
 
+  discord: {
+    getById: Fetcher<{ discordId: string; noFetchAmount?: boolean }, Profile>;
+  };
+
+  email: {
+    getByEmail: Fetcher<{ email: string; noFetchAmount?: boolean }, Profile>;
+  };
+
   activities: {
     getByUser: Fetcher<
       {
@@ -65,6 +73,26 @@ export class ProfileModule {
       getById: async function ({ telegramId, noFetchAmount }) {
         return api
           .url(`/profiles/get-by-telegram/${telegramId}`)
+          .query(noFetchAmount ? { noFetchAmount } : {})
+          .resolve(parse(ProfileSchema))
+          .get();
+      },
+    };
+
+    this.discord = {
+      getById: async function ({ discordId, noFetchAmount }) {
+        return api
+          .url(`/profiles/get-by-discord/${discordId}`)
+          .query(noFetchAmount ? { noFetchAmount } : {})
+          .resolve(parse(ProfileSchema))
+          .get();
+      },
+    };
+
+    this.email = {
+      getByEmail: async function ({ email, noFetchAmount }) {
+        return api
+          .url(`/profiles/get-by-email/${email}`)
           .query(noFetchAmount ? { noFetchAmount } : {})
           .resolve(parse(ProfileSchema))
           .get();
