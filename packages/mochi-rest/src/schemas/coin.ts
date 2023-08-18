@@ -1,10 +1,10 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const QueryCoinSchema = z.object({
-  id: z.string(),
-  symbol: z.string(),
-  name: z.string(),
-  current_price: z.number(),
+  id: z.string().nonempty(),
+  symbol: z.string().nonempty(),
+  name: z.string().nonempty(),
+  current_price: z.number().nonnegative(),
   most_popular: z.boolean(),
   is_native: z.boolean(),
   is_popular: z.boolean(),
@@ -16,13 +16,13 @@ export const ListQueryCoinSchema = z.array(QueryCoinSchema);
 export type QueryCoin = z.infer<typeof QueryCoinSchema>;
 
 const PriceByCurrency = z.object({
-  usd: z.number(),
+  usd: z.number().nonnegative(),
 });
 
 export const CoinSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  market_cap_rank: z.number(),
+  id: z.string().nonempty(),
+  name: z.string().nonempty(),
+  market_cap_rank: z.number().nonnegative(),
   asset_platform: z
     .object({
       name: z.string(),
@@ -55,7 +55,7 @@ const GainerLoser = z.object({
   name: z.string().nonempty(),
   symbol: z.string().nonempty(),
   image: z.string(),
-  market_cap_rank: z.number(),
+  market_cap_rank: z.number().nonnegative(),
   usd: z.number(),
   usd_24h_vol: z.number(),
   usd_24h_change: z.number(),

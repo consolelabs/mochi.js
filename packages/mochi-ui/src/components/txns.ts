@@ -1,114 +1,14 @@
-import time from '../time';
-import UI, { Platform } from '..';
-import { mdTable } from '../markdownTable';
-import type { Paging, Token } from '../types';
-import { formatTokenDigit } from '../formatDigit';
-import { formatUnits } from 'ethers';
-import address from '../address';
-import pageIndicator from './page-indicator';
-import groupby from 'lodash.groupby';
-import { HOMEPAGE } from '../constant';
-
-// other types except OnchainTx are all offchain
-type Tx =
-  | OnchainTx
-  | VaultTransferTx
-  | PayLinkTx
-  | PayMeTx
-  | AirdropTx
-  | TransferTx
-  | DepositTx
-  | WithdrawTx
-  | SwapTx;
-
-interface BaseTx {
-  type: 'in' | 'out';
-  created_at: string;
-  other_profile_id: string;
-  other_profile_source: string;
-}
-
-// onchain tx doesn't have the same data shape as others
-interface OnchainTx {
-  type: 'in' | 'out';
-  tx_hash: string;
-  signed_at: string;
-  has_transfer: boolean;
-  actions: Array<{
-    from?: string;
-    to?: string;
-    amount?: number;
-    unit?: string;
-    native_transfer: boolean;
-  }>;
-  scan_base_url: string;
-}
-
-interface TransferTx extends BaseTx {
-  action: 'transfer';
-  external_id: string;
-  amount: string;
-  token: Token;
-}
-
-interface DepositTx extends BaseTx {
-  action: 'deposit';
-  contract_id: string;
-  tx_hash: string;
-  amount: string;
-  from: string;
-  token: Token;
-}
-
-interface WithdrawTx extends BaseTx {
-  action: 'withdraw';
-  tx_hash: string;
-  amount: string;
-  token: Token;
-}
-
-interface AirdropTx extends BaseTx {
-  action: 'airdrop';
-  amount: string;
-  token: Token;
-  other_profile_ids: string[];
-}
-
-interface SwapTx extends BaseTx {
-  action: 'swap';
-  amount_in: string;
-  amount_out: string;
-  tx_hash: string;
-  from_token: Token;
-  to_token: Token;
-}
-
-interface PayLinkTx extends BaseTx {
-  action: 'paylink';
-  metadata: {
-    paylink_code: string;
-  };
-  amount: string;
-  token: Token;
-}
-
-interface PayMeTx extends BaseTx {
-  action: 'payme';
-  metadata: Record<string, any>;
-  amount: string;
-  token: Token;
-}
-
-interface VaultTransferTx extends BaseTx {
-  action: 'transfer';
-  metadata: {
-    vault_request: {
-      vault_id: number;
-    };
-  };
-  amount: string;
-  token: Token;
-}
+import time from "../time";
+import UI, { Platform } from "..";
+import { mdTable } from "../markdownTable";
+import type { Paging } from "../types";
+import { formatTokenDigit } from "../formatDigit";
+import { formatUnits } from "ethers";
+import address from "../address";
+import pageIndicator from "./page-indicator";
+import groupby from "lodash.groupby";
+import { HOMEPAGE } from "../constant";
+import type { VaultTransferTx, TransferTx, Tx } from "@consolelabs/mochi-rest";
 
 type Props = {
   txns: Array<Tx>;
@@ -120,10 +20,10 @@ type Props = {
 
 function isVault(tx: VaultTransferTx | TransferTx): tx is VaultTransferTx {
   return (
-    tx.other_profile_source === 'mochi-vault' &&
-    'metadata' in tx &&
-    'vault_request' in tx.metadata &&
-    'vault_id' in tx.metadata.vault_request
+    tx.other_profile_source === "mochi-vault" &&
+    "metadata" in tx &&
+    "vault_request" in tx.metadata &&
+    "vault_id" in tx.metadata.vault_request
   );
 }
 
@@ -131,26 +31,26 @@ async function formatTxn(
   tx: Tx,
   on: Platform.Web | Platform.Telegram | Platform.Discord
 ) {
-  const date = new Date('created_at' in tx ? tx.created_at : tx.signed_at);
+  const date = new Date("created_at" in tx ? tx.created_at : tx.signed_at);
   const t = time.relative(date.getTime());
-  const isMochiTx = 'external_id' in tx;
+  const isMochiTx = "external_id" in tx;
   const receiptUrl = isMochiTx
     ? ` → [view receipt](${HOMEPAGE}/transfer/${tx.external_id})`
-    : '';
+    : "";
   const result = {
     time: t,
-    text: '',
+    text: "",
   };
 
-  if ('action' in tx) {
+  if ("action" in tx) {
     switch (tx.action) {
-      case 'transfer': {
+      case "transfer": {
         switch (tx.type) {
-          case 'in': {
+          case "in": {
             let from;
             if (isVault(tx)) {
               [from] = await UI.resolve(on, {
-                type: 'vault',
+                type: "vault",
                 id: tx.metadata.vault_request.vault_id.toString(),
               });
             } else {
@@ -162,16 +62,16 @@ async function formatTxn(
               );
 
               result.text = `+${amount} ${tx.token.symbol.toUpperCase()}${
-                from?.value ? ` from ${from.value}` : ''
+                from?.value ? ` from ${from.value}` : ""
               }`;
             }
             break;
           }
-          case 'out': {
+          case "out": {
             let to;
             if (isVault(tx)) {
               [to] = await UI.resolve(on, {
-                type: 'vault',
+                type: "vault",
                 id: tx.metadata.vault_request.vault_id.toString(),
               });
             } else {
@@ -182,14 +82,14 @@ async function formatTxn(
                 formatUnits(tx.amount || 0, tx.token.decimal)
               );
               result.text = `-${amount} ${tx.token.symbol.toUpperCase()}${
-                to?.value ? ` to ${to.value}` : ''
+                to?.value ? ` to ${to.value}` : ""
               }`;
             }
           }
         }
         break;
       }
-      case 'deposit': {
+      case "deposit": {
         const amount = formatTokenDigit(
           formatUnits(tx.amount, tx.token.decimal)
         );
@@ -201,7 +101,7 @@ async function formatTxn(
         )}\``;
         break;
       }
-      case 'withdraw': {
+      case "withdraw": {
         const amount = formatTokenDigit(
           formatUnits(tx.amount, tx.token.decimal)
         );
@@ -209,19 +109,19 @@ async function formatTxn(
         result.text = `-${amount} ${tx.token.symbol.toUpperCase()} withdrawn to \`${resolved}\``;
         break;
       }
-      case 'airdrop': {
+      case "airdrop": {
         const amount = formatTokenDigit(
           formatUnits(tx.amount, tx.token.decimal)
         );
         const numOfWinners = tx.other_profile_ids.length;
         result.text = `-${amount} ${tx.token.symbol.toUpperCase()} airdropped${
           numOfWinners > 0
-            ? ` to ${numOfWinners} ${numOfWinners > 1 ? 'people' : 'person'}`
-            : ' but no one joined'
+            ? ` to ${numOfWinners} ${numOfWinners > 1 ? "people" : "person"}`
+            : " but no one joined"
         }`;
         break;
       }
-      case 'paylink': {
+      case "paylink": {
         const amount = formatTokenDigit(
           formatUnits(tx.amount, tx.token.decimal)
         );
@@ -237,7 +137,7 @@ async function formatTxn(
         }) claimed by ${by}`;
         break;
       }
-      case 'payme': {
+      case "payme": {
         const amount = formatTokenDigit(
           formatUnits(tx.amount, tx.token.decimal)
         );
@@ -270,7 +170,7 @@ async function formatTxn(
     // }
   }
 
-  if ('has_transfer' in tx) {
+  if ("has_transfer" in tx) {
     const transferTx = tx.actions.find((a) => {
       if (a.native_transfer) return true;
       if (a.from && a.to && a.amount !== 0 && a.unit) return true;
@@ -285,9 +185,9 @@ async function formatTxn(
     target = await address.normalizeAddress(target);
     target = address.shorten(target);
 
-    result.text = `${!isDebit ? '+' : ''}${transferTx.amount ?? 0} ${
-      transferTx.unit ?? ''
-    } ${isDebit ? 'to' : 'from'} \`${target}\``;
+    result.text = `${!isDebit ? "+" : ""}${transferTx.amount ?? 0} ${
+      transferTx.unit ?? ""
+    } ${isDebit ? "to" : "from"} \`${target}\``;
     return result;
   }
 
@@ -295,26 +195,26 @@ async function formatTxn(
 }
 
 function filterSpamToken(tx: Tx) {
-  if ('token' in tx) {
-    const symbol = tx?.token?.symbol ?? '';
+  if ("token" in tx) {
+    const symbol = tx?.token?.symbol ?? "";
 
     return symbol.length >= 3 && symbol.length <= 6;
   }
-  if ('has_transfer' in tx) {
+  if ("has_transfer" in tx) {
     const transferTx = tx.actions.find((a) => {
       if (a.native_transfer) return true;
       if (a.from && a.to && a.amount !== 0 && a.unit) return true;
       return false;
     });
     if (!transferTx) return false;
-    const symbol = transferTx.unit ?? '';
+    const symbol = transferTx.unit ?? "";
     return symbol.length >= 3 && symbol.length <= 6;
   }
   return true;
 }
 
 function filterOnchainOnlyTransfer(tx: Tx) {
-  if ('has_transfer' in tx) {
+  if ("has_transfer" in tx) {
     // transfer tx = first tx to have "from", "to", "amount" and "unit"
     const transferTx = tx.actions.find((a) => {
       if (a.native_transfer) return true;
@@ -341,13 +241,13 @@ function beforeMap(tx: Tx) {
 
 function latest(tx1: Tx, tx2: Tx) {
   let time1, time2;
-  if ('signed_at' in tx1) {
+  if ("signed_at" in tx1) {
     time1 = new Date(tx1.signed_at).getTime();
   } else {
     time1 = new Date(tx1.created_at).getTime();
   }
 
-  if ('signed_at' in tx2) {
+  if ("signed_at" in tx2) {
     time2 = new Date(tx2.signed_at).getTime();
   } else {
     time2 = new Date(tx2.created_at).getTime();
@@ -378,13 +278,13 @@ export default async function (
     )
   ).filter((t) => t.text);
 
-  if (typeof top === 'number') {
+  if (typeof top === "number") {
     data = data.slice(0, top);
   }
 
   let text;
   if (groupDate) {
-    const groupByDate = groupby(data, 'time');
+    const groupByDate = groupby(data, "time");
     const lines = Object.entries(groupByDate).map((e, i) => {
       const isLast = i === Object.keys(groupByDate).length - 1;
       const [time, txns] = e;
@@ -392,25 +292,25 @@ export default async function (
         `🗓 ${time}`,
         mdTable(txns, {
           ...(tableParams ?? {}),
-          cols: ['text'],
+          cols: ["text"],
           wrapLastCol: false,
         }),
-        ...(isLast ? [] : ['']),
-      ].join('\n');
+        ...(isLast ? [] : [""]),
+      ].join("\n");
     });
 
-    text = lines.join('\n');
+    text = lines.join("\n");
   } else {
     text = mdTable(data, {
       ...(tableParams ?? {}),
       wrapLastCol: false,
-      cols: ['time', 'text'],
-      alignment: ['left', 'left'],
+      cols: ["time", "text"],
+      alignment: ["left", "left"],
     });
   }
 
   if (!text) {
-    text = 'There is no transaction, yet 🙁';
+    text = "There is no transaction, yet 🙁";
   }
 
   const { text: pager } = await pageIndicator({
@@ -420,12 +320,12 @@ export default async function (
 
   return {
     text: [
-      ...(withTitle ? ['📜 *History*'] : []),
-      ...(groupDate && withTitle ? [''] : []),
+      ...(withTitle ? ["📜 *History*"] : []),
+      ...(groupDate && withTitle ? [""] : []),
       text,
-      '',
+      "",
       ...pager,
-    ].join('\n'),
+    ].join("\n"),
     totalPage: total,
   };
 }

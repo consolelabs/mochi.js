@@ -1,5 +1,5 @@
-import base from './base';
-import type { Fetcher } from '../utils';
+import base from "./base";
+import type { Fetcher } from "../utils";
 import {
   AnySchema,
   Code,
@@ -9,9 +9,6 @@ import {
   Stats,
   StatsSchema,
   getParser,
-} from '../schemas';
-import { FullOptions } from '../mochi';
-import {
   Balance,
   BalancesSchema,
   Chain,
@@ -23,7 +20,8 @@ import {
   Token,
   TokensSchema,
   WithdrawRequest,
-} from '../schemas/defi';
+} from "../schemas";
+import { FullOptions } from "../mochi";
 
 export class PayModule {
   profile: {
@@ -41,7 +39,7 @@ export class PayModule {
         amount: string;
         token: string;
         note: string;
-        type: 'paylink' | 'payme';
+        type: "paylink" | "payme";
       },
       Code
     >;
@@ -82,11 +80,11 @@ export class PayModule {
       api = api.catcherFallback(catcher);
     }
 
-    let mochiWallet = api.url('/mochi-wallet');
-    let inAppWallets = api.url('/in-app-wallets');
-    let transactions = api.url('/transactions');
-    let payRequest = api.url('/pay-requests');
-    let profile = api.url('/profile');
+    let mochiWallet = api.url("/mochi-wallet");
+    let inAppWallets = api.url("/in-app-wallets");
+    let transactions = api.url("/transactions");
+    let payRequest = api.url("/pay-requests");
+    let profile = api.url("/profile");
     if (apiKey) {
       mochiWallet = mochiWallet.auth(`Bearer ${apiKey}`);
       inAppWallets = inAppWallets.auth(`Bearer ${apiKey}`);
@@ -104,7 +102,7 @@ export class PayModule {
       },
       getTransactions: async function ({ page = 0, ...rest }) {
         return profile
-          .url('/transactions')
+          .url("/transactions")
           .resolve(parse(ListOffchainTxSchema))
           .query({ ...rest, page })
           .get();
@@ -113,20 +111,20 @@ export class PayModule {
 
     this.payRequest = {
       generateCode: async function (payload) {
-        return payRequest.url('/').resolve(parse(CodeSchema)).post(payload);
+        return payRequest.url("/").resolve(parse(CodeSchema)).post(payload);
       },
     };
 
     this.mochiWallet = {
       withdraw: async function (payload) {
         return mochiWallet
-          .url('/withdraw')
+          .url("/withdraw")
           .resolve(parse(AnySchema))
           .post(payload);
       },
       deposit: async function ({ profileId, token }) {
         return mochiWallet
-          .url('/deposit')
+          .url("/deposit")
           .resolve(parse(DepositInfoSchema))
           .post({ profileId, token });
       },
@@ -167,7 +165,7 @@ export class PayModule {
           ...w,
           chain: {
             ...w.chain,
-            symbol: w.chain.symbol === 'ETH' ? 'EVM' : w.chain.symbol,
+            symbol: w.chain.symbol === "ETH" ? "EVM" : w.chain.symbol,
           },
         }));
 
@@ -178,7 +176,7 @@ export class PayModule {
     this.transactions = {
       getAll: async function ({ size = 40, page = 0, action }) {
         return transactions
-          .url('/')
+          .url("/")
           .query({ page, size, action })
           .resolve(parse(ListOffchainTxSchema))
           .get();
@@ -188,7 +186,7 @@ export class PayModule {
     this.tokens = {
       getSupported: async function (symbol?: string) {
         return api
-          .url('/tokens')
+          .url("/tokens")
           .query(symbol ? { symbol } : {})
           .resolve(parse(TokensSchema))
           .get();
@@ -197,7 +195,7 @@ export class PayModule {
 
     this.chains = {
       getSupported: async function () {
-        return api.url('/chains').resolve(parse(ChainsSchema)).get();
+        return api.url("/chains").resolve(parse(ChainsSchema)).get();
       },
     };
 

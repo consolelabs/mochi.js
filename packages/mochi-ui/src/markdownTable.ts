@@ -1,9 +1,9 @@
-import merge from 'lodash.merge';
-import zip from 'lodash.zip';
+import merge from "lodash.merge";
+import zip from "lodash.zip";
 
-const VERTICAL_BAR = '｜' as const;
+const VERTICAL_BAR = "｜" as const;
 
-export type Alignment = 'left' | 'center' | 'right';
+export type Alignment = "left" | "center" | "right";
 type Option<C, L = number | null> = {
   row?: (formatted: string, index: number) => string;
   cols: C[];
@@ -17,26 +17,26 @@ type Data = Record<string, string | number>;
 export function mdTable<
   DT extends Data,
   O extends Option<keyof DT>,
-  L = Pick<O, 'textLimit'>,
+  L = Pick<O, "textLimit">,
   R = L extends { textLimit: number } ? string[] : string
 >(data: Array<DT>, options: O): R {
   if (!data || !data.length || !options.cols.length) {
-    if (typeof options.textLimit === 'number') {
+    if (typeof options.textLimit === "number") {
       return [] as unknown as R;
     }
-    return '' as unknown as R;
+    return "" as unknown as R;
   }
   const segments = [];
   const allColsExceptLast = Array(options.cols.length - 1);
   const resolvedOptions = merge<
-    Omit<Required<Option<keyof DT>>, 'textLimit'>,
+    Omit<Required<Option<keyof DT>>, "textLimit">,
     Partial<Option<keyof DT>>
   >(
     {
       cols: [],
       alignment: [
-        ...allColsExceptLast.slice().fill('left'),
-        allColsExceptLast.length ? 'right' : 'left',
+        ...allColsExceptLast.slice().fill("left"),
+        allColsExceptLast.length ? "right" : "left",
       ],
       row: (str: string) => str,
       separator: allColsExceptLast.slice().fill(VERTICAL_BAR),
@@ -65,9 +65,9 @@ export function mdTable<
     let row = [];
 
     for (const [colIdx, col] of resolvedOptions.cols.entries()) {
-      let content = String(d[col] ?? '');
+      let content = String(d[col] ?? "");
 
-      const padding = ' '.repeat(
+      const padding = " ".repeat(
         Math.max(
           (longestTextByColumns.get(col) ?? 0) - String(content).length,
           0
@@ -78,21 +78,21 @@ export function mdTable<
 
       if (
         colIdx === resolvedOptions.cols.length - 1 &&
-        resolvedOptions.alignment[colIdx] !== 'right'
+        resolvedOptions.alignment[colIdx] !== "right"
       ) {
         row.push(content);
         continue;
       }
       switch (resolvedOptions.alignment[colIdx]) {
-        case 'center':
+        case "center":
           content = `${halfPadding}${
-            isEven ? '' : ' '
+            isEven ? "" : " "
           }${content}${halfPadding}`;
           break;
-        case 'right':
+        case "right":
           content = `${padding}${content}`;
           break;
-        case 'left':
+        case "left":
         default:
           content = `${content}${padding}`;
           break;
@@ -112,11 +112,11 @@ export function mdTable<
     ).flat();
     row = row.filter(Boolean);
 
-    const line = resolvedOptions.row(row.join(''), i);
+    const line = resolvedOptions.row(row.join(""), i);
 
     if (
       i !== 0 &&
-      (lines.join('\n') + line).length > (resolvedOptions.textLimit || 0)
+      (lines.join("\n") + line).length > (resolvedOptions.textLimit || 0)
     ) {
       segments.push([...lines]);
       lines = [line];
@@ -128,9 +128,9 @@ export function mdTable<
       segments.push([...lines]);
     }
   }
-  if (typeof resolvedOptions.textLimit === 'number') {
-    return segments.map((s) => s.join('\n')) as unknown as R;
+  if (typeof resolvedOptions.textLimit === "number") {
+    return segments.map((s) => s.join("\n")) as unknown as R;
   }
 
-  return segments.map((s) => s.join('\n')).join('\n') as unknown as R;
+  return segments.map((s) => s.join("\n")).join("\n") as unknown as R;
 }

@@ -1,5 +1,5 @@
-import address from '../address';
-import { mdTable } from '../markdownTable';
+import address from "../address";
+import { mdTable } from "../markdownTable";
 
 type Wallet = {
   address: string;
@@ -33,8 +33,8 @@ export default async function (
 
   const text = mdTable(data, {
     ...(tableParams ?? {}),
-    cols: ['chain', 'address'],
-    alignment: ['left', 'left'],
+    cols: ["chain", "address"],
+    alignment: ["left", "left"],
   });
 
   return {

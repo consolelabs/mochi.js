@@ -1,4 +1,4 @@
-import { Any } from './schemas';
+import { Any } from "./schemas";
 
 export type Fetcher<
   I extends void | string | number | boolean | object = void,

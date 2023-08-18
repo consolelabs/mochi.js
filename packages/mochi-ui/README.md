@@ -3,9 +3,9 @@
 ## Usage
 
 ```typescript
-import fmt, { Platform } from '@consolelabs/mochi-formatter';
+import fmt, { Platform } from "@consolelabs/mochi-formatter";
 
-fmt.profileAPI = '';
+fmt.profileAPI = "";
 
 const [account, otherAccount] = await fmt.account(
   Platform.Web,

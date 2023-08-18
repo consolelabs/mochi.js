@@ -1,6 +1,6 @@
-import address from '../address';
-import { formatUsdDigit } from '../formatDigit';
-import { Alignment, mdTable } from '../markdownTable';
+import address from "../address";
+import { formatUsdDigit } from "../formatDigit";
+import { Alignment, mdTable } from "../markdownTable";
 
 type Wallet = {
   address: string;
@@ -20,12 +20,12 @@ export default async function (
   tableParams?: Parameters<typeof mdTable>[1]
 ) {
   let totalUsd = 0;
-  const cols: (keyof Wallet)[] = ['chain', 'address'];
-  const alignment: Alignment[] = ['left', 'left'];
+  const cols: (keyof Wallet)[] = ["chain", "address"];
+  const alignment: Alignment[] = ["left", "left"];
 
   if (wallets.some((w) => w.name)) {
-    cols.push('name');
-    alignment.push('left');
+    cols.push("name");
+    alignment.push("left");
   }
 
   const data = (
@@ -33,11 +33,11 @@ export default async function (
       wallets
         .filter((w) => {
           return [
-            'evm-chain',
-            'solana-chain',
-            'near-chain',
-            'sui-chain',
-            'ronin-chain',
+            "evm-chain",
+            "solana-chain",
+            "near-chain",
+            "sui-chain",
+            "ronin-chain",
           ].includes(w.chain);
         })
         .map((w) => ({ ...w, amount: Number(w.amount ?? 0) }))
@@ -57,14 +57,14 @@ export default async function (
           }
 
           let chain = w.chain;
-          if (chain.toLowerCase().endsWith('-chain')) {
-            chain = chain.split('-').shift() ?? '';
+          if (chain.toLowerCase().endsWith("-chain")) {
+            chain = chain.split("-").shift() ?? "";
             switch (true) {
-              case chain.toLowerCase() === 'solana':
-                chain = 'SOL';
+              case chain.toLowerCase() === "solana":
+                chain = "SOL";
                 break;
-              case chain.toLowerCase() === 'ronin':
-                chain = 'RON';
+              case chain.toLowerCase() === "ronin":
+                chain = "RON";
                 break;
               default:
                 break;
@@ -89,7 +89,7 @@ export default async function (
   ).filter(Boolean) as Array<Wallet>;
 
   if (totalUsd > 0) {
-    cols.push('amount');
+    cols.push("amount");
   }
 
   const text = mdTable(data, {

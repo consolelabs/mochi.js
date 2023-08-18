@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 enum ActivityType {
   ACTIVITY_PROFILE_ADD_ONCHAIN_WALLET = 0,
@@ -31,16 +31,16 @@ enum ActivityType {
 }
 
 export const ActivitySchema = z.object({
-  id: z.number(),
+  id: z.number().nonnegative(),
   type: z.nativeEnum(ActivityType),
-  user_profile_id: z.string(),
-  target_profile_id: z.string(),
-  content: z.string(),
-  content_raw: z.string(),
-  changes: z.array(z.object({ key: z.string(), value: z.string() })),
-  status: z.enum(['read', 'new']),
-  created_at: z.string().datetime(),
-  updated_at: z.string().datetime(),
+  user_profile_id: z.string().nonempty(),
+  target_profile_id: z.string().nonempty(),
+  content: z.string().nonempty(),
+  content_raw: z.string().nonempty(),
+  changes: z.array(z.object({ key: z.string(), value: z.string() })).nonempty(),
+  status: z.enum(["read", "new"]),
+  created_at: z.string().datetime().nonempty(),
+  updated_at: z.string().datetime().nonempty(),
 });
 
 export const ListActivity = z.array(ActivitySchema);

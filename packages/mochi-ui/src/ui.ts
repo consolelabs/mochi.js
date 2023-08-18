@@ -1,40 +1,40 @@
-import { DISCORD_PROFILE, HOMEPAGE, TELEGRAM_PROFILE } from './constant';
-import components from './components';
-import Redis from 'ioredis';
-import api from './api';
-import type { Profile as MochiProfile, Vault } from '@consolelabs/mochi-rest';
+import { DISCORD_PROFILE, HOMEPAGE, TELEGRAM_PROFILE } from "./constant";
+import components from "./components";
+import Redis from "ioredis";
+import api from "./api";
+import type { Profile as MochiProfile, Vault } from "@consolelabs/mochi-rest";
 
 type Profile = MochiProfile | Vault | null;
 
 export enum Platform {
-  Web = 'mochi-web',
-  Mochi = 'mochi-profile',
-  App = 'mochi-application',
-  Vault = 'mochi-vault',
+  Web = "mochi-web",
+  Mochi = "mochi-profile",
+  App = "mochi-application",
+  Vault = "mochi-vault",
   //
-  EvmChain = 'evm-chain',
-  SolanaChain = 'solana-chain',
-  SuiChain = 'sui-chain',
-  RoninChain = 'ronin-chain',
+  EvmChain = "evm-chain",
+  SolanaChain = "solana-chain",
+  SuiChain = "sui-chain",
+  RoninChain = "ronin-chain",
   //
-  Twitter = 'twitter',
-  Discord = 'discord',
-  Telegram = 'telegram',
+  Twitter = "twitter",
+  Discord = "discord",
+  Telegram = "telegram",
 }
 
 const PLATFORM_EMOJI_PREFIX = new Proxy(
   {
-    [Platform.Discord]: '👾',
-    [Platform.Telegram]: '🔹',
-    [Platform.Twitter]: '🐦',
-    [Platform.App]: '🔌',
-    [Platform.Mochi]: '🍡',
-    [Platform.Vault]: '🏦',
+    [Platform.Discord]: "👾",
+    [Platform.Telegram]: "🔹",
+    [Platform.Twitter]: "🐦",
+    [Platform.App]: "🔌",
+    [Platform.Mochi]: "🍡",
+    [Platform.Vault]: "🏦",
   },
   {
     get(obj, prop) {
       const key = prop as keyof typeof obj;
-      if (!obj[key]) return '';
+      if (!obj[key]) return "";
       return obj[key];
     },
     set() {
@@ -45,17 +45,17 @@ const PLATFORM_EMOJI_PREFIX = new Proxy(
 
 const PLATFORM_PREFIX = new Proxy(
   {
-    [Platform.Discord]: 'dsc:',
-    [Platform.Telegram]: 'tg:',
-    [Platform.Twitter]: 'tw:',
-    [Platform.App]: 'app:',
-    [Platform.Mochi]: 'mochi:',
-    [Platform.Vault]: 'vault:',
+    [Platform.Discord]: "dsc:",
+    [Platform.Telegram]: "tg:",
+    [Platform.Twitter]: "tw:",
+    [Platform.App]: "app:",
+    [Platform.Mochi]: "mochi:",
+    [Platform.Vault]: "vault:",
   },
   {
     get(obj, prop) {
       const key = prop as keyof typeof obj;
-      if (!obj[key]) return '';
+      if (!obj[key]) return "";
       return obj[key];
     },
     set() {
@@ -86,8 +86,8 @@ export const UI: {
   useRedis: (r: Redis) => void;
   resolve: (
     on: Platform.Web | Platform.Telegram | Platform.Discord,
-    A: string | { id: string; type: 'vault' },
-    B?: string | { id: string; type: 'vault' }
+    A: string | { id: string; type: "vault" },
+    B?: string | { id: string; type: "vault" }
   ) => Promise<[UsernameFmt, UsernameFmt] | []>;
 } = {
   components,
@@ -97,7 +97,7 @@ export const UI: {
   },
   resolve: async function (on, A, B = A) {
     let pA: Profile, pB: Profile;
-    if (typeof A === 'string') {
+    if (typeof A === "string") {
       const { data } = await api.profile.mochi.getById(A);
       pA = data;
     } else {
@@ -105,7 +105,7 @@ export const UI: {
       pA = data;
     }
 
-    if (typeof B === 'string') {
+    if (typeof B === "string") {
       const { data } = await api.profile.mochi.getById(B);
       pB = data;
     } else {
@@ -173,7 +173,7 @@ async function account(
       ];
       break;
     default:
-      throw new Error('MochiFormatter: platform not supported');
+      throw new Error("MochiFormatter: platform not supported");
   }
 
   let userA,
@@ -206,13 +206,13 @@ async function account(
 
 async function vault(p?: Profile, on = Platform.Vault): Promise<UsernameFmt> {
   try {
-    if (!p || 'profile_name' in p)
-      return { plain: '', value: '', id: '', url: '' };
+    if (!p || "profile_name" in p)
+      return { plain: "", value: "", id: "", url: "" };
 
     const textPrefix =
-      on !== Platform.Vault ? PLATFORM_PREFIX['mochi-vault'] : '';
+      on !== Platform.Vault ? PLATFORM_PREFIX["mochi-vault"] : "";
     const emojiPrefix =
-      on !== Platform.Vault ? `${PLATFORM_EMOJI_PREFIX['mochi-vault']} ` : '';
+      on !== Platform.Vault ? `${PLATFORM_EMOJI_PREFIX["mochi-vault"]} ` : "";
     const prefix =
       on === Platform.Web ? emojiPrefix : `${emojiPrefix}${textPrefix}`;
 
@@ -224,7 +224,7 @@ async function vault(p?: Profile, on = Platform.Vault): Promise<UsernameFmt> {
       platform: Platform.Vault,
     };
   } catch (e) {
-    return { plain: '', value: '', id: '', url: '' };
+    return { plain: "", value: "", id: "", url: "" };
   }
 }
 
@@ -234,19 +234,19 @@ async function application(
 ): Promise<UsernameFmt> {
   try {
     if (!p || !isMochiProfile(p))
-      return { plain: '', value: '', id: '', url: '' };
+      return { plain: "", value: "", id: "", url: "" };
 
     const application = p.application;
     const textPrefix =
-      on !== Platform.App ? PLATFORM_PREFIX['mochi-application'] : '';
+      on !== Platform.App ? PLATFORM_PREFIX["mochi-application"] : "";
     const emojiPrefix =
       on !== Platform.App
-        ? `${PLATFORM_EMOJI_PREFIX['mochi-application']} `
-        : '';
+        ? `${PLATFORM_EMOJI_PREFIX["mochi-application"]} `
+        : "";
     const prefix =
       on === Platform.Web ? emojiPrefix : `${emojiPrefix} ${textPrefix}`;
 
-    if (application && p.type === 'application') {
+    if (application && p.type === "application") {
       return {
         value: `[${prefix}${application.name}](${HOMEPAGE}/apps/${application.id})`,
         plain: `${prefix}${application.name}`,
@@ -257,13 +257,13 @@ async function application(
     }
 
     return {
-      plain: '',
-      value: '',
-      id: '',
-      url: '',
+      plain: "",
+      value: "",
+      id: "",
+      url: "",
     };
   } catch (e) {
-    return { plain: '', value: '', id: '', url: '' };
+    return { plain: "", value: "", id: "", url: "" };
   }
 }
 
@@ -272,26 +272,26 @@ async function discord(
   on = Platform.Discord
 ): Promise<UsernameFmt> {
   try {
-    if (!p || !isMochiProfile(p))
-      return { plain: '', value: '', id: '', url: '' };
+    if (!p || !isMochiProfile(p) || isApplication(p) || isVault(p))
+      return { plain: "", value: "", id: "", url: "" };
 
     const discord = p.associated_accounts.find(
       (aa) => aa.platform === Platform.Discord
     );
 
     const textPrefix =
-      on !== Platform.Discord ? PLATFORM_PREFIX['discord'] : '@';
+      on !== Platform.Discord ? PLATFORM_PREFIX["discord"] : "@";
     const emojiPrefix =
-      on !== Platform.Discord ? `${PLATFORM_EMOJI_PREFIX['discord']} ` : '';
+      on !== Platform.Discord ? `${PLATFORM_EMOJI_PREFIX["discord"]} ` : "";
     const prefix =
       on === Platform.Web ? emojiPrefix : `${emojiPrefix} ${textPrefix}`;
 
     if (!discord || !discord.platform_metadata.username)
       return {
-        plain: '',
-        value: '',
-        id: '',
-        url: '',
+        plain: "",
+        value: "",
+        id: "",
+        url: "",
       };
 
     return {
@@ -302,7 +302,7 @@ async function discord(
       platform: Platform.Discord,
     };
   } catch (e) {
-    return { plain: '', value: '', id: '', url: '' };
+    return { plain: "", value: "", id: "", url: "" };
   }
 }
 
@@ -311,26 +311,26 @@ async function telegram(
   on = Platform.Telegram
 ): Promise<UsernameFmt> {
   try {
-    if (!p || !isMochiProfile(p))
-      return { plain: '', value: '', id: '', url: '' };
+    if (!p || !isMochiProfile(p) || isApplication(p) || isVault(p))
+      return { plain: "", value: "", id: "", url: "" };
 
     const telegram = p.associated_accounts.find(
       (aa) => aa.platform === Platform.Telegram
     );
 
     const textPrefix =
-      on !== Platform.Telegram ? PLATFORM_PREFIX['telegram'] : '@';
+      on !== Platform.Telegram ? PLATFORM_PREFIX["telegram"] : "@";
     const emojiPrefix =
-      on !== Platform.Telegram ? `${PLATFORM_EMOJI_PREFIX['telegram']} ` : '';
+      on !== Platform.Telegram ? `${PLATFORM_EMOJI_PREFIX["telegram"]} ` : "";
     const prefix =
       on === Platform.Web ? emojiPrefix : `${emojiPrefix} ${textPrefix}`;
 
     if (!telegram || !telegram.platform_metadata.username)
       return {
-        plain: '',
-        id: '',
-        url: '',
-        value: '',
+        plain: "",
+        id: "",
+        url: "",
+        value: "",
       };
 
     return {
@@ -341,7 +341,7 @@ async function telegram(
       platform: Platform.Telegram,
     };
   } catch (e) {
-    return { plain: '', value: '', id: '', url: '' };
+    return { plain: "", value: "", id: "", url: "" };
   }
 }
 
@@ -351,12 +351,12 @@ async function mochi(
 ): Promise<UsernameFmt> {
   try {
     if (!p || !isMochiProfile(p))
-      return { plain: '', value: '', id: '', url: '' };
+      return { plain: "", value: "", id: "", url: "" };
 
     const textPrefix =
-      on !== Platform.Mochi ? PLATFORM_PREFIX['mochi-profile'] : '';
+      on !== Platform.Mochi ? PLATFORM_PREFIX["mochi-profile"] : "";
     const emojiPrefix =
-      on !== Platform.Mochi ? `${PLATFORM_EMOJI_PREFIX['mochi-profile']} ` : '';
+      on !== Platform.Mochi ? `${PLATFORM_EMOJI_PREFIX["mochi-profile"]} ` : "";
     const prefix =
       on === Platform.Web ? emojiPrefix : `${emojiPrefix} ${textPrefix}`;
 
@@ -370,10 +370,22 @@ async function mochi(
       url: `${HOMEPAGE}/profile/${p.id}`,
     };
   } catch (e) {
-    return { plain: '', value: '', id: '', url: '' };
+    return { plain: "", value: "", id: "", url: "" };
   }
 }
 
-function isMochiProfile(p: any): p is MochiProfile {
-  return 'profile_name' in p;
+function isMochiProfile(p: Exclude<Profile, null>): p is MochiProfile {
+  return "profile_name" in p;
+}
+
+function isApplication(
+  p: Exclude<Profile, null>
+): p is Extract<MochiProfile, { type: "application" }> {
+  return "type" in p && p.type === "application";
+}
+
+function isVault(
+  p: Exclude<Profile, null>
+): p is Extract<MochiProfile, { type: "vault" }> {
+  return "type" in p && p.type === "vault";
 }
