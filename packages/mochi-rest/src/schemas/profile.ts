@@ -1,19 +1,19 @@
-import { z } from "zod";
-import { ListOffchainTxSchema, TokenSchema } from "./defi";
+import { z } from 'zod';
+import { ListOffchainTxSchema, TokenSchema } from './defi';
 
 const AssociatedAccountSchema = z.object({
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
   id: z.string(),
   platform: z.enum([
-    "evm-chain",
-    "solana-chain",
-    "sui-chain",
-    "ronin-chain",
-    "discord",
-    "telegram",
-    "twitter",
-    "binance",
+    'evm-chain',
+    'solana-chain',
+    'sui-chain',
+    'ronin-chain',
+    'discord',
+    'telegram',
+    'twitter',
+    'binance',
   ]),
   platform_identifier: z.string(),
   platform_metadata: z.object({ username: z.string() }).partial(),
@@ -35,7 +35,7 @@ const UserProfileSchema = z.object({
   profile_name: z.string(),
   avatar: z.string(),
   pnl: z.string(),
-  type: z.literal("user"),
+  type: z.literal('user'),
   application: z.null(),
 });
 
@@ -45,11 +45,11 @@ const AppProfileSchema = z.object({
   profile_name: z.string(),
   avatar: z.string(),
   pnl: z.string(),
-  type: z.literal("application"),
+  type: z.literal('application'),
   application: ApplicationSchema,
 });
 
-export const ProfileSchema = z.discriminatedUnion("type", [
+export const ProfileSchema = z.discriminatedUnion('type', [
   UserProfileSchema,
   AppProfileSchema,
 ]);

@@ -1,10 +1,10 @@
-import deepmerge from "deepmerge";
-import { BaseModule, PayModule, ProfileModule } from "./modules";
-import { Command, Copy } from "./schemas";
-import { logger } from "./logger";
-import { apiUrls } from "./constant";
-import { WretchError } from "wretch/resolver";
-import { ZodError } from "zod";
+import deepmerge from 'deepmerge';
+import { BaseModule, PayModule, ProfileModule } from './modules';
+import { Command, Copy } from './schemas';
+import { logger } from './logger';
+import { apiUrls } from './constant';
+import { WretchError } from 'wretch/resolver';
+import { ZodError } from 'zod';
 
 interface Options {
   apiKey?: string;
@@ -24,10 +24,10 @@ const defaultOptions: Options = {
 
 export class Mochi {
   private opts: FullOptions;
-  url: Pick<FullOptions, "baseUrl" | "profileUrl" | "payUrl"> = {
-    payUrl: "",
-    profileUrl: "",
-    baseUrl: "",
+  url: Pick<FullOptions, 'baseUrl' | 'profileUrl' | 'payUrl'> = {
+    payUrl: '',
+    profileUrl: '',
+    baseUrl: '',
   };
   base: BaseModule;
   profile: ProfileModule;
@@ -60,22 +60,22 @@ export class Mochi {
   }
 
   randomTip() {
-    if (!this.copy.tip.length) return "";
+    if (!this.copy.tip.length) return '';
 
     return (
       this.copy.tip.at(
         Math.floor(Math.random() * (this.copy.tip.length - 1))
-      ) ?? ""
+      ) ?? ''
     );
   }
 
   randomFact() {
-    if (!this.copy.fact.length) return "";
+    if (!this.copy.fact.length) return '';
 
     return (
       this.copy.fact.at(
         Math.floor(Math.random() * (this.copy.fact.length - 1))
-      ) ?? ""
+      ) ?? ''
     );
   }
 
@@ -88,9 +88,9 @@ export class Mochi {
       this.commands = new Map(
         result.data.map((c) => [c.code.toLowerCase(), c])
       );
-      logger.info("Command config fetch OK");
+      logger.info('Command config fetch OK');
     } catch (e) {
-      logger.error("Cannot fetch command config");
+      logger.error('Cannot fetch command config');
     }
   }
 
@@ -99,9 +99,9 @@ export class Mochi {
       const result = await this.base.metadata.getCopy();
       if (!result.ok) throw new Error();
       this.copy = result.data;
-      logger.info("Product copy fetch OK");
+      logger.info('Product copy fetch OK');
     } catch (e) {
-      logger.error("Cannot fetch product copy");
+      logger.error('Cannot fetch product copy');
     }
   }
 }

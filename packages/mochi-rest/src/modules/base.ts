@@ -1,28 +1,30 @@
-import wretch from "wretch";
-import QueryStringAddon from "wretch/addons/queryString";
+import wretch from 'wretch';
+import QueryStringAddon from 'wretch/addons/queryString';
 import {
   attachRequestId,
   convertBodyToSnakeCase,
   convertQueryToSnakeCase,
   log,
-} from "./middlewares";
-import { throttlingCache } from "wretch/middlewares";
-import type { Fetcher } from "../utils";
+} from './middlewares';
+import { throttlingCache } from 'wretch/middlewares';
+import type { Fetcher } from '../utils';
 import {
   AnySchema,
   Command,
   Copy,
   CopySchema,
   ListCommandSchema,
+  Vault,
+  VaultSchema,
   getParser,
-} from "../schemas";
-import { FullOptions } from "../mochi";
+} from '../schemas';
+import { FullOptions } from '../mochi';
 import {
   TransferRequest,
   TransferResult,
   TransferResultSchema,
-} from "../schemas/defi";
-import { Gas, ListGasSchema } from "../schemas/gas";
+} from '../schemas/defi';
+import { Gas, ListGasSchema } from '../schemas/gas';
 import {
   Coin,
   CoinChartData,
@@ -32,10 +34,10 @@ import {
   QueryCoin,
   TopGainerLoser,
   TopGainerLoserSchema,
-} from "../schemas/coin";
+} from '../schemas/coin';
 
 const base = wretch()
-  .content("application/json")
+  .content('application/json')
   .middlewares([
     attachRequestId,
     convertQueryToSnakeCase,
@@ -48,8 +50,12 @@ const base = wretch()
 export default base;
 
 export class BaseModule {
+  vault: {
+    getById: Fetcher<number, Vault>;
+  };
+
   metadata: {
-    getCopy: Fetcher<string, Copy>;
+    getCopy: Fetcher<string | void, Copy>;
     getCommands: Fetcher<void, Array<Command>>;
   };
 
@@ -94,7 +100,7 @@ export class BaseModule {
       address: string;
       alias: string;
       chainType: string;
-      type?: "follow" | "track" | "copy";
+      type?: 'follow' | 'track' | 'copy';
     }>;
     getUserWatchlist: Fetcher<{
       profileId: string;
@@ -154,12 +160,13 @@ export class BaseModule {
       api = api.catcherFallback(catcher);
     }
 
-    let defi = api.url("/defi");
-    let tip = api.url("/tip");
-    let users = api.url("/users");
-    let community = api.url("/community");
-    let configDefi = api.url("/config-defi");
-    let productMetadata = api.url("/product-metadata");
+    let vault = api.url('/vault');
+    let defi = api.url('/defi');
+    let tip = api.url('/tip');
+    let users = api.url('/users');
+    let community = api.url('/community');
+    let configDefi = api.url('/config-defi');
+    let productMetadata = api.url('/product-metadata');
 
     if (apiKey) {
       defi = defi.auth(`Bearer ${apiKey}`);
@@ -170,13 +177,19 @@ export class BaseModule {
       productMetadata = productMetadata.auth(`Bearer ${apiKey}`);
     }
 
+    this.vault = {
+      getById: async function (id: number) {
+        return vault.url(`/${id}`).resolve(parse(VaultSchema)).get();
+      },
+    };
+
     this.defi = {
       getGasTrackers: async function () {
         return defi.url(`/gas-tracker`).resolve(parse(ListGasSchema)).get();
       },
-      searchCoin: async function ({ query, chain = "" }) {
+      searchCoin: async function ({ query, chain = '' }) {
         return defi
-          .url("/coins")
+          .url('/coins')
           .query({ query, chain })
           .resolve(parse(ListQueryCoinSchema))
           .get();
@@ -235,7 +248,7 @@ export class BaseModule {
     this.tip = {
       transferV2: async function (body) {
         return tip
-          .url("/transfer-v2")
+          .url('/transfer-v2')
           .resolve(parse(TransferResultSchema))
           .post(body);
       },
@@ -357,7 +370,7 @@ export class BaseModule {
       sendFeedback: async function (body) {
         return (
           community
-            .url("/feedback")
+            .url('/feedback')
             // TODO
             .resolve(parse(AnySchema))
             .post({ ...body })
@@ -366,7 +379,7 @@ export class BaseModule {
       listFeedback: async function ({ profileId, page = 0, size = 5 }) {
         return (
           community
-            .url("/feedback")
+            .url('/feedback')
             .query({
               profileId,
               page,
@@ -388,7 +401,7 @@ export class BaseModule {
       },
       getCommands: async function () {
         return productMetadata
-          .url("/commands")
+          .url('/commands')
           .resolve(parse(ListCommandSchema))
           .get();
       },
@@ -398,7 +411,7 @@ export class BaseModule {
       getDefaultMonikers: async function () {
         return (
           configDefi
-            .url("/monikers/default")
+            .url('/monikers/default')
             // TODO
             .resolve(parse(AnySchema))
             .get()

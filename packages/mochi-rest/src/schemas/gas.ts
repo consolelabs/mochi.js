@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 const GasSchema = z.object({
   chain: z.string(),

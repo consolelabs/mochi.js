@@ -1,4 +1,4 @@
-import MochiAPI from "@consolelabs/mochi-rest";
+import MochiAPI from '@consolelabs/mochi-rest';
 
 const api = new MochiAPI({});
 api.init();

@@ -1,26 +1,26 @@
-import { logger } from "../logger";
-import { WretchOptions } from "wretch/types";
-import { nanoid } from "nanoid";
-import snakeCase from "lodash.snakecase";
-import snakeCaseKeys from "snakecase-keys";
+import { logger } from '../logger';
+import { WretchOptions } from 'wretch/types';
+import { nanoid } from 'nanoid';
+import snakeCase from 'lodash.snakecase';
+import snakeCaseKeys from 'snakecase-keys';
 
 export const log = (next: any) => (url: string, opts: WretchOptions) => {
   logger.info(
     `[API going - ${opts.method}]: ${url}${
-      opts.body ? ` with body ${opts.body}` : ""
+      opts.body ? ` with body ${opts.body}` : ''
     }`
   );
   return next(url, opts).then((r: any) => {
     if (r.ok) {
       logger.info(
         `[API ok - ${opts.method}/${r.status}]: ${url}${
-          opts.body ? ` with body ${opts.body}` : ""
+          opts.body ? ` with body ${opts.body}` : ''
         }`
       );
     } else {
       logger.error(
         `[API failed - ${opts.method}/${r.status}]: ${url}${
-          opts.body ? ` with body ${opts.body}` : ""
+          opts.body ? ` with body ${opts.body}` : ''
         }`
       );
     }
@@ -33,10 +33,10 @@ export const attachRequestId =
     const id = nanoid(10);
     if (!opts.headers) {
       opts.headers = {
-        "X-Request-ID": id,
+        'X-Request-ID': id,
       };
     } else {
-      opts.headers["X-Request-ID"] = id;
+      opts.headers['X-Request-ID'] = id;
     }
     return next(url, opts);
   };

@@ -1,20 +1,20 @@
-import pino, { LoggerOptions } from "pino";
-import { PACKAGE_ID } from "./constant";
+import pino, { LoggerOptions } from 'pino';
+import { PACKAGE_ID } from './constant';
 
 const options: LoggerOptions =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_ENV === 'production'
     ? {
         mixin() {
           return { package: PACKAGE_ID };
         },
         transport: {
-          target: "pino/file",
+          target: 'pino/file',
           options: {
             destination: 1,
           },
         },
       }
-    : process.env.NODE_ENV === "test"
+    : process.env.NODE_ENV === 'test'
     ? {
         mixin() {
           return { package: PACKAGE_ID };
@@ -26,7 +26,7 @@ const options: LoggerOptions =
           return { package: PACKAGE_ID };
         },
         transport: {
-          target: "pino-pretty",
+          target: 'pino-pretty',
           options: {
             colorize: true,
             levelFirst: true,

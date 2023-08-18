@@ -1,7 +1,7 @@
-import { utils } from "..";
-import { formatUsdDigit } from "../formatDigit";
-import { mdTable } from "../markdownTable";
-import { capitalCase } from "change-case";
+import { utils } from '..';
+import { formatUsdDigit } from '../formatDigit';
+import { mdTable } from '../markdownTable';
+import { capitalCase } from 'change-case';
 
 type Wallet = {
   // cex name
@@ -23,7 +23,7 @@ export default async function (
 
   const data = wallets
     .filter((w) => {
-      return ["binance"].includes(w.name);
+      return ['binance'].includes(w.name);
     })
     .map((w) => {
       const amount = Number(w.amount);
@@ -47,7 +47,7 @@ export default async function (
 
   const text = mdTable(data, {
     ...(tableParams ?? {}),
-    cols: ["name", "address", "amount"],
+    cols: ['name', 'address', 'amount'],
   });
 
   return {

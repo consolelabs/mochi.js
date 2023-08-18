@@ -1,19 +1,19 @@
-import time from "../time";
-import UI, { Platform } from "..";
-import { mdTable } from "../markdownTable";
-import { formatTokenDigit } from "../formatDigit";
-import { formatUnits } from "ethers";
-import { ActivityType } from "../constant";
-import address from "../address";
-import { capitalCase } from "change-case";
-import type { Paging } from "../types";
-import groupBy from "lodash.groupby";
+import time from '../time';
+import UI, { Platform } from '..';
+import { mdTable } from '../markdownTable';
+import { formatTokenDigit } from '../formatDigit';
+import { formatUnits } from 'ethers';
+import { ActivityType } from '../constant';
+import address from '../address';
+import { capitalCase } from 'change-case';
+import type { Paging } from '../types';
+import groupBy from 'lodash.groupby';
 
 interface Activity {
   created_at: string;
   id: number;
   type: ActivityType;
-  status: "new" | "read";
+  status: 'new' | 'read';
   changes: Array<{ key: string; value: string }>;
   user_profile_id: string;
   target_profile_id: string;
@@ -36,7 +36,7 @@ function formatActivity(
     const t = time.relative(date.getTime());
     const result = {
       time: t,
-      text: "",
+      text: '',
     };
 
     const notEnoughDataError = new Error(
@@ -45,68 +45,68 @@ function formatActivity(
 
     switch (activity.type) {
       case ActivityType.AddOnchainWallet: {
-        const wallet = activity.changes.find((c) => c.key === "wallet")?.value;
-        const chain = activity.changes.find((c) => c.key === "chain")?.value;
+        const wallet = activity.changes.find((c) => c.key === 'wallet')?.value;
+        const chain = activity.changes.find((c) => c.key === 'chain')?.value;
 
         if (!wallet || !chain) throw notEnoughDataError;
 
         result.text = activity.content_raw
-          .replace("{.wallet}", `\`${address.shorten(wallet)}\``)
-          .replace("{.chain}", capitalCase(chain));
+          .replace('{.wallet}', `\`${address.shorten(wallet)}\``)
+          .replace('{.chain}', capitalCase(chain));
         break;
       }
       case ActivityType.Withdraw: {
-        const amount = activity.changes.find((c) => c.key === "amount")?.value;
+        const amount = activity.changes.find((c) => c.key === 'amount')?.value;
         // const decimal = activity.changes.find(
         //   (c) => c.key === "decimal"
         // )?.value;
-        const token = activity.changes.find((c) => c.key === "token")?.value;
+        const token = activity.changes.find((c) => c.key === 'token')?.value;
 
         if (!amount || !token) throw notEnoughDataError;
 
         result.text = activity.content_raw
-          .replace("{.amount}", amount)
-          .replace("{.token}", token);
+          .replace('{.amount}', amount)
+          .replace('{.token}', token);
         break;
       }
       case ActivityType.Receive: {
-        const amount = activity.changes.find((c) => c.key === "amount")?.value;
+        const amount = activity.changes.find((c) => c.key === 'amount')?.value;
         const decimal = activity.changes.find(
-          (c) => c.key === "decimal"
+          (c) => c.key === 'decimal'
         )?.value;
-        const token = activity.changes.find((c) => c.key === "token")?.value;
+        const token = activity.changes.find((c) => c.key === 'token')?.value;
         const otherPid = activity.target_profile_id;
-        const [username] = await UI.account(on, otherPid);
+        const [username] = await UI.resolve(on, otherPid);
 
         if (!username)
-          throw new Error("MochiFormatter: activity platform not supported");
+          throw new Error('MochiFormatter: activity platform not supported');
         if (!amount || !decimal || !token) throw notEnoughDataError;
 
         const formattedAmount = formatTokenDigit(formatUnits(amount, +decimal));
         result.text = activity.content_raw
-          .replace("{.amount}", formattedAmount)
-          .replace("{.token}", token)
-          .replace("{.target_profile_id}", username.value);
+          .replace('{.amount}', formattedAmount)
+          .replace('{.token}', token)
+          .replace('{.target_profile_id}', username.value);
         break;
       }
       case ActivityType.Send: {
-        const amount = activity.changes.find((c) => c.key === "amount")?.value;
+        const amount = activity.changes.find((c) => c.key === 'amount')?.value;
         const decimal = activity.changes.find(
-          (c) => c.key === "decimal"
+          (c) => c.key === 'decimal'
         )?.value;
-        const token = activity.changes.find((c) => c.key === "token")?.value;
+        const token = activity.changes.find((c) => c.key === 'token')?.value;
         const otherPid = activity.target_profile_id;
-        const [username] = await UI.account(on, otherPid);
+        const [username] = await UI.resolve(on, otherPid);
 
         if (!username)
-          throw new Error("MochiFormatter: activity platform not supported");
+          throw new Error('MochiFormatter: activity platform not supported');
         if (!amount || !decimal || !token) throw notEnoughDataError;
 
         const formattedAmount = formatTokenDigit(formatUnits(amount, +decimal));
         result.text = activity.content_raw
-          .replace("{.amount}", formattedAmount)
-          .replace("{.token}", token)
-          .replace("{.target_profile_id}", username.value);
+          .replace('{.amount}', formattedAmount)
+          .replace('{.token}', token)
+          .replace('{.target_profile_id}', username.value);
         break;
       }
       default:
@@ -152,13 +152,13 @@ export default async function (
     )
   ).filter((t) => t.text);
 
-  if (typeof top === "number") {
+  if (typeof top === 'number') {
     data = data.slice(0, top);
   }
 
   let text;
   if (groupDate) {
-    const groupByDate = groupBy(data, "time");
+    const groupByDate = groupBy(data, 'time');
     const lines = Object.entries(groupByDate).map((e, i) => {
       const isLast = i === Object.keys(groupByDate).length - 1;
       const [time, activities] = e;
@@ -167,20 +167,20 @@ export default async function (
         `🗓 ${time}`,
         mdTable(activities, {
           ...(tableParams ?? {}),
-          cols: ["text"],
+          cols: ['text'],
           wrapLastCol: false,
         }),
-        ...(isLast ? [] : [""]),
-      ].join("\n");
+        ...(isLast ? [] : ['']),
+      ].join('\n');
     });
 
-    text = lines.join("\n");
+    text = lines.join('\n');
   } else {
     text = mdTable(data, {
       ...(tableParams ?? {}),
       wrapLastCol: false,
-      cols: ["time", "text"],
-      alignment: ["left", "left"],
+      cols: ['time', 'text'],
+      alignment: ['left', 'left'],
     });
   }
 
@@ -195,6 +195,6 @@ export default async function (
 
   return {
     totalPage: total,
-    text: [text, "", ...pager].join("\n"),
+    text: [text, '', ...pager].join('\n'),
   };
 }

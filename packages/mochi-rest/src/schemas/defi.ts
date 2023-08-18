@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const ChainSchema = z.object({
   id: z.string().uuid(),
@@ -46,44 +46,44 @@ export type Balance = z.infer<typeof BalanceSchema>;
 export const BalancesSchema = z.array(BalanceSchema);
 
 const MochiTxSchema = z.object({
-  type: z.enum(["in", "out"]),
+  type: z.enum(['in', 'out']),
   created_at: z.string().datetime(),
   internal_id: z.number(),
   external_id: z.string(),
   from_profile_id: z.string().nonempty(),
   other_profile_id: z.string().nonempty(),
-  from_profile_source: z.enum(["mochi-balance"]),
-  other_profile_source: z.enum(["mochi-balance"]),
-  source_platform: z.enum(["discord", "telegram"]),
+  from_profile_source: z.enum(['mochi-balance']),
+  other_profile_source: z.enum(['mochi-balance']),
+  source_platform: z.enum(['discord', 'telegram']),
 });
 
 export const MochiTransferTxSchema = MochiTxSchema.extend({
-  action: z.literal("transfer"),
+  action: z.literal('transfer'),
   amount: z.string(),
   token: TokenSchema,
 });
 
 export const MochiDepositTxSchema = MochiTxSchema.extend({
-  action: z.literal("deposit"),
+  action: z.literal('deposit'),
   amount: z.string(),
   token: TokenSchema,
 });
 
 export const MochiWithdrawTxSchema = MochiTxSchema.extend({
-  action: z.literal("withdraw"),
+  action: z.literal('withdraw'),
   amount: z.string(),
   token: TokenSchema,
 });
 
 export const MochiAirdropTxSchema = MochiTxSchema.extend({
-  action: z.literal("airdrop"),
+  action: z.literal('airdrop'),
   amount: z.string(),
   token: TokenSchema,
   other_profile_ids: z.array(z.string()),
 });
 
 export const MochiSwapTxSchema = MochiTxSchema.extend({
-  action: z.literal("swap"),
+  action: z.literal('swap'),
   amount_in: z.string(),
   amount_out: z.string(),
   from_token: TokenSchema,
@@ -91,7 +91,7 @@ export const MochiSwapTxSchema = MochiTxSchema.extend({
 });
 
 export const MochiPayLinkTxSchema = MochiTxSchema.extend({
-  action: z.literal("paylink"),
+  action: z.literal('paylink'),
   metadata: z.object({
     paylink_code: z.string(),
   }),
@@ -100,7 +100,7 @@ export const MochiPayLinkTxSchema = MochiTxSchema.extend({
 });
 
 export const MochiPayMeTxSchema = MochiTxSchema.extend({
-  action: z.literal("payme"),
+  action: z.literal('payme'),
   metadata: z.object({}),
   amount: z.string(),
   token: TokenSchema,
@@ -145,7 +145,7 @@ export type WithdrawRequest = {
   tokenId: string;
   tokenDecimal: number;
   chainId: string;
-  platform: "telegram" | "discord";
+  platform: 'telegram' | 'discord';
   platform_user_id: string;
   amount_string: string;
 };
@@ -168,10 +168,10 @@ const TransferRequestSchema = z.object({
   token_price: z.number(),
   each: z.boolean(),
   all: z.boolean(),
-  transfer_type: z.enum(["transfer", "airdrop"]),
+  transfer_type: z.enum(['transfer', 'airdrop']),
   chain_id: z.string(),
   decimal: z.number(),
-  platform: z.enum(["telegram", "discord"]),
+  platform: z.enum(['telegram', 'discord']),
 });
 
 export type TransferRequest = z.infer<typeof TransferRequestSchema>;

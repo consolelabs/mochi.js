@@ -1,7 +1,7 @@
-import { PageSize } from "../constant";
+import { PageSize } from '../constant';
 
-export * from "./chain";
-export * from "./token";
+export * from './chain';
+export * from './token';
 
 export type Paging = {
   page?: number;

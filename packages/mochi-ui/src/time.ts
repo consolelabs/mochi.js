@@ -1,6 +1,6 @@
-const rtf = new Intl.RelativeTimeFormat("en", {
-  style: "narrow",
-  numeric: "auto",
+const rtf = new Intl.RelativeTimeFormat('en', {
+  style: 'narrow',
+  numeric: 'auto',
 });
 
 function relative(ms: string | number) {
@@ -16,15 +16,15 @@ function relative(ms: string | number) {
   num = num / 24;
   // round
   num = Math.round(num);
-  return rtf.format(num, "day");
+  return rtf.format(num, 'day');
 }
 
 function convertSecondToMinute(second: number): string {
   if (second <= 30) {
-    return second.toString() + "s";
+    return second.toString() + 's';
   }
   const minute = second / 60;
-  return Math.round(minute).toString() + "m";
+  return Math.round(minute).toString() + 'm';
 }
 
 async function wait(ms: number) {

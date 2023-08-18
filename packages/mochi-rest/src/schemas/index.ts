@@ -1,10 +1,11 @@
-import type { WretchResponseChain } from "wretch";
-import { WretchError } from "wretch/resolver";
-import { Schema, ZodError, z } from "zod";
+import type { WretchResponseChain } from 'wretch';
+import { WretchError } from 'wretch/resolver';
+import { Schema, ZodError, z } from 'zod';
 
-export * from "./metadata";
-export * from "./profile";
-export * from "./activity";
+export * from './metadata';
+export * from './profile';
+export * from './activity';
+export * from './vault';
 
 export const AnySchema = z.any();
 
@@ -24,7 +25,7 @@ export function getParser(catcher?: (error: WretchError | ZodError) => void) {
       const json = await r.json<any>();
       let data = json;
 
-      if ("data" in json) {
+      if ('data' in json) {
         data = json.data;
       }
 

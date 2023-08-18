@@ -1,10 +1,10 @@
-import { APPROX, MIN_DUST_USD, PageSize } from "../constant";
-import { formatTokenDigit, formatUsdDigit } from "../formatDigit";
-import { mdTable } from "../markdownTable";
-import { formatUnits } from "ethers";
-import pageIndicator from "./page-indicator";
-import type { Paging } from "../types";
-import chunk from "lodash.chunk";
+import { APPROX, MIN_DUST_USD, PageSize } from '../constant';
+import { formatTokenDigit, formatUsdDigit } from '../formatDigit';
+import { mdTable } from '../markdownTable';
+import { formatUnits } from 'ethers';
+import pageIndicator from './page-indicator';
+import type { Paging } from '../types';
+import chunk from 'lodash.chunk';
 
 type Balance = {
   token: {
@@ -47,11 +47,11 @@ export default async function (
       const usdVal = price * tokenVal;
       const value = formatTokenDigit(tokenVal.toString());
       const usdWorth = formatUsdDigit(usdVal.toString());
-      let chain = _chain?.symbol || _chain?.short_name || _chain?.name || "";
+      let chain = _chain?.symbol || _chain?.short_name || _chain?.name || '';
       chain = chain.toLowerCase();
       if (tokenVal === 0 || (filterDust && usdVal <= MIN_DUST_USD))
         return {
-          text: "",
+          text: '',
           usdVal: 0,
           usdWorth: 0,
           chain,
@@ -64,7 +64,7 @@ export default async function (
         text,
         usdWorth,
         usdVal,
-        ...(chain && !native && isDuplicateSymbol(symbol?.toUpperCase() ?? "")
+        ...(chain && !native && isDuplicateSymbol(symbol?.toUpperCase() ?? '')
           ? { chain }
           : {}),
       };
@@ -76,12 +76,12 @@ export default async function (
   const chunks = chunk(data, size);
   let text = mdTable(
     chunks[page]?.map((b) => ({
-      balance: `${b.text}${b.chain ? ` (${b.chain})` : ""}`,
+      balance: `${b.text}${b.chain ? ` (${b.chain})` : ''}`,
       usd: `${b.usdWorth}`,
     })),
     {
       ...(tableParams ?? {}),
-      cols: ["balance", "usd"],
+      cols: ['balance', 'usd'],
       separator: [` ${APPROX} `],
     }
   );
@@ -90,10 +90,10 @@ export default async function (
     totalPage: total,
   });
   if (!text) {
-    text = "There is no token, yet 🙁";
+    text = 'There is no token, yet 🙁';
   }
   return {
-    text: [text, "", ...pager].join("\n"),
+    text: [text, '', ...pager].join('\n'),
     totalUsd,
     totalPage: total,
   };

@@ -1,30 +1,30 @@
-import functions from "./functions";
+import functions from './functions';
 import {
   NameRegistryState,
   getHashedNameSync,
   getNameAccountKeySync,
   reverseLookup as performReverseLookup,
-} from "@bonfida/spl-name-service";
-import { clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
-import { isAddress as isValidEvmAddress, JsonRpcProvider } from "ethers";
-import time from "./time";
-import UI from "./index";
+} from '@bonfida/spl-name-service';
+import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
+import { isAddress as isValidEvmAddress, JsonRpcProvider } from 'ethers';
+import time from './time';
+import UI from './index';
 
-const eth = new JsonRpcProvider("https://eth.llamarpc.com", 1);
-const connection = new Connection(clusterApiUrl("mainnet-beta"));
+const eth = new JsonRpcProvider('https://eth.llamarpc.com', 1);
+const connection = new Connection(clusterApiUrl('mainnet-beta'));
 const SOL_TLD_AUTHORITY = new PublicKey(
-  "58PwtjSDuFHuUkYjH9BYnnQKHfwo9reZhC2zMJv9JPkx"
+  '58PwtjSDuFHuUkYjH9BYnnQKHfwo9reZhC2zMJv9JPkx'
 );
 
 async function resolveSNSDomain(domain: string) {
-  const hashedName = getHashedNameSync(domain.replace(".sol", ""));
+  const hashedName = getHashedNameSync(domain.replace('.sol', ''));
   const nameAccountKey = getNameAccountKeySync(
     hashedName,
     undefined,
     SOL_TLD_AUTHORITY
   );
   const owner = await NameRegistryState.retrieve(
-    new Connection(clusterApiUrl("mainnet-beta")),
+    new Connection(clusterApiUrl('mainnet-beta')),
     nameAccountKey
   );
   return owner.registry.owner.toBase58();
@@ -59,12 +59,12 @@ async function resolveDomains(
 
 async function doResolve(domain: string) {
   try {
-    if (domain.endsWith(".sol")) {
+    if (domain.endsWith('.sol')) {
       return await resolveSNSDomain(domain);
     }
     return (await resolveENSDomain(domain)) || domain;
   } catch (e) {
-    return "";
+    return '';
   }
 }
 
@@ -112,7 +112,7 @@ async function doLookup(_address: string, shortenAddr: boolean) {
 }
 
 function shorten(val: string, len = 5, lenRight = len) {
-  if (!val) return "";
+  if (!val) return '';
   return `${val.slice(0, len)}\.\.${val.slice(val.length - lenRight)}`;
 }
 
@@ -126,8 +126,8 @@ function isShorten(address: string): address is `${string}..${string}` {
  */
 function normalizeAddress(address: string) {
   return functions.pipe(address, function ronin(a) {
-    if (a.toLowerCase().startsWith("ronin:")) {
-      return a.slice("ronin:".length);
+    if (a.toLowerCase().startsWith('ronin:')) {
+      return a.slice('ronin:'.length);
     }
     return a;
   });
@@ -147,18 +147,18 @@ function isValidSuiAddress(value: string): boolean {
 }
 
 function isValidRoninAddress(value: string): boolean {
-  return value.length === 46 && value.toLowerCase().startsWith("ronin:");
+  return value.length === 46 && value.toLowerCase().startsWith('ronin:');
 }
 
 export enum AddressChainType {
-  EVM = "evm-chain",
-  SOL = "solana-chain",
-  SUI = "sui-chain",
-  RON = "ronin-chain",
-  UNKNOWN = "",
+  EVM = 'evm-chain',
+  SOL = 'solana-chain',
+  SUI = 'sui-chain',
+  RON = 'ronin-chain',
+  UNKNOWN = '',
 }
 
-function isAddress(address: string | null = ""): {
+function isAddress(address: string | null = ''): {
   valid: boolean;
   chainType: AddressChainType;
 } {

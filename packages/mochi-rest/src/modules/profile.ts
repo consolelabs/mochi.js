@@ -1,4 +1,4 @@
-import { FullOptions } from "../mochi";
+import { FullOptions } from '../mochi';
 import {
   Activity,
   AnySchema,
@@ -8,9 +8,9 @@ import {
   Profile,
   ProfileSchema,
   getParser,
-} from "../schemas";
-import type { Fetcher } from "../utils";
-import base from "./base";
+} from '../schemas';
+import type { Fetcher } from '../utils';
+import base from './base';
 
 export class ProfileModule {
   mochi: {
@@ -34,7 +34,7 @@ export class ProfileModule {
       {
         profileId: string;
         actions: (string | number)[];
-        status?: "new" | "read";
+        status?: 'new' | 'read';
         page?: number;
         size?: number;
       },
@@ -55,7 +55,7 @@ export class ProfileModule {
       api = api.catcherFallback(catcher);
     }
 
-    let profiles = api.url("/profiles");
+    let profiles = api.url('/profiles');
     if (apiKey) {
       profiles = profiles.auth(`Bearer ${apiKey}`);
     }
@@ -109,7 +109,7 @@ export class ProfileModule {
       }) {
         return api
           .url(`/profiles/${profileId}/activities`)
-          .query({ actions: actions.join("|"), page, size, status })
+          .query({ actions: actions.join('|'), page, size, status })
           .resolve(parse(ListActivity))
           .get();
       },
