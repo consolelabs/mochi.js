@@ -1,6 +1,8 @@
 import type { WretchResponseChain } from "wretch";
 import { WretchError } from "wretch/resolver";
 import { Schema, ZodError, z } from "zod";
+import { Pagination } from "./pagination";
+import { Err, Meta, Ok } from "../utils";
 
 export * from "./activity";
 export * from "./coin";
@@ -19,12 +21,9 @@ export function getParser(catcher?: (error: WretchError | ZodError) => void) {
     S extends Schema,
     R extends WretchResponseChain<any, any, any>
   >(schema: S) {
-    return async function (
+    return async function <P extends void | Pagination, O = z.infer<S>>(
       r: R
-    ): Promise<
-      | { ok: true; data: z.infer<S>; error: null }
-      | { ok: false; data: null; error: any }
-    > {
+    ): Promise<(Ok<O> & Meta<P>) | Err> {
       const json = await r.json<any>();
       let data = json;
 
@@ -47,7 +46,12 @@ export function getParser(catcher?: (error: WretchError | ZodError) => void) {
         ok: true,
         data: result as z.infer<S>,
         error: null,
-      };
+        metadata: {
+          page: 0,
+          size: 0,
+          total: 0,
+        },
+      } as unknown as Ok<O> & Meta<P>;
     };
   };
 }

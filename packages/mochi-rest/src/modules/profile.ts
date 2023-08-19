@@ -9,6 +9,7 @@ import {
   ProfileSchema,
   getParser,
 } from "../schemas";
+import { Pagination } from "../schemas/pagination";
 import type { Fetcher } from "../utils";
 import base from "./base";
 
@@ -38,7 +39,8 @@ export class ProfileModule {
         page?: number;
         size?: number;
       },
-      Array<Activity>
+      Array<Activity>,
+      Pagination
     >;
     markRead: Fetcher<{ profileId: string; ids: (string | number)[] }>;
   };
@@ -110,7 +112,7 @@ export class ProfileModule {
         return api
           .url(`/profiles/${profileId}/activities`)
           .query({ actions: actions.join("|"), page, size, status })
-          .resolve(parse(ListActivity))
+          .resolve(parse(ListActivity)<Pagination>)
           .get();
       },
       markRead: async function ({ profileId, ids }) {
