@@ -4,6 +4,7 @@ export const ChainSchema = z.object({
   id: z.string().uuid().nonempty(),
   chain_id: z.string().nonempty(),
   name: z.string().nonempty(),
+  short_name: z.string().optional(),
   symbol: z.string().nonempty(),
   rpc: z.string(),
   explorer: z.string(),
@@ -28,6 +29,12 @@ export const TokenSchema = z.object({
   price: z.number(),
   chain: ChainSchema.or(z.null()),
 });
+export const SimplifiedTokenSchema = z.object({
+  address: z.string().nonempty(),
+  symbol: z.string().nonempty(),
+});
+export type SimplifiedToken = z.infer<typeof SimplifiedTokenSchema>;
+export const SimplifiedTokensSchema = z.array(SimplifiedTokenSchema);
 
 export type Token = z.infer<typeof TokenSchema>;
 export const TokensSchema = z.array(TokenSchema);

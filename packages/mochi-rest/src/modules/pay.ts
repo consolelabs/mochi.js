@@ -20,6 +20,8 @@ import {
   Token,
   TokensSchema,
   WithdrawRequest,
+  InAppWallet,
+  InAppWalletsSchema,
 } from "../schemas";
 import { FullOptions } from "../mochi";
 
@@ -50,7 +52,7 @@ export class PayModule {
     deposit: Fetcher<{ profileId: string; token: string }, DepositInfo>;
     getBalance: Fetcher<{ profileId: string; token?: string }, Array<Balance>>;
     // in-app-wallets
-    getWallets: Fetcher<string>;
+    getWallets: Fetcher<string, Array<InAppWallet>>;
   };
 
   transactions: {
@@ -135,23 +137,22 @@ export class PayModule {
           .get();
       },
       getWallets: async function (profileId) {
-        let result = await api
+        let result = await inAppWallets
           .url(`/get-by-profile/${profileId}`)
-          // TODO
-          .resolve(parse(AnySchema))
+          .resolve(parse(InAppWalletsSchema))
           .post();
 
-        if (!result.ok) return [];
+        if (!result.ok) return { ok: true, data: [], error: null };
 
         let wallets = result.data;
 
         // group all EVM wallets into 1
-        wallets = wallets.filter((w: any, i: number) => {
+        wallets = wallets.filter((w, i: number) => {
           if (!w.chain.is_evm) return true;
           if (
             w.chain.is_evm &&
             wallets.findIndex(
-              (wa: any) => wa.wallet_address === w.wallet_address
+              (wa) => wa.wallet_address === w.wallet_address
             ) === i
           ) {
             return true;
@@ -161,7 +162,7 @@ export class PayModule {
         });
 
         // change ETH wallet to EVM
-        wallets = wallets.map((w: any) => ({
+        wallets = wallets.map((w) => ({
           ...w,
           chain: {
             ...w.chain,
@@ -169,7 +170,11 @@ export class PayModule {
           },
         }));
 
-        return wallets;
+        return {
+          ok: true,
+          error: null,
+          data: wallets,
+        };
       },
     };
 

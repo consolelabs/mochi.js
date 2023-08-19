@@ -30,6 +30,23 @@ import {
   TransferResultSchema,
   Gas,
   ListGasSchema,
+  SimplifiedToken,
+  SimplifiedTokensSchema,
+  TrackWalletList,
+  TrackWalletListSchema,
+  WatchlistTokenData,
+  WatchlistTokenDataListSchema,
+  QueryCoinResponse,
+  QueryCoinResponseSchema,
+  OnchainWalletBalance,
+  OnchainWalletBalanceSchema,
+  OnchainWalletTxn,
+  OnchainWalletTxnListSchema,
+  UserTrackingWallet,
+  UserTrackingWalletSchema,
+  Pagination,
+  MonikersSchema,
+  Moniker,
 } from "../schemas";
 import { FullOptions } from "../mochi";
 
@@ -81,12 +98,16 @@ export class BaseModule {
       },
       CoinChartData
     >;
-    getSupportTokens: Fetcher<{ page: number; size: number }>;
+    getSupportTokens: Fetcher<
+      { page: number; size: number },
+      Array<SimplifiedToken>,
+      Pagination
+    >;
     getTopGainerLoser: Fetcher<string, TopGainerLoser>;
   };
 
   users: {
-    getListTrackingWallets: Fetcher<string>;
+    getListTrackingWallets: Fetcher<string, TrackWalletList>;
     untrackWallet: Fetcher<{
       profileId: string;
       address: string;
@@ -99,17 +120,24 @@ export class BaseModule {
       chainType: string;
       type?: "follow" | "track" | "copy";
     }>;
-    getUserWatchlist: Fetcher<{
-      profileId: string;
-      page?: number;
-      size?: number;
-    }>;
-    trackToken: Fetcher<{
-      profileId: string;
-      symbol: string;
-      coinGeckoId?: string;
-      isFiat: boolean;
-    }>;
+    getUserWatchlist: Fetcher<
+      {
+        profileId: string;
+        page?: number;
+        size?: number;
+      },
+      Array<WatchlistTokenData>,
+      Pagination
+    >;
+    trackToken: Fetcher<
+      {
+        profileId: string;
+        symbol: string;
+        coinGeckoId?: string;
+        isFiat: boolean;
+      },
+      QueryCoinResponse
+    >;
     untrackToken: Fetcher<{
       profileId: string;
       symbol: string;
@@ -119,17 +147,26 @@ export class BaseModule {
         futurePositions: Fetcher<string>;
       };
     };
-    getWalletAssets: Fetcher<{
-      profileId: string;
-      address: string;
-      chainType: string;
-    }>;
-    getWalletTransactions: Fetcher<{
-      profileId: string;
-      address: string;
-      chainType: string;
-    }>;
-    getUserTrackingWallet: Fetcher<{ profileId: string; query: string }>;
+    getWalletAssets: Fetcher<
+      {
+        profileId: string;
+        address: string;
+        chainType: string;
+      },
+      OnchainWalletBalance
+    >;
+    getWalletTransactions: Fetcher<
+      {
+        profileId: string;
+        address: string;
+        chainType: string;
+      },
+      Array<OnchainWalletTxn>
+    >;
+    getUserTrackingWallet: Fetcher<
+      { profileId: string; query: string },
+      UserTrackingWallet
+    >;
   };
 
   community: {
@@ -146,7 +183,7 @@ export class BaseModule {
   };
 
   configDefi: {
-    getDefaultMonikers: Fetcher;
+    getDefaultMonikers: Fetcher<void, Array<Moniker>>;
   };
 
   constructor({ baseUrl, apiKey, catcher }: FullOptions) {
@@ -221,17 +258,14 @@ export class BaseModule {
           .get();
       },
       getSupportTokens: async function ({ page = 0, size = 10 }) {
-        return (
-          defi
-            .url(`/tokens`)
-            .query({
-              page,
-              size,
-            })
-            // TODO
-            .resolve(parse(AnySchema))
-            .get()
-        );
+        return defi
+          .url(`/tokens`)
+          .query({
+            page,
+            size,
+          })
+          .resolve(parse(SimplifiedTokensSchema)<Pagination>)
+          .get();
       },
       getTopGainerLoser: async function (duration) {
         return defi
@@ -253,22 +287,16 @@ export class BaseModule {
 
     this.users = {
       getListTrackingWallets: async function (profileId) {
-        return (
-          users
-            .url(`/${profileId}/watchlists/wallets`)
-            // TODO
-            .resolve(parse(AnySchema))
-            .get()
-        );
+        return users
+          .url(`/${profileId}/watchlists/wallets`)
+          .resolve(parse(TrackWalletListSchema))
+          .get();
       },
       untrackWallet: async function ({ profileId, address, alias }) {
-        return (
-          users
-            .url(`/${profileId}/watchlists/wallets/untrack`)
-            // TODO
-            .resolve(parse(AnySchema))
-            .post({ profileId, address, alias })
-        );
+        return users
+          .url(`/${profileId}/watchlists/wallets/untrack`)
+          .resolve(parse(AnySchema))
+          .post({ profileId, address, alias });
       },
       trackWallet: async function ({
         alias,
@@ -277,41 +305,29 @@ export class BaseModule {
         type,
         chainType,
       }) {
-        return (
-          users
-            .url(`/${profileId}/watchlists/wallets/track`)
-            // TODO
-            .resolve(parse(AnySchema))
-            .post({ alias, address, profileId, type, chainType })
-        );
+        return users
+          .url(`/${profileId}/watchlists/wallets/track`)
+          .resolve(parse(AnySchema))
+          .post({ alias, address, profileId, type, chainType });
       },
       getUserWatchlist: async function ({ profileId, page = 0, size = 16 }) {
-        return (
-          users
-            .url(`/${profileId}/watchlists/tokens`)
-            .query({ page, size })
-            // TODO
-            .resolve(parse(AnySchema))
-            .get()
-        );
+        return users
+          .url(`/${profileId}/watchlists/tokens`)
+          .query({ page, size })
+          .resolve(parse(WatchlistTokenDataListSchema)<Pagination>)
+          .get();
       },
       trackToken: async function ({ isFiat, profileId, symbol, coinGeckoId }) {
-        return (
-          api
-            .url(`/users/${profileId}/watchlists/tokens/track`)
-            // TODO
-            .resolve(parse(AnySchema))
-            .post({ isFiat, profileId, symbol, coinGeckoId })
-        );
+        return api
+          .url(`/users/${profileId}/watchlists/tokens/track`)
+          .resolve(parse(AnySchema))
+          .post({ isFiat, profileId, symbol, coinGeckoId });
       },
       untrackToken: async function ({ symbol, profileId }) {
-        return (
-          api
-            .url(`/users/${profileId}/watchlists/tokens/untrack`)
-            // TODO
-            .resolve(parse(AnySchema))
-            .post({ symbol, profileId })
-        );
+        return api
+          .url(`/users/${profileId}/watchlists/tokens/untrack`)
+          .resolve(parse(QueryCoinResponseSchema))
+          .post({ symbol, profileId });
       },
       cex: {
         binance: {
@@ -327,39 +343,30 @@ export class BaseModule {
         },
       },
       getWalletAssets: async function ({ profileId, chainType, address }) {
-        return (
-          users
-            .url(
-              `/${profileId}/wallets/${address}/${chainType.toLowerCase()}/assets`
-            )
-            // TODO
-            .resolve(parse(AnySchema))
-            .get()
-        );
+        return users
+          .url(
+            `/${profileId}/wallets/${address}/${chainType.toLowerCase()}/assets`
+          )
+          .resolve(parse(OnchainWalletBalanceSchema))
+          .get();
       },
       getWalletTransactions: async function ({
         address,
         chainType,
         profileId,
       }) {
-        return (
-          users
-            .url(
-              `/${profileId}/wallets/${address}/${chainType.toLowerCase()}/txns`
-            )
-            // TODO
-            .resolve(parse(AnySchema))
-            .get()
-        );
+        return users
+          .url(
+            `/${profileId}/wallets/${address}/${chainType.toLowerCase()}/txns`
+          )
+          .resolve(parse(OnchainWalletTxnListSchema))
+          .get();
       },
       getUserTrackingWallet: async function ({ profileId, query }) {
-        return (
-          users
-            .url(`/${profileId}/wallets/${query}`)
-            // TODO
-            .resolve(parse(AnySchema))
-            .get()
-        );
+        return users
+          .url(`/${profileId}/wallets/${query}`)
+          .resolve(parse(UserTrackingWalletSchema))
+          .get();
       },
     };
 
@@ -406,13 +413,10 @@ export class BaseModule {
 
     this.configDefi = {
       getDefaultMonikers: async function () {
-        return (
-          configDefi
-            .url("/monikers/default")
-            // TODO
-            .resolve(parse(AnySchema))
-            .get()
-        );
+        return configDefi
+          .url("/monikers/default")
+          .resolve(parse(MonikersSchema))
+          .get();
       },
     };
   }

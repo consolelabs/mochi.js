@@ -7,8 +7,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "pnpm clean && tsup src/index.ts --format cjs,esm --dts",
-    "beta": "pnpm build && VERSION=$(pnpm version prerelease --preid=rc) && pnpm publish && pnpm dist-tag add @consolelabs/mochi-formatter@\"$VERSION\" next",
-    "dev": "tsc --watch"
+    "beta": "pnpm build && VERSION=$(pnpm version prerelease --preid=rc) && pnpm publish && pnpm dist-tag add @consolelabs/mochi-rest@\"$VERSION\" next"
   },
   "exports": {
     ".": {

@@ -8,8 +8,8 @@ import {
   Profile,
   ProfileSchema,
   getParser,
+  Pagination,
 } from "../schemas";
-import { Pagination } from "../schemas/pagination";
 import type { Fetcher } from "../utils";
 import base from "./base";
 

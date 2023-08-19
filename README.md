@@ -3,6 +3,7 @@
 # This is a monorepo for all things Mochi and Javascript
 
 ## What's included
+
 Currently for developers, there are:
 
 🎛 `mochi-ui`: a set of formatters (text + digit) + oppionated components (functions that return markdown content) to render content on platforms such as Discord or Telegram, it makes use of the markdown syntax + the `code` syntax which preserves spaces and fixed-width characters.

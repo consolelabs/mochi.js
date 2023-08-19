@@ -73,3 +73,11 @@ export const TopGainerLoserSchema = z.object({
 });
 
 export type TopGainerLoser = z.infer<typeof TopGainerLoserSchema>;
+
+export const QueryCoinResponseSchema = z.object({
+  base_suggestions: z.array(QueryCoinSchema).or(z.null()),
+  target_suggestions: z.array(QueryCoinSchema).or(z.null()),
+  base_coin: CoinSchema.or(z.null()),
+  target_coin: CoinSchema.or(z.null()),
+});
+export type QueryCoinResponse = z.infer<typeof QueryCoinResponseSchema>;

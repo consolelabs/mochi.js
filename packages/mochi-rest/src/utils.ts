@@ -1,5 +1,4 @@
-import { Any } from "./schemas";
-import { Pagination } from "./schemas/pagination";
+import { Any, Pagination } from "./schemas";
 
 export type Ok<O> = {
   ok: true;
@@ -15,7 +14,7 @@ export type Err = {
 
 export type Meta<P> = Extract<P, void> extends never
   ? { metadata: Pagination }
-  : { metadata: never };
+  : { metadata?: never };
 
 export type Fetcher<
   I extends void | string | number | boolean | object = void,
