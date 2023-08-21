@@ -1,3 +1,0 @@
-## docker ignore for nodejs
-node_modules
-npm-debug.log

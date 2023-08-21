@@ -22,8 +22,14 @@ export const ListCommandSchema = z.array(CommandSchema);
 export type Command = z.infer<typeof CommandSchema>;
 
 export const CopySchema = z.object({
-  fact: z.array(z.string().nonempty()),
-  tip: z.array(z.string().nonempty()),
+  id: z.number().nonnegative(),
+  type: z.string().nonempty(),
+  description: z.object({
+    fact: z.array(z.string().nonempty()),
+    tip: z.array(z.string().nonempty()),
+  }),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
 });
 
 export type Copy = z.infer<typeof CopySchema>;

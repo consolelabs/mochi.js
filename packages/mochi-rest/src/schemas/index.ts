@@ -48,7 +48,7 @@ export function getParser(catcher?: (error: WretchError | ZodError) => void) {
 
       return {
         ok: true,
-        data: result as z.infer<S>,
+        data: result.data as z.infer<S>,
         error: null,
         metadata: {
           page: 0,

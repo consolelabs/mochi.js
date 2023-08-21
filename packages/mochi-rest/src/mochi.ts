@@ -1,6 +1,6 @@
 import deepmerge from "deepmerge";
 import { BaseModule, PayModule, ProfileModule } from "./modules";
-import { Command, Copy } from "./schemas";
+import { Command } from "./schemas";
 import { logger } from "./logger";
 import { apiUrls } from "./constant";
 import { WretchError } from "wretch/resolver";
@@ -34,7 +34,7 @@ export class Mochi {
   pay: PayModule;
 
   commands: Map<string, Command> = new Map();
-  private copy: Copy = { tip: [], fact: [] };
+  private copy: { tip: string[]; fact: string[] } = { tip: [], fact: [] };
 
   constructor(_opts: Options) {
     const opts = deepmerge(defaultOptions, _opts);
@@ -96,9 +96,9 @@ export class Mochi {
 
   private async fetchProductCopy() {
     try {
-      const result = await this.base.metadata.getCopy();
+      const result = await this.base.metadata.getCopy("header");
       if (!result.ok) throw new Error();
-      this.copy = result.data;
+      this.copy = result.data.description;
       logger.info("Product copy fetch OK");
     } catch (e) {
       logger.error("Cannot fetch product copy");
