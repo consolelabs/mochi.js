@@ -6,8 +6,7 @@
   "module": "dist/index.mjs",
   "scripts": {
     "clean": "rimraf dist",
-    "build": "pnpm clean && tsup src/index.ts --format cjs,esm --dts",
-    "beta": "VERSION=$(pnpm version prerelease --preid=rc) && pnpm publish && pnpm dist-tag add @consolelabs/mochi-ui@\"$VERSION\" next"
+    "build": "pnpm clean && tsup src/index.ts --format cjs,esm --dts"
   },
   "exports": {
     ".": {
