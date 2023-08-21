@@ -1,6 +1,6 @@
 {
   "name": "@consolelabs/mochi-ui",
-  "version": "0.0.2-rc.4",
+  "version": "0.0.2-rc.5",
   "description": "Mochi UI for profiles, numbers, texts",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -34,7 +34,7 @@
   },
   "peerDependencies": {
     "ioredis": "^5.x.x",
-    "@consolelabs/mochi-rest": "workspace:*"
+    "@consolelabs/mochi-rest": "workspace:^"
   },
   "dependencies": {
     "@bonfida/spl-name-service": "^1.0.9",
