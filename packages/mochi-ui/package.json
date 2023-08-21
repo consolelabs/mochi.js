@@ -1,6 +1,6 @@
 {
   "name": "@consolelabs/mochi-ui",
-  "version": "0.0.2-rc.1",
+  "version": "0.0.2-rc.3",
   "description": "Mochi UI for profiles, numbers, texts",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
