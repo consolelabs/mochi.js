@@ -1,13 +1,13 @@
 {
   "name": "@consolelabs/mochi-ui",
-  "version": "0.0.1",
+  "version": "0.0.2-rc.1",
   "description": "Mochi UI for profiles, numbers, texts",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "scripts": {
     "clean": "rimraf dist",
     "build": "pnpm clean && tsup src/index.ts --format cjs,esm --dts",
-    "beta": "pnpm build && VERSION=$(pnpm version prerelease --preid=rc) && pnpm publish && pnpm dist-tag add @consolelabs/mochi-ui@\"$VERSION\" next"
+    "beta": "VERSION=$(pnpm version prerelease --preid=rc) && pnpm publish && pnpm dist-tag add @consolelabs/mochi-ui@\"$VERSION\" next"
   },
   "exports": {
     ".": {

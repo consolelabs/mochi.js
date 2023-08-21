@@ -83,7 +83,6 @@ type UsernameFmt = {
 export const UI: {
   components: typeof components;
   redis: Redis | null;
-  useRedis: (r: Redis) => void;
   resolve: (
     on: Platform.Web | Platform.Telegram | Platform.Discord,
     A: string | { id: string; type: "vault" },
@@ -92,9 +91,6 @@ export const UI: {
 } = {
   components,
   redis: null,
-  useRedis: function (redis: Redis) {
-    this.redis = redis;
-  },
   resolve: async function (on, A, B = A) {
     let pA: Profile, pB: Profile;
     if (typeof A === "string") {
