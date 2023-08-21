@@ -3,11 +3,17 @@
 ## Usage
 
 ```typescript
+import API from "@consolelabs/mochi-rest";
 import UI from "@consolelabs/mochi-ui";
 import Redis from "ioredis";
 
 // optionally use redis for better perf
 UI.redis = new Redis();
+
+const api = new API({});
+api.init().then(() => {
+  UI.api = api;
+});
 
 const [account, otherAccount] = await UI.resolve(
   Platform.Web,

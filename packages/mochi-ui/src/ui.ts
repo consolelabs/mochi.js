@@ -1,8 +1,8 @@
 import { DISCORD_PROFILE, HOMEPAGE, TELEGRAM_PROFILE } from "./constant";
 import components from "./components";
 import Redis from "ioredis";
-import api from "./api";
 import type { Profile as MochiProfile, Vault } from "@consolelabs/mochi-rest";
+import API from "@consolelabs/mochi-rest";
 
 type Profile = MochiProfile | Vault | null;
 
@@ -83,6 +83,7 @@ type UsernameFmt = {
 export const UI: {
   components: typeof components;
   redis: Redis | null;
+  api: API | null;
   resolve: (
     on: Platform.Web | Platform.Telegram | Platform.Discord,
     A: string | { id: string; type: "vault" },
@@ -91,21 +92,23 @@ export const UI: {
 } = {
   components,
   redis: null,
+  api: null,
   resolve: async function (on, A, B = A) {
+    if (!this.api) throw new Error("MochiFormatter: api property must be set");
     let pA: Profile, pB: Profile;
     if (typeof A === "string") {
-      const { data } = await api.profile.mochi.getById(A);
+      const { data } = await this.api.profile.mochi.getById(A);
       pA = data;
     } else {
-      const { data } = await api.base.vault.getById(Number(A.id));
+      const { data } = await this.api.base.vault.getById(Number(A.id));
       pA = data;
     }
 
     if (typeof B === "string") {
-      const { data } = await api.profile.mochi.getById(B);
+      const { data } = await this.api.profile.mochi.getById(B);
       pB = data;
     } else {
-      const { data } = await api.base.vault.getById(Number(B.id));
+      const { data } = await this.api.base.vault.getById(Number(B.id));
       pB = data;
     }
 

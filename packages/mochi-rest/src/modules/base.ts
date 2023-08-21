@@ -397,7 +397,7 @@ export class BaseModule {
     };
 
     this.metadata = {
-      getCopy: async function (type?: string) {
+      getCopy: async function (type: string = "") {
         return productMetadata
           .url(`/copy/${type}`)
           .resolve(parse(CopySchema))
