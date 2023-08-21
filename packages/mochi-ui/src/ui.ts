@@ -130,7 +130,7 @@ async function account(
     [Platform.Discord]: await discord(pB, on),
     [Platform.Mochi]: await mochi(pB, on),
     [Platform.App]: await application(pB, on),
-    [Platform.Vault]: await vault(pA, on),
+    [Platform.Vault]: await vault(pB, on),
   };
 
   let fallbackOrder: Array<
