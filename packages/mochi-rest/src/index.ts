@@ -1,4 +1,5 @@
 import { Mochi } from "./mochi";
+
 export type {
   Profile,
   Vault,
@@ -15,5 +16,7 @@ export type {
   TransferTx,
   VaultTransferTx,
 } from "./schemas";
+
+export { CommandScope } from "./schemas";
 
 export default Mochi;

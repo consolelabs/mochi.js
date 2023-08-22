@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-enum CommandScope {
+export enum CommandScope {
   All = 0,
   PublicOnly,
   PrivateOnly,
