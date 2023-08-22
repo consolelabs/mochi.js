@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 1.1.0
+
+### Minor Changes
+
+- 65915cd: Add new global format for txn
+
 ## 1.0.4
 
 ### Patch Changes
