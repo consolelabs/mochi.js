@@ -1,4 +1,6 @@
-![Mochi Pose_13](https://github.com/consolelabs/mochi.js/assets/25856620/3a4124dc-5e86-4cfd-b33c-a1ba1aca370f)
+<p align="center">
+  <img src="https://github.com/consolelabs/mochi.js/assets/25856620/3a4124dc-5e86-4cfd-b33c-a1ba1aca370f" alt="mochi pose 13" width="40%" />
+</p>
 
 # Mochi UI
 This package includes the basic components that you need to render any Mochi data, generally speaking there are 3 main goal:
