@@ -1,10 +1,10 @@
-![Mochi Pose_05](https://github.com/consolelabs/mochi.js/assets/25856620/7a4e6e14-9106-4b3b-8f54-5d129e402792)
+<p align="center">
+  <img src="https://github.com/consolelabs/mochi.js/assets/25856620/7a4e6e14-9106-4b3b-8f54-5d129e402792" alt="mochi post 5" width="40%" />
+</p>
 
-# This is a monorepo for everything related to Mochi and Javascript
+# Monorepo for everything related to Mochi and Javascript
 
-## What's included
-
-Currently for developers, there are:
+## 🧰 What's included
 
 🎛 `mochi-ui`: a set of formatters (text + digit) + oppionated components (functions that return markdown text) to render content on platforms such as Discord or Telegram, it makes use of the markdown syntax and the `code` syntax which preserves spaces and fixed-width characters.
 
