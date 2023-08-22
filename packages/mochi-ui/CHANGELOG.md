@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 1.0.3
+
+### Patch Changes
+
+- 0d365e1: Show external id in txn component
+
 ## 1.0.2
 
 ### Patch Changes
