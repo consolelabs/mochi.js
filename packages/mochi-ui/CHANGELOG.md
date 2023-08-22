@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 1.0.4
+
+### Patch Changes
+
+- 5515a68: Remove remaining wrapLastCol
+
 ## 1.0.3
 
 ### Patch Changes
