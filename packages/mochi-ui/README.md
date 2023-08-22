@@ -79,7 +79,7 @@ type UsernameFmt = {
 ### Utilities
 - `formatUsdDigit(input: string | number | object): string`: returns a string representation of the usd value with $ prefix
 - `formatPercentDigit(input: string | number | object): string`: returns a string representation of the percentage value with % suffix
-- `formatTokenDigit(input: string | number | object): string`:" returns a string representation of the token value
+- `formatTokenDigit(input: string | number | object): string`: returns a string representation of the token value
 - `formatDigit(options: object): string`: the base formatter, the shape of options is:
 ```typescript
 type Options = {
@@ -95,5 +95,16 @@ type Options = {
   scientificFormat?: boolean;
 }
 ```
+Note: All the format functions except `formatDigit` follows the same decimal point formatting rule, that is:
+- For percentage value, automatically hide decimal point if value >= 10
+- For USD value, automatically hide decimal point if value >= 100
+- For token value, automatically hide decimal point if value >= 1000
 
-### components
+- In case of having to show decimal point, we only take maximum 2 digits that are not 0 starting from the dot, if both are 0 then take the first digit that is not zero, some examples:
+```
+0.02345 -> 0.02
+0.2103 -> 0.2
+0.00003981 -> 0.0003
+```
+
+### components (coming soon)
