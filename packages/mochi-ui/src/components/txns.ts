@@ -16,11 +16,21 @@ type Props = {
   top?: number;
   groupDate?: boolean;
   withTitle?: boolean;
+  /**
+   * by default the txn component only renders the "other" in a txn, it assumes the caller is also the "from"
+   * so if you use this option it will switch format mode to "A to B" instead of "from B", "to B"
+   * also using this will auto set groupDate to true
+   */
+  global?: boolean;
 };
 
-function isVault(tx: VaultTransferTx | TransferTx): tx is VaultTransferTx {
+function isVault(
+  tx: VaultTransferTx | TransferTx,
+  source: "from" | "to"
+): tx is VaultTransferTx {
   return (
-    tx.other_profile_source === "mochi-vault" &&
+    (source === "from" ? tx.from_profile_source : tx.other_profile_source) ===
+      "mochi-vault" &&
     "metadata" in tx &&
     "vault_request" in tx.metadata &&
     "vault_id" in tx.metadata.vault_request
@@ -29,12 +39,14 @@ function isVault(tx: VaultTransferTx | TransferTx): tx is VaultTransferTx {
 
 async function formatTxn(
   tx: Tx,
-  on: Platform.Web | Platform.Telegram | Platform.Discord
+  on: Platform.Web | Platform.Telegram | Platform.Discord,
+  global: boolean
 ) {
   const date = new Date("created_at" in tx ? tx.created_at : tx.signed_at);
   const t = time.relative(date.getTime());
   const result = {
     time: t,
+    amount: "",
     text: "",
     external_id: "",
   };
@@ -69,44 +81,91 @@ async function formatTxn(
       case "transfer": {
         switch (tx.type) {
           case "in": {
-            let from;
-            if (isVault(tx)) {
-              [from] = await UI.resolve(on, {
-                type: "vault",
-                id: tx.metadata.vault_request.vault_id.toString(),
-              });
-            } else {
-              [from] = await UI.resolve(on, tx.other_profile_id);
-            }
+            let amount = "";
             if (!Number.isNaN(Number(tx.token.decimal))) {
-              const amount = formatTokenDigit(
+              amount = formatTokenDigit(
                 formatUnits(tx.amount || 0, tx.token.decimal)
               );
+              amount = `${amount} ${tx.token.symbol.toUpperCase()}`;
+            }
+            if (global) {
+              const [from, to] = await UI.resolve(
+                on,
+                isVault(tx, "from")
+                  ? {
+                      type: "vault",
+                      id: tx.metadata.vault_request.vault_id.toString(),
+                    }
+                  : tx.from_profile_id,
+                isVault(tx, "to")
+                  ? {
+                      type: "vault",
+                      id: tx.metadata.vault_request.vault_id.toString(),
+                    }
+                  : tx.other_profile_id
+              );
+              result.amount = `+${amount}`;
+              if (from?.value && to?.value) {
+                result.text = `${to.value} to ${from.value}`;
+              }
+            } else {
+              const [from] = await UI.resolve(
+                on,
+                isVault(tx, "to")
+                  ? {
+                      type: "vault",
+                      id: tx.metadata.vault_request.vault_id.toString(),
+                    }
+                  : tx.other_profile_id
+              );
 
-              result.text = `+${amount} ${tx.token.symbol.toUpperCase()}${
+              result.text = `+${amount}${
                 from?.value ? ` from ${from.value}` : ""
               }`;
             }
             break;
           }
           case "out": {
-            let to;
-            if (isVault(tx)) {
-              [to] = await UI.resolve(on, {
-                type: "vault",
-                id: tx.metadata.vault_request.vault_id.toString(),
-              });
-            } else {
-              [to] = await UI.resolve(on, tx.other_profile_id);
-            }
+            let amount = "";
             if (!Number.isNaN(Number(tx.token.decimal))) {
-              const amount = formatTokenDigit(
+              amount = formatTokenDigit(
                 formatUnits(tx.amount || 0, tx.token.decimal)
               );
-              result.text = `-${amount} ${tx.token.symbol.toUpperCase()}${
-                to?.value ? ` to ${to.value}` : ""
-              }`;
+              amount = `${amount} ${tx.token.symbol.toUpperCase()}`;
             }
+            if (global) {
+              const [from, to] = await UI.resolve(
+                on,
+                isVault(tx, "from")
+                  ? {
+                      type: "vault",
+                      id: tx.metadata.vault_request.vault_id.toString(),
+                    }
+                  : tx.from_profile_id,
+                isVault(tx, "to")
+                  ? {
+                      type: "vault",
+                      id: tx.metadata.vault_request.vault_id.toString(),
+                    }
+                  : tx.other_profile_id
+              );
+              result.amount = `-${amount}`;
+              if (from?.value && to?.value) {
+                result.text = `${from.value} to ${to.value}`;
+              }
+            } else {
+              const [to] = await UI.resolve(
+                on,
+                isVault(tx, "to")
+                  ? {
+                      type: "vault",
+                      id: tx.metadata.vault_request.vault_id.toString(),
+                    }
+                  : tx.other_profile_id
+              );
+              result.text = `-${amount}${to?.value ? ` to ${to.value}` : ""}`;
+            }
+            break;
           }
         }
         break;
@@ -266,15 +325,20 @@ export default async function (
     on = Platform.Web,
     groupDate = false,
     withTitle = false,
+    global = false,
   }: Props & Paging,
   tableParams?: Parameters<typeof mdTable>[1]
 ) {
+  if (global) {
+    groupDate = true;
+  }
+
   let data = (
     await Promise.all(
       txns
         .sort(latest)
         .filter(beforeMap)
-        .map((tx) => formatTxn(tx, on))
+        .map((tx) => formatTxn(tx, on, global))
     )
   ).filter((t) => t.text);
 
@@ -292,9 +356,9 @@ export default async function (
         `🗓 ${time}`,
         mdTable(txns, {
           ...(tableParams ?? {}),
-          cols: ["external_id", "text"],
+          cols: global ? ["amount", "text"] : ["external_id", "text"],
           alignment: ["left", "left"],
-          wrapCol: [false, false],
+          wrapCol: global ? [true, false] : [false, false],
         }),
         ...(isLast ? [] : [""]),
       ].join("\n");

@@ -211,11 +211,11 @@ async function vault(p?: Profile, on = Platform.Vault): Promise<UsernameFmt> {
     const textPrefix =
       on !== Platform.Vault ? PLATFORM_PREFIX["mochi-vault"] : "";
     const emojiPrefix =
-      on !== Platform.Vault ? `${PLATFORM_EMOJI_PREFIX["mochi-vault"]} ` : "";
+      on !== Platform.Vault ? PLATFORM_EMOJI_PREFIX["mochi-vault"] : "";
     let prefix =
-      on === Platform.Web ? emojiPrefix : `${emojiPrefix} ${textPrefix}`;
+      on === Platform.Web ? `${emojiPrefix} ` : `${emojiPrefix} ${textPrefix}`;
 
-    prefix = prefix.trim();
+    prefix = prefix.trimStart();
 
     return {
       value: `[${prefix}${p.name}](${HOMEPAGE}/vaults/${p.id})`,
@@ -241,13 +241,11 @@ async function application(
     const textPrefix =
       on !== Platform.App ? PLATFORM_PREFIX["mochi-application"] : "";
     const emojiPrefix =
-      on !== Platform.App
-        ? `${PLATFORM_EMOJI_PREFIX["mochi-application"]} `
-        : "";
+      on !== Platform.App ? PLATFORM_EMOJI_PREFIX["mochi-application"] : "";
     let prefix =
-      on === Platform.Web ? emojiPrefix : `${emojiPrefix} ${textPrefix}`;
+      on === Platform.Web ? `${emojiPrefix} ` : `${emojiPrefix} ${textPrefix}`;
 
-    prefix = prefix.trim();
+    prefix = prefix.trimStart();
 
     if (application && p.type === "application") {
       return {
@@ -285,11 +283,11 @@ async function discord(
     const textPrefix =
       on !== Platform.Discord ? PLATFORM_PREFIX["discord"] : "@";
     const emojiPrefix =
-      on !== Platform.Discord ? `${PLATFORM_EMOJI_PREFIX["discord"]} ` : "";
+      on !== Platform.Discord ? PLATFORM_EMOJI_PREFIX["discord"] : "";
     let prefix =
-      on === Platform.Web ? emojiPrefix : `${emojiPrefix} ${textPrefix}`;
+      on === Platform.Web ? `${emojiPrefix} ` : `${emojiPrefix} ${textPrefix}`;
 
-    prefix = prefix.trim();
+    prefix = prefix.trimStart();
 
     if (!discord || !discord.platform_metadata.username)
       return {
@@ -329,11 +327,11 @@ async function telegram(
     const textPrefix =
       on !== Platform.Telegram ? PLATFORM_PREFIX["telegram"] : "@";
     const emojiPrefix =
-      on !== Platform.Telegram ? `${PLATFORM_EMOJI_PREFIX["telegram"]} ` : "";
+      on !== Platform.Telegram ? PLATFORM_EMOJI_PREFIX["telegram"] : "";
     let prefix =
-      on === Platform.Web ? emojiPrefix : `${emojiPrefix} ${textPrefix}`;
+      on === Platform.Web ? `${emojiPrefix} ` : `${emojiPrefix} ${textPrefix}`;
 
-    prefix = prefix.trim();
+    prefix = prefix.trimStart();
 
     if (!telegram || !telegram.platform_metadata.username)
       return {
@@ -366,11 +364,11 @@ async function mochi(
     const textPrefix =
       on !== Platform.Mochi ? PLATFORM_PREFIX["mochi-profile"] : "";
     const emojiPrefix =
-      on !== Platform.Mochi ? `${PLATFORM_EMOJI_PREFIX["mochi-profile"]} ` : "";
+      on !== Platform.Mochi ? PLATFORM_EMOJI_PREFIX["mochi-profile"] : "";
     let prefix =
-      on === Platform.Web ? emojiPrefix : `${emojiPrefix} ${textPrefix}`;
+      on === Platform.Web ? `${emojiPrefix} ` : `${emojiPrefix} ${textPrefix}`;
 
-    prefix = prefix.trim();
+    prefix = prefix.trimStart();
 
     return {
       value: `[${prefix}${p.profile_name || p.id}](${HOMEPAGE}/profile/${
