@@ -3,7 +3,9 @@
 </p>
 
 # Mochi UI
+
 This package includes the basic components that you need to render any Mochi data, generally speaking there are 3 main goal:
+
 - Render Mochi identity
 - Use components such as balance list, activities, transactions list, etc...
 - Utilize helpers such as text/number formatters, etc...
@@ -33,8 +35,8 @@ const markdownText = await UI.components.balance({
   /* props */
 });
 
-const formattedUsd = utils.formatUsdDigit(23.12563)
-console.log(formattedUsd) // "$23.12"
+const formattedUsd = utils.formatUsdDigit(23.12563);
+console.log(formattedUsd); // "$23.12"
 ```
 
 ## API
@@ -77,10 +79,12 @@ type UsernameFmt = {
 ```
 
 ### Utilities
+
 - `formatUsdDigit(input: string | number | object): string`: returns a string representation of the usd value with $ prefix
 - `formatPercentDigit(input: string | number | object): string`: returns a string representation of the percentage value with % suffix
 - `formatTokenDigit(input: string | number | object): string`: returns a string representation of the token value
 - `formatDigit(options: object): string`: the base formatter, the shape of options is:
+
 ```typescript
 type Options = {
   value: string | number;
@@ -93,14 +97,17 @@ type Options = {
   shorten?: boolean;
   // use for very small numbers e.g. 1e-8
   scientificFormat?: boolean;
-}
+};
 ```
+
 Note: All the format functions except `formatDigit` follows the same decimal point formatting rule, that is:
+
 - For percentage value, automatically hide decimal point if value >= 10
 - For USD value, automatically hide decimal point if value >= 100
 - For token value, automatically hide decimal point if value >= 1000
 
 - In case of having to show decimal point, we only take maximum 2 digits that are not 0 starting from the dot, if both are 0 then take the first digit that is not zero, some examples:
+
 ```
 0.02345 -> 0.02
 0.2103 -> 0.2
