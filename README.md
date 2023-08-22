@@ -11,6 +11,7 @@
 🚀 [`mochi-rest`](./packages/mochi-rest/README.md): an SDK for Mochi's api ecosystems, built with Typescript and shipped with a response schema validator so that developers who are interested can build Mochi applications with confidence.
 
 ## 🤝 Contributing
-Open a pull request and send a request review to [vincent](https://github.com/tuanddd), git commit should follow [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) format with the scope e.g. `feat(mochi-ui): add a new component...`, after it is approved, you can merge the PR.
-
 **Use squash commit strategy in PRs**
+
+Clone this repo, create a new branch from `main`, do your magic then open a pull request and send a request review to [vincent](https://github.com/tuanddd), your git commit should follow [conventional commit](https://www.conventionalcommits.org/en/v1.0.0/) format with the scope e.g. `feat(mochi-ui): add a new component...`, after it is approved, you can merge the PR.
+
