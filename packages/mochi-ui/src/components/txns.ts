@@ -294,7 +294,7 @@ export default async function (
           ...(tableParams ?? {}),
           cols: ["external_id", "text"],
           alignment: ["left", "left"],
-          wrapLastCol: false,
+          wrapCol: [false, false],
         }),
         ...(isLast ? [] : [""]),
       ].join("\n");

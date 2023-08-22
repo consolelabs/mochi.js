@@ -168,7 +168,7 @@ export default async function (
         mdTable(activities, {
           ...(tableParams ?? {}),
           cols: ["text"],
-          wrapLastCol: false,
+          wrapCol: [false],
         }),
         ...(isLast ? [] : [""]),
       ].join("\n");
@@ -178,7 +178,7 @@ export default async function (
   } else {
     text = mdTable(data, {
       ...(tableParams ?? {}),
-      wrapLastCol: false,
+      wrapCol: [true, false],
       cols: ["time", "text"],
       alignment: ["left", "left"],
     });
