@@ -292,7 +292,8 @@ export default async function (
         `🗓 ${time}`,
         mdTable(txns, {
           ...(tableParams ?? {}),
-          cols: ["text"],
+          cols: ["external_id", "text"],
+          alignment: ["left", "left"],
           wrapLastCol: false,
         }),
         ...(isLast ? [] : [""]),
@@ -303,9 +304,9 @@ export default async function (
   } else {
     text = mdTable(data, {
       ...(tableParams ?? {}),
-      wrapLastCol: false,
-      cols: ["time", "text"],
-      alignment: ["left", "left"],
+      wrapCol: [true, false, false],
+      cols: ["time", "external_id", "text"],
+      alignment: ["left", "left", "left"],
     });
   }
 

@@ -9,7 +9,7 @@ type Option<C, L = number | null> = {
   cols: C[];
   alignment?: Alignment[];
   separator?: string[];
-  wrapLastCol?: boolean;
+  wrapCol?: boolean[];
   textLimit?: L;
 };
 type Data = Record<string, string | number>;
@@ -40,7 +40,7 @@ export function mdTable<
       ],
       row: (str: string) => str,
       separator: allColsExceptLast.slice().fill(VERTICAL_BAR),
-      wrapLastCol: true,
+      wrapCol: Array(options.cols.length).fill(true),
     },
     options
   );
@@ -104,8 +104,9 @@ export function mdTable<
     row = row.filter(Boolean);
     row = zip(
       row.map((r, i) => {
-        if (i !== resolvedOptions.cols.length - 1) return `\`${r}\``;
-        if (resolvedOptions.wrapLastCol) return `\`${r}\``;
+        if (resolvedOptions.wrapCol[i]) {
+          return `\`${r}\``;
+        }
         return r;
       }),
       resolvedOptions.separator.slice(0, row.length - 1)
