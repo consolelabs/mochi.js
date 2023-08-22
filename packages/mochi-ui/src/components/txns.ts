@@ -33,14 +33,36 @@ async function formatTxn(
 ) {
   const date = new Date("created_at" in tx ? tx.created_at : tx.signed_at);
   const t = time.relative(date.getTime());
-  const isMochiTx = "external_id" in tx;
-  const receiptUrl = isMochiTx
-    ? ` → [view receipt](${HOMEPAGE}/transfer/${tx.external_id})`
-    : "";
   const result = {
     time: t,
     text: "",
+    external_id: "",
   };
+
+  if ("has_transfer" in tx) {
+    const transferTx = tx.actions.find((a) => {
+      if (a.native_transfer) return true;
+      if (a.from && a.to && a.amount !== 0 && a.unit) return true;
+      return false;
+    });
+    if (!transferTx) return result;
+    const amount = transferTx.amount ?? 0;
+    if (amount === 0) return result;
+    const isDebit = Math.sign(amount) < 0;
+    let target = isDebit ? transferTx.to : transferTx.from;
+    if (!target) return result;
+    target = await address.normalizeAddress(target);
+    target = address.shorten(target);
+
+    result.text = `${!isDebit ? "+" : ""}${transferTx.amount ?? 0} ${
+      transferTx.unit ?? ""
+    } ${isDebit ? "to" : "from"} \`${target}\``;
+    return result;
+  }
+
+  result.external_id = `[\`${tx.external_id.slice(0, 5)}\`](${HOMEPAGE}/tx/${
+    tx.external_id
+  })`;
 
   if ("action" in tx) {
     switch (tx.action) {
@@ -152,7 +174,6 @@ async function formatTxn(
         break;
       }
     }
-    result.text += receiptUrl;
     return result;
 
     // swap
@@ -168,27 +189,6 @@ async function formatTxn(
     //   }
     //   return result;
     // }
-  }
-
-  if ("has_transfer" in tx) {
-    const transferTx = tx.actions.find((a) => {
-      if (a.native_transfer) return true;
-      if (a.from && a.to && a.amount !== 0 && a.unit) return true;
-      return false;
-    });
-    if (!transferTx) return result;
-    const amount = transferTx.amount ?? 0;
-    if (amount === 0) return result;
-    const isDebit = Math.sign(amount) < 0;
-    let target = isDebit ? transferTx.to : transferTx.from;
-    if (!target) return result;
-    target = await address.normalizeAddress(target);
-    target = address.shorten(target);
-
-    result.text = `${!isDebit ? "+" : ""}${transferTx.amount ?? 0} ${
-      transferTx.unit ?? ""
-    } ${isDebit ? "to" : "from"} \`${target}\``;
-    return result;
   }
 
   return result;
