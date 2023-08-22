@@ -1,10 +1,16 @@
-# Mochi formatters
+![Mochi Pose_13](https://github.com/consolelabs/mochi.js/assets/25856620/3a4124dc-5e86-4cfd-b33c-a1ba1aca370f)
+
+# Mochi UI
+This package includes the basic components that you need to render any Mochi data, generally speaking there are 3 main goal:
+- Render Mochi identity
+- Use components such as balance list, activities, transactions list, etc...
+- Utilize helpers such as text/number formatters, etc...
 
 ## Usage
 
 ```typescript
 import API from "@consolelabs/mochi-rest";
-import UI from "@consolelabs/mochi-ui";
+import UI, { utils } from "@consolelabs/mochi-ui";
 import Redis from "ioredis";
 
 // optionally use redis for better perf
@@ -24,21 +30,12 @@ const [account, otherAccount] = await UI.resolve(
 const markdownText = await UI.components.balance({
   /* props */
 });
+
+const formattedUsd = utils.formatUsdDigit(23.12563)
+console.log(formattedUsd) // "$23.12"
 ```
 
 ## API
-
-### `redis`
-
-```typescript
-import UI from "@consolelabs/mochi-ui";
-// only ioredis is supported for now
-import Redis from "ioredis";
-
-UI.redis = new Redis();
-```
-
-You can optionally assign an instance of `Redis` to improve perf
 
 ### `resolve(on: Platform.Web | Platform.Discord | Platform.Telegram, profile_id_A: string, profile_id_B?: string)`
 
@@ -75,6 +72,26 @@ type UsernameFmt = {
     | Platform.Vault
     | null;
 };
+```
+
+### Utilities
+- `formatUsdDigit(input: string | number | object): string`: returns a string representation of the usd value with $ prefix
+- `formatPercentDigit(input: string | number | object): string`: returns a string representation of the percentage value with % suffix
+- `formatTokenDigit(input: string | number | object): string`:" returns a string representation of the token value
+- `formatDigit(options: object): string`: the base formatter, the shape of options is:
+```typescript
+type Options = {
+  value: string | number;
+  // how many numbers to keep after decimal point
+  fractionDigits?: number;
+  // decides whether the result should have commas
+  withoutCommas?: boolean;
+  // use shorten form e.g. 200,000 -> 200K, $1,234,567,890 -> $1B
+  // note that by using this option some precision of number will be lost
+  shorten?: boolean;
+  // use for very small numbers e.g. 1e-8
+  scientificFormat?: boolean;
+}
 ```
 
 ### components
