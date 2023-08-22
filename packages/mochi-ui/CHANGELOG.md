@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 1.0.2
+
+### Patch Changes
+
+- a0bb76e: Update new format of txn
+
 ## 1.0.1
 
 ### Patch Changes
