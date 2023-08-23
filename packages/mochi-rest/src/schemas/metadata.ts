@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export enum CommandScope {
   All = 0,
-  PublicOnly,
   PrivateOnly,
+  PublicOnly,
 }
 
 export const CommandSchema = z.object({
