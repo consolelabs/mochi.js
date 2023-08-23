@@ -120,3 +120,9 @@ export const StatsSchema = z.object({
 });
 
 export type Stats = z.infer<typeof StatsSchema>;
+
+export const AuthRequestSchema = z.object({
+  url: z.string().nonempty(),
+});
+
+export type AuthRequest = z.infer<typeof AuthRequestSchema>;

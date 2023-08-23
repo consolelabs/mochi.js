@@ -9,11 +9,17 @@ import {
   ProfileSchema,
   getParser,
   Pagination,
+  AuthRequest,
+  AuthRequestSchema,
 } from "../schemas";
 import type { Fetcher } from "../utils";
 import base from "./base";
 
 export class ProfileModule {
+  auth: {
+    byDiscord: Fetcher<string, AuthRequest>;
+  };
+
   mochi: {
     getById: Fetcher<string, Profile>;
   };
@@ -61,6 +67,15 @@ export class ProfileModule {
     if (apiKey) {
       profiles = profiles.auth(`Bearer ${apiKey}`);
     }
+
+    this.auth = {
+      byDiscord: async function (code: string) {
+        return await api
+          .url(`/profiles/auth/discord?code=${code}`)
+          .resolve(parse(AuthRequestSchema))
+          .get();
+      },
+    };
 
     this.mochi = {
       getById: async function (profileId) {

@@ -11,6 +11,8 @@ export const CommandSchema = z.object({
   code: z.string().nonempty(),
   discord_command: z.string().nonempty(),
   telegram_command: z.string().nonempty(),
+  discord_alias: z.string(),
+  telegram_alias: z.string(),
   scope: z.nativeEnum(CommandScope), // All / Private only / Public only
   description: z.string(),
   created_at: z.string().datetime().nonempty(),

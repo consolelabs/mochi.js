@@ -34,6 +34,9 @@ export class Mochi {
   pay: PayModule;
 
   commands: Map<string, Command> = new Map();
+  telegramAlias: Map<string, Command> = new Map();
+  discordAlias: Map<string, Command> = new Map();
+
   private copy: { tip: string[]; fact: string[] } = { tip: [], fact: [] };
 
   constructor(_opts: Options) {
@@ -88,6 +91,19 @@ export class Mochi {
       this.commands = new Map(
         result.data.map((c) => [c.code.toLowerCase(), c])
       );
+      for (const cmd of this.commands.values()) {
+        let aliases: string[] = [];
+        try {
+          aliases = JSON.parse(cmd.telegram_alias ?? "[]");
+        } catch (e) {}
+        this.telegramAlias = new Map(aliases.map((a) => [a, cmd]));
+
+        aliases = [];
+        try {
+          aliases = JSON.parse(cmd.discord_alias ?? "[]");
+        } catch (e) {}
+        this.discordAlias = new Map(aliases.map((a) => [a, cmd]));
+      }
       logger.info("Command config fetch OK");
     } catch (e) {
       logger.error("Cannot fetch command config");
