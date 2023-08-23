@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 1.1.1
+
+### Patch Changes
+
+- b8d5ade: Swap PrivateOnly and PublicOnly in CommandScope
+
 ## 1.1.0
 
 ### Minor Changes
