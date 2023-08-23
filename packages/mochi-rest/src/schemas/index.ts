@@ -15,6 +15,7 @@ export * from "./wallet";
 export * from "./watchlist";
 export * from "./pagination";
 export * from "./moniker";
+export * from "./pay-link";
 
 export const AnySchema = z.any();
 

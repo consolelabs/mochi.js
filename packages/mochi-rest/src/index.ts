@@ -15,6 +15,7 @@ export type {
   PayLinkTx,
   TransferTx,
   VaultTransferTx,
+  PayLink,
 } from "./schemas";
 
 export { CommandScope } from "./schemas";
