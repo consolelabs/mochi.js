@@ -1,5 +1,12 @@
 # @consolelabs/mochi-ui
 
+## 4.0.0
+
+### Patch Changes
+
+- Updated dependencies [72f9724]
+  - @consolelabs/mochi-rest@1.3.0
+
 ## 3.0.0
 
 ### Patch Changes

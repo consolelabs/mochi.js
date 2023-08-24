@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 1.3.0
+
+### Minor Changes
+
+- 72f9724: Add "log" option to mochi-rest, add env detect logic to mochi-mock
+
 ## 1.2.0
 
 ### Minor Changes

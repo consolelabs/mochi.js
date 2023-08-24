@@ -1,5 +1,11 @@
 # @consolelabs/mochi-mock
 
+## 0.0.2
+
+### Patch Changes
+
+- 72f9724: Add "log" option to mochi-rest, add env detect logic to mochi-mock
+
 ## 0.0.1
 
 ### Patch Changes
