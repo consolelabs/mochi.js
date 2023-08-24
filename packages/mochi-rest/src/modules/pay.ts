@@ -74,9 +74,10 @@ export class PayModule {
     getLeaderboard: Fetcher<void, Leaderboard>;
   };
 
-  constructor({ payUrl, apiKey, catcher }: FullOptions) {
+  constructor({ payUrl, apiKey, catcher, log }: FullOptions) {
     const parse = getParser(catcher);
     let api = base.url(payUrl, true);
+    api = api.options({ log });
 
     if (catcher) {
       api = api.catcherFallback(catcher);

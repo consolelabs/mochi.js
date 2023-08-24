@@ -186,9 +186,10 @@ export class BaseModule {
     getDefaultMonikers: Fetcher<void, Array<Moniker>>;
   };
 
-  constructor({ baseUrl, apiKey, catcher }: FullOptions) {
+  constructor({ baseUrl, apiKey, catcher, log }: FullOptions) {
     const parse = getParser(catcher);
     let api = base.url(baseUrl, true);
+    api = api.options({ log });
 
     if (catcher) {
       api = api.catcherFallback(catcher);

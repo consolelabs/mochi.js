@@ -5,6 +5,9 @@ import snakeCase from "lodash.snakecase";
 import snakeCaseKeys from "snakecase-keys";
 
 export const log = (next: any) => (url: string, opts: WretchOptions) => {
+  if (!opts.log) {
+    return next(url, opts);
+  }
   logger.info(
     `[API going - ${opts.method}]: ${url}${
       opts.body ? ` with body ${opts.body}` : ""

@@ -10,6 +10,7 @@ interface Options {
   apiKey?: string;
   preview?: boolean;
   catcher?: (error: WretchError | ZodError) => void;
+  log?: boolean;
 }
 
 export interface FullOptions extends Options {
@@ -20,6 +21,7 @@ export interface FullOptions extends Options {
 
 const defaultOptions: Options = {
   preview: false,
+  log: true,
 };
 
 export class Mochi {
