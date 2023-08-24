@@ -10,7 +10,7 @@ This package includes the basic components that you need to render any Mochi dat
 - Use components such as balance list, activities, transactions list, etc...
 - Utilize helpers such as text/number formatters, etc...
 
-## Usage
+## 🚀 Usage
 
 ```typescript
 import API from "@consolelabs/mochi-rest";
@@ -39,7 +39,7 @@ const formattedUsd = utils.formatUsdDigit(23.12563);
 console.log(formattedUsd); // "$23.12"
 ```
 
-## API
+## 🤖 API
 
 ### `resolve(on: Platform.Web | Platform.Discord | Platform.Telegram, profile_id_A: string, profile_id_B?: string)`
 

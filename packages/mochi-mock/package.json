@@ -1,0 +1,37 @@
+{
+  "name": "@consolelabs/mochi-mock",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "pnpm clean && tsup --entry src/index.ts --entry src/cli.ts --format cjs,esm --dts"
+  },
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "bin": {
+    "mochi-mock": "./dist/cli.js"
+  },
+  "keywords": [],
+  "author": "tuanddd",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/listr": "^0.14.4",
+    "@types/prompts": "^2.4.4",
+    "@types/recursive-readdir": "^2.2.1",
+    "rimraf": "^5.0.1",
+    "tsup": "^7.2.0",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "listr": "^0.14.3",
+    "minimatch": "^9.0.3",
+    "prompts": "^2.4.2",
+    "recursive-readdir": "^2.2.3"
+  }
+}
