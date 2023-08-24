@@ -5,22 +5,6 @@ import { exec } from "child_process";
 import Listr from "listr";
 
 (async () => {
-  const gitInstalled = await new Promise((r) => {
-    exec("git -v", (error) => {
-      if (error) {
-        console.error(error.message);
-        r(false);
-        return;
-      }
-      r(true);
-    });
-  });
-  if (!gitInstalled) {
-    console.error(
-      "Git was not detected in your machine, we recommend installing it to make things easier"
-    );
-    process.exit(1);
-  }
   const exist = await access(path.resolve(process.cwd(), "mochi-mocks"))
     .then(() => true)
     .catch(() => false);
@@ -29,7 +13,7 @@ import Listr from "listr";
       type: "confirm",
       name: "confirm_overwrite",
       message:
-        "There is already a mochi-mocks directory, are you sure you want to overwrite?",
+        "There is already a mochi-mocks directory, are you sure you want to overwrite?\n(this will wipe out all local changes that you have)",
       initial: false,
     });
     if (!confirm_overwrite) {
@@ -39,50 +23,93 @@ import Listr from "listr";
   }
 
   await new Listr([
+    {
+      title: "Check if Git is installed",
+      task: () =>
+        new Promise<void>((res, rej) => {
+          exec("git -v", (error) => {
+            if (error) {
+              console.error(error.message);
+              rej(
+                new Error(
+                  "Git was not detected in your machine, we recommend installing it to make things easier"
+                )
+              );
+              return;
+            }
+            res();
+          });
+        }),
+    },
     ...(exist
       ? [
           {
             title: "Clean up mochi-mocks",
             task: () =>
-              new Promise<void>((r) => {
-                exec("rm -rf mochi-mocks", (error) => {
-                  if (error) {
-                    console.error(error.message);
-                    process.exit(1);
-                  }
-                  r();
-                });
-              }),
+              new Listr([
+                {
+                  title: "Unregister submodule",
+                  task: () =>
+                    new Promise<void>((res, rej) => {
+                      exec(
+                        "git submodule deinit -f -- mochi-mocks",
+                        (error) => {
+                          if (error) {
+                            console.error(error.message);
+                            rej(error);
+                            return;
+                          }
+                          res();
+                        }
+                      );
+                    }),
+                },
+                {
+                  title: "Remove entry in .git",
+                  task: () =>
+                    new Promise<void>((res, rej) => {
+                      exec("rm -rf .git/modules/mochi-mocks", (error) => {
+                        if (error) {
+                          console.error(error.message);
+                          rej(error);
+                          return;
+                        }
+                        res();
+                      });
+                    }),
+                },
+                {
+                  title: "Remove submodule directory",
+                  task: () =>
+                    new Promise<void>((res, rej) => {
+                      exec("git rm -f mochi-mocks", (error) => {
+                        if (error) {
+                          console.error(error.message);
+                          rej(error);
+                          return;
+                        }
+                        res();
+                      });
+                    }),
+                },
+              ]),
           },
         ]
       : []),
     {
-      title: "Pulling mock data",
+      title: "Pulling mock data submodule",
       task: () =>
-        new Promise<void>((r) => {
+        new Promise<void>((res, rej) => {
           exec(
-            "git clone git@github.com:consolelabs/data-mock.git mochi-mocks",
+            "git submodule add git@github.com:consolelabs/data-mock.git mochi-mocks",
             (error) => {
               if (error) {
                 console.error(error.message);
-                process.exit(1);
+                rej(error);
               }
-              r();
+              res();
             }
           );
-        }),
-    },
-    {
-      title: "Remove .git inside mochi-mocks",
-      task: () =>
-        new Promise<void>((r) => {
-          exec("rm -rf mochi-mocks/.git", (error) => {
-            if (error) {
-              console.error(error.message);
-              process.exit(1);
-            }
-            r();
-          });
         }),
     },
   ]).run();
@@ -94,8 +121,8 @@ import Listr from "listr";
 
       2. During development, feel free to change the mock data shape/value
 
-      3. After you're done, if there are new changes to the mock data, please submit a PR
-         at https://github.com/consolelabs/data-mock so others can use it too
+      3. After you're done, if there are new changes to the mock data,
+         submit a PR > get merged > profit
 
     Happy coding 🤙
 `);

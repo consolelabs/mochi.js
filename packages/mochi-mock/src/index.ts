@@ -21,6 +21,7 @@ function getModule(url: string) {
   throw new Error("Couldn't find a host");
 }
 
+// interceptor
 const monkeyPatchFunc = function (func: any) {
   return async function (...args: any[]) {
     let [urlString] = args;
@@ -68,7 +69,14 @@ const monkeyPatchFunc = function (func: any) {
   };
 };
 
-export default function mock() {
+export default function mock(overrideEnable = true) {
+  if (typeof overrideEnable !== "boolean") {
+    if (process.env.NODE_ENV !== "development") {
+      return;
+    }
+  } else if (!overrideEnable) {
+    return;
+  }
   if (typeof window !== "undefined") {
     window.fetch = monkeyPatchFunc(window.fetch);
   } else {
