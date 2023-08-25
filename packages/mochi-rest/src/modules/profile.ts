@@ -1,3 +1,4 @@
+import endpoints from "../endpoints";
 import { FullOptions } from "../mochi";
 import {
   Activity,
@@ -64,15 +65,15 @@ export class ProfileModule {
       api = api.catcherFallback(catcher);
     }
 
-    let profiles = api.url("/profiles");
     if (apiKey) {
-      profiles = profiles.auth(`Bearer ${apiKey}`);
+      api = api.auth(`Bearer ${apiKey}`);
     }
 
     this.auth = {
       byDiscord: async function (code: string) {
         return await api
-          .url(`/profiles/auth/discord?code=${code}`)
+          .url(endpoints.MOCHI_PROFILE.AUTH_BY_DISCORD)
+          .query({ code })
           .resolve(parse(AuthRequestSchema))
           .get();
       },
@@ -81,7 +82,7 @@ export class ProfileModule {
     this.mochi = {
       getById: async function (profileId) {
         return await api
-          .url(`/profiles/${profileId}`)
+          .url(endpoints.MOCHI_PROFILE.GET_BY_ID(profileId))
           .resolve(parse(ProfileSchema))
           .get();
       },
@@ -90,7 +91,7 @@ export class ProfileModule {
     this.telegram = {
       getById: async function ({ telegramId, noFetchAmount }) {
         return api
-          .url(`/profiles/get-by-telegram/${telegramId}`)
+          .url(endpoints.MOCHI_PROFILE.GET_BY_TELEGRAM_ID(telegramId))
           .query(noFetchAmount ? { noFetchAmount } : {})
           .resolve(parse(ProfileSchema))
           .get();
@@ -100,7 +101,7 @@ export class ProfileModule {
     this.discord = {
       getById: async function ({ discordId, noFetchAmount }) {
         return api
-          .url(`/profiles/get-by-discord/${discordId}`)
+          .url(endpoints.MOCHI_PROFILE.GET_BY_DISCORD_ID(discordId))
           .query(noFetchAmount ? { noFetchAmount } : {})
           .resolve(parse(ProfileSchema))
           .get();
@@ -110,7 +111,7 @@ export class ProfileModule {
     this.email = {
       getByEmail: async function ({ email, noFetchAmount }) {
         return api
-          .url(`/profiles/get-by-email/${email}`)
+          .url(endpoints.MOCHI_PROFILE.GET_BY_EMAIL(email))
           .query(noFetchAmount ? { noFetchAmount } : {})
           .resolve(parse(ProfileSchema))
           .get();
@@ -126,14 +127,14 @@ export class ProfileModule {
         status,
       }) {
         return api
-          .url(`/profiles/${profileId}/activities`)
+          .url(endpoints.MOCHI_PROFILE.USER_ACTIVITIES(profileId))
           .query({ actions: actions.join("|"), page, size, status })
           .resolve(parse(ListActivity)<Pagination>)
           .get();
       },
       markRead: async function ({ profileId, ids }) {
         return api
-          .url(`/profiles/${profileId}/activities`)
+          .url(endpoints.MOCHI_PROFILE.USER_ACTIVITIES(profileId))
           .resolve(parse(AnySchema))
           .put({ ids });
       },
@@ -142,7 +143,7 @@ export class ProfileModule {
     this.connect = {
       requestCode: async function (profileId) {
         return api
-          .url(`/profiles/${profileId}/codes`)
+          .url(endpoints.MOCHI_PROFILE.REQUEST_CODE(profileId))
           .resolve(parse(CodeSchema))
           .post();
       },

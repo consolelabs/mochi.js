@@ -4,7 +4,7 @@ import p from "prompts";
 import { exec } from "child_process";
 import Listr from "listr";
 
-(async () => {
+export default async function init() {
   const exist = await access(path.resolve(process.cwd(), "mochi-mocks"))
     .then(() => true)
     .catch(() => false);
@@ -126,4 +126,4 @@ import Listr from "listr";
 
     Happy coding 🤙
 `);
-})();
+}

@@ -1,5 +1,5 @@
 import deepmerge from "deepmerge";
-import { BaseModule, PayModule, ProfileModule } from "./modules";
+import baseWretch, { BaseModule, PayModule, ProfileModule } from "./modules";
 import { Command } from "./schemas";
 import { logger } from "./logger";
 import { apiUrls } from "./constant";
@@ -34,6 +34,8 @@ export class Mochi {
   base: BaseModule;
   profile: ProfileModule;
   pay: PayModule;
+  mock: (jsonPath: string) => typeof baseWretch = (jsonPath) =>
+    baseWretch.mock(jsonPath);
 
   commands: Map<string, Command> = new Map();
   telegramAlias: Map<string, Command> = new Map();

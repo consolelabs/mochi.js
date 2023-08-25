@@ -6,7 +6,7 @@
   "module": "dist/index.mjs",
   "scripts": {
     "clean": "rimraf dist",
-    "build": "pnpm clean && tsup --entry src/index.ts --entry src/cli.ts --format cjs,esm --dts"
+    "build": "pnpm clean && tsup --entry src/index.ts --entry src/cli/index.ts --format cjs,esm --dts"
   },
   "exports": {
     ".": {
@@ -15,7 +15,7 @@
     }
   },
   "bin": {
-    "mochi-mock": "./dist/cli.js"
+    "mochi-mock": "./dist/cli/index.js"
   },
   "keywords": [],
   "author": "tuanddd",
@@ -28,8 +28,13 @@
     "tsup": "^7.2.0",
     "typescript": "^5.1.6"
   },
+  "peerDependencies": {
+    "wretch": "^2.x.x"
+  },
   "dependencies": {
+    "@faker-js/faker": "^8.0.2",
     "listr": "^0.14.3",
+    "meow": "^9.0.0",
     "minimatch": "^9.0.3",
     "pino": "^8.15.0",
     "pino-pretty": "^10.2.0",

@@ -24,6 +24,7 @@ import {
   InAppWalletsSchema,
 } from "../schemas";
 import { FullOptions } from "../mochi";
+import endpoints from "../endpoints";
 
 export class PayModule {
   profile: {
@@ -83,29 +84,20 @@ export class PayModule {
       api = api.catcherFallback(catcher);
     }
 
-    let mochiWallet = api.url("/mochi-wallet");
-    let inAppWallets = api.url("/in-app-wallets");
-    let transactions = api.url("/transactions");
-    let payRequest = api.url("/pay-requests");
-    let profile = api.url("/profile");
     if (apiKey) {
-      mochiWallet = mochiWallet.auth(`Bearer ${apiKey}`);
-      inAppWallets = inAppWallets.auth(`Bearer ${apiKey}`);
-      transactions = transactions.auth(`Bearer ${apiKey}`);
-      payRequest = payRequest.auth(`Bearer ${apiKey}`);
-      profile = profile.auth(`Bearer ${apiKey}`);
+      api = api.auth(`Bearer ${apiKey}`);
     }
 
     this.profile = {
       stats: async function (id) {
-        return profile
-          .url(`/${id}/monthly-stats`)
+        return api
+          .url(endpoints.MOCHI_PAY.MONTHLY_STATS(id))
           .resolve(parse(StatsSchema))
           .get();
       },
       getTransactions: async function ({ page = 0, ...rest }) {
-        return profile
-          .url("/transactions")
+        return api
+          .url(endpoints.MOCHI_PAY.PROFILE_TRANSACTIONS)
           .resolve(parse(ListOffchainTxSchema))
           .query({ ...rest, page })
           .get();
@@ -114,32 +106,35 @@ export class PayModule {
 
     this.payRequest = {
       generateCode: async function (payload) {
-        return payRequest.url("/").resolve(parse(CodeSchema)).post(payload);
+        return api
+          .url(endpoints.MOCHI_PAY.PAY_REQUESTS)
+          .resolve(parse(CodeSchema))
+          .post(payload);
       },
     };
 
     this.mochiWallet = {
       withdraw: async function (payload) {
-        return mochiWallet
-          .url("/withdraw")
+        return api
+          .url(endpoints.MOCHI_PAY.WITHDRAW)
           .resolve(parse(AnySchema))
           .post(payload);
       },
       deposit: async function ({ profileId, token }) {
-        return mochiWallet
-          .url("/deposit")
+        return api
+          .url(endpoints.MOCHI_PAY.DEPOSIT)
           .resolve(parse(DepositInfoSchema))
           .post({ profileId, token });
       },
       getBalance: async function ({ profileId, token }) {
-        return mochiWallet
-          .url(`/${profileId}/balances/${token}`)
+        return api
+          .url(endpoints.MOCHI_PAY.GET_BALANCE(profileId, token))
           .resolve(parse(BalancesSchema))
           .get();
       },
       getWallets: async function (profileId) {
-        let result = await inAppWallets
-          .url(`/get-by-profile/${profileId}`)
+        let result = await api
+          .url(endpoints.MOCHI_PAY.GET_WALLETS(profileId))
           .resolve(parse(InAppWalletsSchema))
           .post();
 
@@ -181,8 +176,8 @@ export class PayModule {
 
     this.transactions = {
       getAll: async function ({ size = 40, page = 0, action }) {
-        return transactions
-          .url("/")
+        return api
+          .url(endpoints.MOCHI_PAY.GLOBAL_TRANSACTIONS)
           .query({ page, size, action })
           .resolve(parse(ListOffchainTxSchema))
           .get();
@@ -192,7 +187,7 @@ export class PayModule {
     this.tokens = {
       getSupported: async function (symbol?: string) {
         return api
-          .url("/tokens")
+          .url(endpoints.MOCHI_PAY.SUPPORTED_TOKENS)
           .query(symbol ? { symbol } : {})
           .resolve(parse(TokensSchema))
           .get();
@@ -201,14 +196,17 @@ export class PayModule {
 
     this.chains = {
       getSupported: async function () {
-        return api.url("/chains").resolve(parse(ChainsSchema)).get();
+        return api
+          .url(endpoints.MOCHI_PAY.SUPPORTED_CHAINS)
+          .resolve(parse(ChainsSchema))
+          .get();
       },
     };
 
     this.users = {
       getLeaderboard: async function () {
         return api
-          .url(`/leaderboard`)
+          .url(endpoints.MOCHI_PAY.LEADERBOARD)
           .query({ size: 10 })
           .resolve(parse(LeaderboardSchema))
           .get();
