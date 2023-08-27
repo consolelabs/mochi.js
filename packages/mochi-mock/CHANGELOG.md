@@ -1,5 +1,11 @@
 # @consolelabs/mochi-mock
 
+## 0.0.3
+
+### Patch Changes
+
+- 3bb670a: Mocker use custom header
+
 ## 0.0.2
 
 ### Patch Changes

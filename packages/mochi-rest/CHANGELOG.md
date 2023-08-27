@@ -1,5 +1,13 @@
 # @consolelabs/mochi-rest
 
+## 1.3.1
+
+### Patch Changes
+
+- 3bb670a: Mocker use custom header
+- Updated dependencies [3bb670a]
+  - @consolelabs/mochi-mock@0.0.3
+
 ## 1.3.0
 
 ### Minor Changes
