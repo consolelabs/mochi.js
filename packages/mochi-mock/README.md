@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="https://github.com/consolelabs/mochi.js/assets/25856620/3a4124dc-5e86-4cfd-b33c-a1ba1aca370f" alt="mochi pose 13" width="40%" />
+  <img src="https://github.com/consolelabs/mochi.js/assets/25856620/ea835197-5ed7-45e3-a42f-3e696dfd11fb" alt="mochi pose 04" width="40%" />
 </p>
 
 # Mochi Mock
 
-This pacakge is used to mock data returned by api that are not yet finished so that front-end devs can use the mock data to continue their work
+This package is used to mock json file normally returned by backend apis
 
 ## 🌈 Installation
 
