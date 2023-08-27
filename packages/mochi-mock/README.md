@@ -21,6 +21,8 @@ pnpm add @consolelabs/mochi-mock
 
 ## 🚀 Usage
 
+### 1. Sync data
+
 First, sync the mock data to your local project, this should clone/overwrite the remote data mock repo
 
 ```bash
@@ -31,20 +33,38 @@ npx mochi-mock
 pnpm exec mochi-mock
 ```
 
-Then, begin mocking in your code
+### 2. Spy request
 
 ```javascript
-// somewhere in your code, preferrably the entry file e.g. src/index.js
-
-import mock from "@consolelabs/mochi-mock";
+import spyRequest from "@consolelabs/mochi-mock";
 // or
-const mock = require("@consolelabs/mochi-mock");
+const spyRequest = require("@consolelabs/mochi-mock");
 
-// begin mock
-mock();
+// ensure that mocker only runs in development
+if (process.env.NODE_ENV === "development") {
+  spyRequest();
+}
 ```
 
-During development, you can change the mock data file and see the api response be updated as well
+### 3. Mock response
+
+#### Method 1 (recommended, requires [wretch](https://github.com/elbywan/wretch#addons) package)
+
+Register a new addon for your wretch instance
+
+```javascript
+import { MockAddon } from "@consolelabs/mochi-mock";
+import wretch from "@consolelabs";
+
+const api = wretch().addon(MockAddon);
+
+// somewhere else in your business logic
+const data = api.mock("path/to/json/mock/file").get().json();
+```
+
+#### Method 2
+
+The other way is to attach a custom header called `X-Mochi-Mock` with the json file as the header's value (this is also how the mocker works under the hood)
 
 ## 🤝 Contributing
 
