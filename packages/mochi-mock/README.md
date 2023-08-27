@@ -66,6 +66,27 @@ const data = api.mock("path/to/json/mock/file").get().json();
 
 The other way is to attach a custom header called `X-Mochi-Mock` with the json file as the header's value (this is also how the mocker works under the hood)
 
+## ❓ FAQ
+
+### Do I need to follow some kind of format in my mock json file?
+No, just use regular objects/list at the root, the response returned by the mocker will be converted to a format that is the same from a real api
+
+### Does the mocker support query string?
+Yes, and there are also some reserved keys like `page` and `size` that are used for pagination. Anyother key/value pair is treated as filtering value, for example, this file:
+```json
+[
+  {
+    "id": 1,
+    "name": "john"
+  },
+  {
+    "id": 2,
+    "name": "ben"
+  }
+]
+```
+mocking this file with query string `?name=john` will only return list with 1 element
+
 ## 🤝 Contributing
 
 If you happen to change the mock data, kindly submit a PR with the changes so the team can review it
