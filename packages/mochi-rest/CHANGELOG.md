@@ -1,5 +1,12 @@
 # @consolelabs/mochi-rest
 
+## 1.3.4
+
+### Patch Changes
+
+- Updated dependencies [07cbdda]
+  - @consolelabs/mochi-mock@0.0.6
+
 ## 1.3.3
 
 ### Patch Changes

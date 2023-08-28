@@ -1,5 +1,11 @@
 # @consolelabs/mochi-mock
 
+## 0.0.6
+
+### Patch Changes
+
+- 07cbdda: Fix pagination logic
+
 ## 0.0.5
 
 ### Patch Changes
