@@ -24,8 +24,7 @@ const monkeyPatchFunc = function (func: any) {
     if (!mockHeaderValue) {
       return await func.apply(
         typeof window === "undefined" ? globalThis : window,
-        url.toString(),
-        opts
+        [url.toString(), opts]
       );
     }
 
@@ -50,8 +49,7 @@ const monkeyPatchFunc = function (func: any) {
     if (!file) {
       return await func.apply(
         typeof window === "undefined" ? globalThis : window,
-        url.toString(),
-        opts
+        [url.toString(), opts]
       );
     }
 
