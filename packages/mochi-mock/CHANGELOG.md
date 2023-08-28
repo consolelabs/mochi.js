@@ -1,5 +1,11 @@
 # @consolelabs/mochi-mock
 
+## 0.0.7
+
+### Patch Changes
+
+- 10d0f14: Fix call on non-object
+
 ## 0.0.6
 
 ### Patch Changes
