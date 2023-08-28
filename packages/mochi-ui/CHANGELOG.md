@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 4.0.5
+
+### Patch Changes
+
+- ae8993a: Fix page indicator string format
+
 ## 4.0.4
 
 ### Patch Changes
