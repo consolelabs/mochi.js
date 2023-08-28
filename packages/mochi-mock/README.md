@@ -48,7 +48,7 @@ if (process.env.NODE_ENV === "development") {
 
 ### 3. Mock response
 
-#### Method 1 (recommended, requires [wretch](https://github.com/elbywan/wretch#addons) package)
+#### Method 1 (recommended, requires [wretch](https://github.com/elbywan/wretch) package)
 
 Register a new addon for your wretch instance
 
