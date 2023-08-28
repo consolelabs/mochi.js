@@ -85,14 +85,16 @@ const monkeyPatchFunc = function (func: any) {
 
     let page = 0,
       size = 10;
+
     if (_page !== undefined && !Number.isNaN(Number(_page))) {
       page = Number(_page);
-      if (_size !== undefined && !Number.isNaN(Number(_size))) {
-        size = Number(_size);
-      }
-
-      content = content.slice(page * size, page * size + size);
     }
+
+    if (_size !== undefined && !Number.isNaN(Number(_size))) {
+      size = Number(_size);
+    }
+
+    content = content.slice(page * size, page * size + size);
 
     logger.info(`[Mock ok - ${opts?.method || ""}]: returning ${file}`);
     return new Response(
