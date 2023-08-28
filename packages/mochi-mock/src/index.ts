@@ -4,17 +4,17 @@ import recursiveRead from "recursive-readdir";
 import { logger } from "./logger";
 import qs from "querystring";
 import type { WretchAddon } from "wretch";
+import { CUSTOM_HEADER } from "./constant";
 
 const mockDirRoot = path.resolve(process.cwd(), "mochi-mocks", "mocks");
 
 // interceptor
 const monkeyPatchFunc = function (func: any) {
   return async function (url: RequestInfo | URL, opts?: RequestInit) {
-    const [urlString, queryString] = url.toString().split("?");
     let mockHeaderValue = "";
     if (typeof opts?.headers?.forEach !== "string") {
       for (const [k, v] of Object.entries(opts?.headers ?? {})) {
-        if (k.toLowerCase() === "x-mochi-mock") {
+        if (k.toLowerCase() === CUSTOM_HEADER.toLowerCase()) {
           mockHeaderValue = v;
         }
       }
@@ -24,10 +24,12 @@ const monkeyPatchFunc = function (func: any) {
     if (!mockHeaderValue) {
       return await func.apply(
         typeof window === "undefined" ? globalThis : window,
-        urlString,
+        url.toString(),
         opts
       );
     }
+
+    const [jsonFile, queryString] = mockHeaderValue.split("?");
 
     let files = await recursiveRead(
       path.resolve(process.cwd(), "mochi-mocks", "mocks")
@@ -37,7 +39,7 @@ const monkeyPatchFunc = function (func: any) {
 
     let file: string | null = null;
     for (let f of files.values()) {
-      if (path.normalize(`/${mockHeaderValue}`) === path.normalize(f)) {
+      if (path.normalize(`/${jsonFile}`) === path.normalize(f)) {
         // mock found
         file = f;
         break;
@@ -48,7 +50,7 @@ const monkeyPatchFunc = function (func: any) {
     if (!file) {
       return await func.apply(
         typeof window === "undefined" ? globalThis : window,
-        urlString,
+        url.toString(),
         opts
       );
     }
@@ -123,17 +125,17 @@ export default function mock() {
 }
 
 interface MockAddOn {
-  mock(jsonPath: string): this;
+  mock(jsonPath: string, query?: Record<string, any>): this;
 }
 
 export const MockAddOn: WretchAddon<MockAddOn> = {
   wretch: {
-    mock(jsonPath: string) {
+    mock(jsonPath: string, query: Record<string, any> = {}) {
       return {
         ...this,
         _options: {
           headers: {
-            "X-Mochi-Mock": jsonPath,
+            [CUSTOM_HEADER]: `${jsonPath}?${qs.stringify(query)}`,
           },
         },
       };

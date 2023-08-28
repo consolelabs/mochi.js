@@ -59,7 +59,10 @@ import wretch from "@consolelabs";
 const api = wretch().addon(MockAddon);
 
 // somewhere else in your business logic
-const data = api.mock("path/to/json/mock/file").get().json();
+const data = api
+  .mock("path/to/json/mock/file", { query: "optional" })
+  .get()
+  .json();
 ```
 
 #### Method 2
