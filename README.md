@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/consolelabs/mochi.js/assets/25856620/7a4e6e14-9106-4b3b-8f54-5d129e402792" alt="mochi post 5" width="40%" />
+  <img src="https://github.com/consolelabs/mochi.js/assets/25856620/a0d2a321-1a40-4a6d-a140-ee4a89a7e110" alt="mochi pose 5" width="40%" />
 </p>
 
 # Monorepo for everything related to Mochi and Javascript
