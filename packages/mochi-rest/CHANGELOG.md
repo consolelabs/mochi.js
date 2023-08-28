@@ -1,5 +1,12 @@
 # @consolelabs/mochi-rest
 
+## 1.3.2
+
+### Patch Changes
+
+- Updated dependencies [1067bbc]
+  - @consolelabs/mochi-mock@0.0.4
+
 ## 1.3.1
 
 ### Patch Changes

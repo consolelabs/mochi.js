@@ -1,5 +1,11 @@
 # @consolelabs/mochi-mock
 
+## 0.0.4
+
+### Patch Changes
+
+- 1067bbc: Add 2nd param query to mock func
+
 ## 0.0.3
 
 ### Patch Changes
