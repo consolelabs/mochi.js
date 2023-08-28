@@ -1,5 +1,12 @@
 # @consolelabs/mochi-ui
 
+## 4.0.3
+
+### Patch Changes
+
+- ac7dcf6: Fix pagination for mock/ui
+  - @consolelabs/mochi-rest@1.3.3
+
 ## 4.0.2
 
 ### Patch Changes

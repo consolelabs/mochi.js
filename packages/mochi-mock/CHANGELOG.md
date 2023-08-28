@@ -1,5 +1,11 @@
 # @consolelabs/mochi-mock
 
+## 0.0.5
+
+### Patch Changes
+
+- ac7dcf6: Fix pagination for mock/ui
+
 ## 0.0.4
 
 ### Patch Changes
