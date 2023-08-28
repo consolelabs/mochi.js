@@ -389,7 +389,7 @@ export default async function (
       ...(groupDate && withTitle ? [""] : []),
       text,
       "",
-      ...pager,
+      pager,
     ].join("\n"),
     totalPage: total,
   };
