@@ -75,11 +75,12 @@ const monkeyPatchFunc = function (func: any) {
       });
     }
 
-    const total = Array.isArray(content) ? content.length : 0;
+    let total = Array.isArray(content) ? content.length : 0;
 
     for (const [k, v] of Object.entries(rest)) {
       if (!v || Array.isArray(v)) continue;
       content = content.filter((c: any) => c[k].includes(v));
+      total = Array.isArray(content) ? content.length : 0;
     }
 
     let page = 0,

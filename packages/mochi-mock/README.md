@@ -72,10 +72,13 @@ The other way is to attach a custom header called `X-Mochi-Mock` with the json f
 ## ❓ FAQ
 
 ### Do I need to follow some kind of format in my mock json file?
+
 No, just use regular objects/list at the root, the response returned by the mocker will be converted to a format that is the same from a real api
 
 ### Does the mocker support query string?
+
 Yes, and there are also some reserved keys like `page` and `size` that are used for pagination. Anyother key/value pair is treated as filtering value, for example, this file:
+
 ```json
 [
   {
@@ -88,6 +91,7 @@ Yes, and there are also some reserved keys like `page` and `size` that are used 
   }
 ]
 ```
+
 mocking this file with query string `?name=john` will only return list with 1 element
 
 ## 🤝 Contributing
