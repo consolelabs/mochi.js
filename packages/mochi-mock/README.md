@@ -27,10 +27,10 @@ First, sync the mock data to your local project, this should clone/overwrite the
 
 ```bash
 // npm or yarn
-npx mochi-mock
+npx mochi-mock -i
 
 // pnpm
-pnpm exec mochi-mock
+pnpm exec mochi-mock -i
 ```
 
 ### 2. Spy request
