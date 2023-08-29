@@ -88,6 +88,10 @@ export class Mochi {
     );
   }
 
+  isTokenWhitelisted(symbol: string, address: string): boolean {
+    return this.whitelistTokens.get(symbol) === address;
+  }
+
   private async fetchCommandConfigs() {
     try {
       const result = await this.base.metadata.getCommands();
@@ -129,7 +133,7 @@ export class Mochi {
 
   private async fetchWhitelistTokens() {
     try {
-      const { ok, data } = await this.pay.getWhilteListToken({});
+      const { ok, data } = await this.pay.getWhilteListToken();
       if (!ok) throw new Error();
       this.whitelistTokens = new Map(data.map((t) => [t.symbol, t.address]));
       logger.info("Whitelist tokens fetch OK");

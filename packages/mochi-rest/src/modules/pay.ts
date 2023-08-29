@@ -69,7 +69,7 @@ export class PayModule {
     getSupported: Fetcher<string, Array<Token>>;
   };
 
-  getWhilteListToken: Fetcher<{ symbol?: string }, Array<SimplifiedToken>>;
+  getWhilteListToken: Fetcher<string | void, Array<SimplifiedToken>>;
 
   chains: {
     getSupported: Fetcher<void, Array<Chain>>;
@@ -198,10 +198,10 @@ export class PayModule {
       },
     };
 
-    this.getWhilteListToken = async function (query: { symbol?: string }) {
+    this.getWhilteListToken = async function (symbol?: string) {
       return api
         .url(endpoints.MOCHI_PAY.CONSOLE_TOKENS)
-        .query(query)
+        .query(symbol ? { symbol } : {})
         .resolve(parse(SimplifiedTokensSchema))
         .get();
     };

@@ -44,17 +44,23 @@ export default async function (
   const data = balances
     .map((balance) => {
       const { token, amount } = balance;
-      const { symbol, chain: _chain, decimal, price, native, address } = token;
+      const {
+        symbol = "",
+        chain: _chain,
+        decimal,
+        price,
+        native,
+        address,
+      } = token;
       const tokenVal = +formatUnits(amount, decimal);
       const usdVal = price * tokenVal;
       const value = formatTokenDigit(tokenVal.toString());
       const usdWorth = formatUsdDigit(usdVal.toString());
       let chain = _chain?.symbol || _chain?.short_name || _chain?.name || "";
       chain = chain.toLowerCase();
-      const isWhitelist = symbol && UI.api.whitelistTokens[symbol] === address;
       if (
         (tokenVal === 0 || (filterDust && usdVal <= MIN_DUST_USD)) &&
-        !isWhitelist
+        !UI.api.isTokenWhitelisted(symbol, address)
       )
         return {
           text: "",
@@ -70,7 +76,7 @@ export default async function (
         text,
         usdWorth,
         usdVal,
-        ...(chain && !native && isDuplicateSymbol(symbol?.toUpperCase() ?? "")
+        ...(chain && !native && isDuplicateSymbol(symbol.toUpperCase())
           ? { chain }
           : {}),
       };
