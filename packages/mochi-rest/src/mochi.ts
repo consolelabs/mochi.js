@@ -40,6 +40,7 @@ export class Mochi {
   commands: Map<string, Command> = new Map();
   telegramAlias: Map<string, Command> = new Map();
   discordAlias: Map<string, Command> = new Map();
+  whitelistTokens: Map<string, string> = new Map();
 
   private copy: { tip: string[]; fact: string[] } = { tip: [], fact: [] };
 
@@ -64,6 +65,7 @@ export class Mochi {
   async init(): Promise<void> {
     await this.fetchCommandConfigs();
     await this.fetchProductCopy();
+    await this.fetchWhitelistTokens();
   }
 
   randomTip() {
@@ -122,6 +124,17 @@ export class Mochi {
       logger.info("Product copy fetch OK");
     } catch (e) {
       logger.error("Cannot fetch product copy");
+    }
+  }
+
+  private async fetchWhitelistTokens() {
+    try {
+      const { ok, data } = await this.pay.getWhilteListToken({});
+      if (!ok) throw new Error();
+      this.whitelistTokens = new Map(data.map((t) => [t.symbol, t.address]));
+      logger.info("Whitelist tokens fetch OK");
+    } catch (e) {
+      logger.error("Cannot fetch whitelist tokens");
     }
   }
 }
