@@ -105,7 +105,7 @@ export default async function (
     text = "There is no token, yet 🙁";
   }
   return {
-    text: [text, "", pager].join("\n"),
+    text: [text, "", ...(pager ? [pager] : [])].join("\n"),
     totalUsd,
     totalPage: total,
   };

@@ -195,6 +195,6 @@ export default async function (
 
   return {
     totalPage: total,
-    text: [text, "", pager].join("\n"),
+    text: [text, "", ...(pager ? [pager] : [])].join("\n"),
   };
 }

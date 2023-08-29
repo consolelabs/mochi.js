@@ -58,11 +58,18 @@ const monkeyPatchFunc = function (func: any) {
     headers.set("Content-Type", "application/json");
 
     const query = qs.parse(queryString);
-    const { page: _page, size: _size, ...rest } = query;
+    const { page: _page, size: _size, id: _id, ...rest } = query;
 
     let content = JSON.parse(
       await readFile(path.join(mockDirRoot, file), { encoding: "utf8" })
     );
+
+    if (_id) {
+      const first = content.find((c: any) => c.id == _id);
+      if (first) {
+        content = first;
+      }
+    }
 
     // if not list then return as it
     if (!Array.isArray(content)) {
