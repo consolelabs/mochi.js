@@ -1,5 +1,11 @@
 # @consolelabs/mochi-mock
 
+## 0.1.0
+
+### Minor Changes
+
+- f20e14c: Add new `id` param to mocker + edit page indicator logic
+
 ## 0.0.7
 
 ### Patch Changes

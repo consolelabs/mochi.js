@@ -1,5 +1,12 @@
 # @consolelabs/mochi-ui
 
+## 4.0.7
+
+### Patch Changes
+
+- f20e14c: Add new `id` param to mocker + edit page indicator logic
+  - @consolelabs/mochi-rest@1.3.6
+
 ## 4.0.6
 
 ### Patch Changes
