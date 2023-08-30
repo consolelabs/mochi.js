@@ -1,5 +1,17 @@
 # @consolelabs/mochi-ui
 
+## 5.0.0
+
+### Minor Changes
+
+- 8d68adb: Add metadata whitelist token and balance UI to show whitelisted tokens
+
+### Patch Changes
+
+- Updated dependencies [dec9dfe]
+- Updated dependencies [8d68adb]
+  - @consolelabs/mochi-rest@1.4.0
+
 ## 4.0.7
 
 ### Patch Changes

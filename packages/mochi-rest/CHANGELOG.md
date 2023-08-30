@@ -1,5 +1,12 @@
 # @consolelabs/mochi-rest
 
+## 1.4.0
+
+### Minor Changes
+
+- dec9dfe: Add changelog metadata methods to rest client
+- 8d68adb: Add metadata whitelist token and balance UI to show whitelisted tokens
+
 ## 1.3.6
 
 ### Patch Changes
