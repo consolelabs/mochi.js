@@ -47,6 +47,10 @@ import {
   Pagination,
   MonikersSchema,
   Moniker,
+  Changelog,
+  ListChangelogSchema,
+  ViewChangelog,
+  ListViewChangelogSchema,
 } from "../schemas";
 import { FullOptions } from "../mochi";
 import endpoints from "../endpoints";
@@ -74,6 +78,8 @@ export class BaseModule {
   metadata: {
     getCopy: Fetcher<string | void, Copy>;
     getCommands: Fetcher<void, Array<Command>>;
+    getChangelogs: Fetcher<void, Array<Changelog>>;
+    getChangelogView: Fetcher<string, Array<ViewChangelog>>;
   };
 
   tip: {
@@ -413,6 +419,19 @@ export class BaseModule {
         return api
           .url(endpoints.MOCHI.METADATA_COMMANDS)
           .resolve(parse(ListCommandSchema))
+          .get();
+      },
+      getChangelogs: async function () {
+        return api
+          .url(endpoints.MOCHI.METADATA_GET_CHANGELOGS)
+          .resolve(parse(ListChangelogSchema))
+          .get();
+      },
+      getChangelogView: async function (key: string) {
+        return api
+          .url(endpoints.MOCHI.METADATA_CHANGELOG_VIEW)
+          .query({ key })
+          .resolve(parse(ListViewChangelogSchema))
           .get();
       },
     };

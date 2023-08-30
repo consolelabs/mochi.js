@@ -1,6 +1,6 @@
 import deepmerge from "deepmerge";
 import baseWretch, { BaseModule, PayModule, ProfileModule } from "./modules";
-import { Command } from "./schemas";
+import { Changelog, Command } from "./schemas";
 import { logger } from "./logger";
 import { apiUrls } from "./constant";
 import { WretchError } from "wretch/resolver";
@@ -43,6 +43,7 @@ export class Mochi {
   whitelistTokens: Map<string, string> = new Map();
 
   private copy: { tip: string[]; fact: string[] } = { tip: [], fact: [] };
+  changelogs: Changelog[] = [];
 
   constructor(_opts: Options) {
     const opts = deepmerge(defaultOptions, _opts);
@@ -63,9 +64,17 @@ export class Mochi {
   }
 
   async init(): Promise<void> {
-    await this.fetchCommandConfigs();
-    await this.fetchProductCopy();
-    await this.fetchWhitelistTokens();
+    const results = await Promise.allSettled([
+      this.fetchCommandConfigs(),
+      this.fetchProductCopy(),
+      this.fetchChangelogs(),
+      this.fetchWhitelistTokens(),
+    ]);
+    for (const res of results) {
+      if (res.status === "rejected") {
+        logger.error(res.reason);
+      }
+    }
   }
 
   randomTip() {
@@ -88,57 +97,81 @@ export class Mochi {
     );
   }
 
+  // can safely assume that key is profile id
+  async getChangelogs(key: string) {
+    const { ok, data, error } = await this.base.metadata.getChangelogView(key);
+    if (!ok) throw new Error(error);
+
+    const viewedFiles = new Set(data.map((d) => d.changelog_name));
+    const allFiles = new Set(this.changelogs.map((c) => c.file_name));
+    const newFiles = new Set([...allFiles].filter((f) => !viewedFiles.has(f)));
+
+    return {
+      hasNew: newFiles.size > 0,
+      newChangelogs: this.changelogs.filter((c) => newFiles.has(c.file_name)),
+      allChangelogs: this.changelogs,
+    };
+  }
+
   isTokenWhitelisted(symbol: string, address: string): boolean {
     return this.whitelistTokens.get(symbol) === address;
   }
 
   private async fetchCommandConfigs() {
-    try {
-      const result = await this.base.metadata.getCommands();
-      if (!result.ok) {
-        throw new Error();
-      }
-      this.commands = new Map(
-        result.data.map((c) => [c.code.toLowerCase(), c])
-      );
-      for (const cmd of this.commands.values()) {
-        let aliases: string[] = [];
-        try {
-          aliases = JSON.parse(cmd.telegram_alias ?? "[]");
-        } catch (e) {}
-        this.telegramAlias = new Map(aliases.map((a) => [a, cmd]));
-
-        aliases = [];
-        try {
-          aliases = JSON.parse(cmd.discord_alias ?? "[]");
-        } catch (e) {}
-        this.discordAlias = new Map(aliases.map((a) => [a, cmd]));
-      }
-      logger.info("Command config fetch OK");
-    } catch (e) {
-      logger.error("Cannot fetch command config");
+    const result = await this.base.metadata.getCommands();
+    if (!result.ok) {
+      throw new Error(`Cannot fetch command configs ${result.error}`);
     }
+    this.commands = new Map(result.data.map((c) => [c.code.toLowerCase(), c]));
+    for (const cmd of this.commands.values()) {
+      let aliases: string[] = [];
+      try {
+        aliases = JSON.parse(cmd.telegram_alias ?? "[]");
+        if (!Array.isArray(aliases)) {
+          aliases = [aliases];
+        }
+      } catch (e) {
+        aliases = [];
+      }
+      this.telegramAlias = new Map(aliases.map((a) => [a, cmd]));
+
+      aliases = [];
+      try {
+        aliases = JSON.parse(cmd.discord_alias ?? "[]");
+        if (!Array.isArray(aliases)) {
+          aliases = [aliases];
+        }
+      } catch (e) {
+        aliases = [];
+      }
+      this.discordAlias = new Map(aliases.map((a) => [a, cmd]));
+    }
+    logger.info("Command config fetch OK");
   }
 
   private async fetchProductCopy() {
-    try {
-      const result = await this.base.metadata.getCopy("header");
-      if (!result.ok) throw new Error();
-      this.copy = result.data.description;
-      logger.info("Product copy fetch OK");
-    } catch (e) {
-      logger.error("Cannot fetch product copy");
-    }
+    const result = await this.base.metadata.getCopy("header");
+    if (!result.ok)
+      throw new Error(`Cannot fetch product copy ${result.error}`);
+    this.copy = result.data.description;
+    logger.info("Product copy fetch OK");
+  }
+
+  private async fetchChangelogs() {
+    const result = await this.base.metadata.getChangelogs();
+    if (!result.ok)
+      throw new Error(`Cannot fetch product changelogs ${result.error}`);
+    this.changelogs = result.data;
+    logger.info("Product changelogs fetch OK");
   }
 
   private async fetchWhitelistTokens() {
-    try {
-      const { ok, data } = await this.pay.getWhiteListToken();
-      if (!ok) throw new Error();
-      this.whitelistTokens = new Map(data.map((t) => [t.symbol, t.address]));
-      logger.info("Whitelist tokens fetch OK");
-    } catch (e) {
-      logger.error("Cannot fetch whitelist tokens");
-    }
+    const result = await this.pay.getWhiteListToken();
+    if (!result.ok)
+      throw new Error(`Cannot fetch whitelist tokens ${result.error}`);
+    this.whitelistTokens = new Map(
+      result.data.map((t) => [t.symbol, t.address])
+    );
+    logger.info("Whitelist tokens fetch OK");
   }
 }
