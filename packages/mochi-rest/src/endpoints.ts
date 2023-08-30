@@ -108,6 +108,7 @@ export default {
     MONTHLY_STATS: (profileId: Serializable) =>
       new Path("/profile/:profileId/monthly-stats").build({ profileId }),
     SUPPORTED_TOKENS: "/tokens",
+    CONSOLE_TOKENS: "/console-tokens",
     SUPPORTED_CHAINS: "/chains",
     LEADERBOARD: "/leaderboard",
   },

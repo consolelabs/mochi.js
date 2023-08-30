@@ -22,6 +22,8 @@ import {
   WithdrawRequest,
   InAppWallet,
   InAppWalletsSchema,
+  SimplifiedTokensSchema,
+  SimplifiedToken,
 } from "../schemas";
 import { FullOptions } from "../mochi";
 import endpoints from "../endpoints";
@@ -66,6 +68,8 @@ export class PayModule {
   tokens: {
     getSupported: Fetcher<string, Array<Token>>;
   };
+
+  getWhiteListToken: Fetcher<string | void, Array<SimplifiedToken>>;
 
   chains: {
     getSupported: Fetcher<void, Array<Chain>>;
@@ -192,6 +196,14 @@ export class PayModule {
           .resolve(parse(TokensSchema))
           .get();
       },
+    };
+
+    this.getWhiteListToken = async function (symbol?: string) {
+      return api
+        .url(endpoints.MOCHI_PAY.CONSOLE_TOKENS)
+        .query(symbol ? { symbol } : {})
+        .resolve(parse(SimplifiedTokensSchema))
+        .get();
     };
 
     this.chains = {

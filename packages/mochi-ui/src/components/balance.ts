@@ -5,6 +5,7 @@ import { formatUnits } from "ethers";
 import pageIndicator from "./page-indicator";
 import type { Paging } from "../types";
 import chunk from "lodash.chunk";
+import { UI } from "../ui";
 
 type Balance = {
   token: {
@@ -12,6 +13,7 @@ type Balance = {
     symbol?: string;
     decimal: number;
     price: number;
+    address: string;
     chain: { short_name?: string; name?: string; symbol?: string };
     native: boolean;
   };
@@ -42,14 +44,24 @@ export default async function (
   const data = balances
     .map((balance) => {
       const { token, amount } = balance;
-      const { symbol, chain: _chain, decimal, price, native } = token;
+      const {
+        symbol = "",
+        chain: _chain,
+        decimal,
+        price,
+        native,
+        address,
+      } = token;
       const tokenVal = +formatUnits(amount, decimal);
       const usdVal = price * tokenVal;
       const value = formatTokenDigit(tokenVal.toString());
       const usdWorth = formatUsdDigit(usdVal.toString());
       let chain = _chain?.symbol || _chain?.short_name || _chain?.name || "";
       chain = chain.toLowerCase();
-      if (tokenVal === 0 || (filterDust && usdVal <= MIN_DUST_USD))
+      if (
+        (tokenVal === 0 || (filterDust && usdVal <= MIN_DUST_USD)) &&
+        !UI.api?.isTokenWhitelisted(symbol, address)
+      )
         return {
           text: "",
           usdVal: 0,
@@ -64,7 +76,7 @@ export default async function (
         text,
         usdWorth,
         usdVal,
-        ...(chain && !native && isDuplicateSymbol(symbol?.toUpperCase() ?? "")
+        ...(chain && !native && isDuplicateSymbol(symbol.toUpperCase())
           ? { chain }
           : {}),
       };
