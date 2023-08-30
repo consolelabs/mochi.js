@@ -60,7 +60,7 @@ export default async function (
       chain = chain.toLowerCase();
       if (
         (tokenVal === 0 || (filterDust && usdVal <= MIN_DUST_USD)) &&
-        !UI.api.isTokenWhitelisted(symbol, address)
+        !UI.api?.isTokenWhitelisted(symbol, address)
       )
         return {
           text: "",

@@ -133,7 +133,7 @@ export class Mochi {
 
   private async fetchWhitelistTokens() {
     try {
-      const { ok, data } = await this.pay.getWhilteListToken();
+      const { ok, data } = await this.pay.getWhiteListToken();
       if (!ok) throw new Error();
       this.whitelistTokens = new Map(data.map((t) => [t.symbol, t.address]));
       logger.info("Whitelist tokens fetch OK");
