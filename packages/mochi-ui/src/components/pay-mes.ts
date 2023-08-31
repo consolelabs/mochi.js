@@ -30,48 +30,45 @@ const updateStatus = (status: PayLink["status"], date: Date) => {
 };
 
 type Props = {
-  payLinks: Array<PayLink>;
+  payMes: Array<PayLink>;
   on?: Platform.Discord | Platform.Telegram | Platform.Web;
   withTitle?: boolean;
   groupDate?: boolean;
+  title?: string;
+  profileId: string;
 };
 
-async function formatPayLink(
-  pl: PayLink,
-  on: Platform.Web | Platform.Telegram | Platform.Discord
+async function formatPayMe(
+  pm: PayLink,
+  on: Platform.Web | Platform.Telegram | Platform.Discord,
+  profileId: string
 ) {
-  const claimedDate = new Date(pl.claimed_at);
-  const expiredDate = new Date(pl.expired_at);
-  const createdDate = new Date(pl.created_at);
+  // const claimedDate = new Date(pm.claimed_at);
+  const expiredDate = new Date(pm.expired_at);
+  const createdDate = new Date(pm.created_at);
   const t = time.relative(createdDate.getTime());
-  const code = pl.code;
-  const status = updateStatus(pl.status, expiredDate);
+  const code = pm.code;
+  const status = updateStatus(pm.status, expiredDate);
   const statusIcon = STATUS_MAP[status] || "🔵";
   const shortCode = `${code.slice(0, 2)}..${code.slice(-3)}`;
   const amount = formatTokenDigit(
-    formatUnits(pl.amount || 0, pl.token.decimal)
+    formatUnits(pm.amount || 0, pm.token.decimal)
   );
 
-  let text = `${status}`;
-  switch (status) {
-    case "claimed":
-      const [claimer] = await UI.resolve(on, pl.claimer || pl.to_profile_id);
-      text = `claimed by ${claimer?.value} ${time.relative(
-        claimedDate.getTime()
-      )}`;
-      break;
-    case "expired":
-      text = `expired ${time.relative(expiredDate.getTime())}`;
-      break;
+  const isRequester = pm.from_profile_id === profileId;
+  const [otherProfile] = await UI.resolve(on, pm.to_profile_id);
 
-    default:
-      break;
+  const action = status === "claimed" ? "paid" : "requested";
+
+  let text = `You ${action} ${otherProfile?.value}`;
+  if (!isRequester) {
+    text = `${otherProfile?.value} ${action} you`;
   }
 
   const result = {
     status: statusIcon,
     time: t,
-    amount: amount + " " + pl.token.symbol.toUpperCase(),
+    amount: amount + " " + pm.token.symbol.toUpperCase(),
     shortCode,
     text: text,
   };
@@ -79,26 +76,27 @@ async function formatPayLink(
   return result;
 }
 
-function latest(pl1: PayLink, pl2: PayLink) {
+function latest(pm1: PayLink, pm2: PayLink) {
   let time1, time2;
-  time1 = new Date(pl1.created_at).getTime();
-  time2 = new Date(pl2.created_at).getTime();
+  time1 = new Date(pm1.created_at).getTime();
+  time2 = new Date(pm2.created_at).getTime();
   return time2 - time1;
 }
 
 export default async function (
   {
-    payLinks,
+    payMes,
     page = 0,
     total = 1,
     on = Platform.Telegram,
+    profileId,
     withTitle,
     groupDate,
   }: Props & Paging,
   tableParams?: Parameters<typeof mdTable>[1]
 ) {
   let data = await Promise.all(
-    payLinks.sort(latest).map((pl: PayLink) => formatPayLink(pl, on))
+    payMes.sort(latest).map((pl: PayLink) => formatPayMe(pl, on, profileId))
   );
 
   let text;
@@ -107,17 +105,17 @@ export default async function (
     const groupByDate = groupBy(data, "time");
     const lines = Object.entries(groupByDate).map((e, i) => {
       const isLast = i === Object.keys(groupByDate).length - 1;
-      const [time, payLinks] = e;
+      const [time, payMes] = e;
       return [
-        `🗓 Created ${time}`,
-        mdTable(payLinks, {
+        `🗓 *Created ${time}*`,
+        mdTable(payMes, {
           ...(tableParams ?? {}),
           cols: ["shortCode", "amount", "text"],
           alignment: ["left", "right", "left"],
           wrapCol: [true, true, false],
           wrapLastCol: false,
           row(formatted, index) {
-            return payLinks[index].status + " " + formatted;
+            return payMes[index].status + " " + formatted;
           },
         }),
         ...(isLast ? [] : [""]),
@@ -145,7 +143,7 @@ export default async function (
 
   return {
     text: [
-      ...(withTitle ? ["📜 *Pay link status*"] : []),
+      ...(withTitle ? ["📜 *Pay me request status*"] : []),
       ...(groupDate && withTitle ? [""] : []),
       text,
       "",
