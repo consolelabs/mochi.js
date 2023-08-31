@@ -78,9 +78,6 @@ importers:
 
   packages/mochi-rest:
     dependencies:
-      '@consolelabs/mochi-mock':
-        specifier: workspace:^
-        version: link:../mochi-mock
       deepmerge:
         specifier: ^4.3.1
         version: 4.3.1

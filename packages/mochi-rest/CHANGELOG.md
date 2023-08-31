@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 1.5.1
+
+### Patch Changes
+
+- a479f45: Remove mochi-mock as dependency of mochi-rest
+
 ## 1.5.0
 
 ### Minor Changes
