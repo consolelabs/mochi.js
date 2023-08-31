@@ -54,7 +54,6 @@ import {
 } from "../schemas";
 import { FullOptions } from "../mochi";
 import endpoints from "../endpoints";
-import { MockAddOn } from "@consolelabs/mochi-mock";
 
 const base = wretch()
   .content("application/json")
@@ -65,8 +64,7 @@ const base = wretch()
     log,
     throttlingCache(),
   ])
-  .addon(QueryStringAddon)
-  .addon(MockAddOn);
+  .addon(QueryStringAddon);
 
 export default base;
 
@@ -196,10 +194,16 @@ export class BaseModule {
     getDefaultMonikers: Fetcher<void, Array<Moniker>>;
   };
 
-  constructor({ baseUrl, apiKey, catcher, log }: FullOptions) {
+  constructor({ addons, baseUrl, apiKey, catcher, log }: FullOptions) {
     const parse = getParser(catcher);
     let api = base.url(baseUrl, true);
     api = api.options({ log });
+
+    if (addons?.length) {
+      for (const addon of addons) {
+        api = api.addon(addon);
+      }
+    }
 
     if (catcher) {
       api = api.catcherFallback(catcher);

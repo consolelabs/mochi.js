@@ -5,12 +5,14 @@ import { logger } from "./logger";
 import { apiUrls } from "./constant";
 import { WretchError } from "wretch/resolver";
 import { ZodError } from "zod";
+import { WretchAddon } from "wretch/types";
 
 interface Options {
   apiKey?: string;
   preview?: boolean;
   catcher?: (error: WretchError | ZodError) => void;
   log?: boolean;
+  addons?: WretchAddon<any>[];
 }
 
 export interface FullOptions extends Options {
@@ -22,6 +24,7 @@ export interface FullOptions extends Options {
 const defaultOptions: Options = {
   preview: false,
   log: true,
+  addons: [],
 };
 
 export class Mochi {
@@ -34,8 +37,14 @@ export class Mochi {
   base: BaseModule;
   profile: ProfileModule;
   pay: PayModule;
-  mock: (jsonPath: string) => typeof baseWretch = (jsonPath) =>
-    baseWretch.mock(jsonPath);
+  mock: (jsonPath: string) => typeof baseWretch = (jsonPath) => {
+    if ("mock" in baseWretch) {
+      // @ts-ignore
+      return baseWretch.mock(jsonPath);
+    }
+
+    throw new Error("You must pass MockAddon to API constructor first");
+  };
 
   commands: Map<string, Command> = new Map();
   telegramAlias: Map<string, Command> = new Map();
@@ -106,9 +115,7 @@ export class Mochi {
     const allFiles = new Set(this.changelogs.map((c) => c.file_name));
     const newFiles = new Set([...allFiles].filter((f) => !viewedFiles.has(f)));
 
-    const newChangelogs = this.changelogs.filter((c) =>
-      newFiles.has(c.file_name)
-    );
+    const newChangelog = this.changelogs.find((c) => newFiles.has(c.file_name));
     let changelog: Changelog | null = null;
 
     if (!Number.isNaN(Number(changelogId)) && typeof changelogId === "number") {
@@ -116,24 +123,19 @@ export class Mochi {
         this.changelogs.at(
           Math.min(Math.max(changelogId, 1), this.changelogs.length)
         ) ?? null;
+    } else {
+      changelog = newChangelog ?? null;
     }
 
     return {
       hasNew: newFiles.size > 0,
-      newChangelogsContent: changelog
-        ? changelog.content
-        : newChangelogs.map((c) => c.content).join("\n\n\n"),
-      markRead: async () => {
-        const names = changelog
-          ? [changelog.file_name]
-          : newChangelogs.map((c) => c.file_name);
-        await Promise.allSettled(
-          names.map((n) =>
-            this.base.metadata.markChangelogRead({ key, changelogName: n })
-          )
-        );
-      },
-      allChangelogs: this.changelogs,
+      changelogContent: changelog,
+      markRead: () =>
+        changelog?.file_name &&
+        this.base.metadata.markChangelogRead({
+          key,
+          changelogName: changelog.file_name,
+        }),
     };
   }
 

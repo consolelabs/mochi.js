@@ -56,10 +56,16 @@ export class ProfileModule {
     requestCode: Fetcher<string, Code>;
   };
 
-  constructor({ profileUrl, apiKey, catcher, log }: FullOptions) {
+  constructor({ addons, profileUrl, apiKey, catcher, log }: FullOptions) {
     const parse = getParser(catcher);
     let api = base.url(profileUrl, true);
     api = api.options({ log });
+
+    if (addons?.length) {
+      for (const addon of addons) {
+        api = api.addon(addon);
+      }
+    }
 
     if (catcher) {
       api = api.catcherFallback(catcher);
