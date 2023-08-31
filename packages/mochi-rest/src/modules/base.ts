@@ -80,6 +80,7 @@ export class BaseModule {
     getCommands: Fetcher<void, Array<Command>>;
     getChangelogs: Fetcher<void, Array<Changelog>>;
     getChangelogView: Fetcher<string, Array<ViewChangelog>>;
+    markChangelogRead: Fetcher<{ key: string; changelogName: string }>;
   };
 
   tip: {
@@ -433,6 +434,12 @@ export class BaseModule {
           .query({ key })
           .resolve(parse(ListViewChangelogSchema))
           .get();
+      },
+      markChangelogRead: async function ({ key, changelogName }) {
+        return api
+          .url(endpoints.MOCHI.METADATA_CHANGELOG_VIEW)
+          .resolve(parse(AnySchema))
+          .post({ key, changelogName });
       },
     };
 

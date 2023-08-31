@@ -98,7 +98,7 @@ export class Mochi {
   }
 
   // can safely assume that key is profile id
-  async getChangelogs(key: string) {
+  async getChangelogs(key: string, changelogId?: number) {
     const { ok, data, error } = await this.base.metadata.getChangelogView(key);
     if (!ok) throw new Error(error);
 
@@ -106,9 +106,33 @@ export class Mochi {
     const allFiles = new Set(this.changelogs.map((c) => c.file_name));
     const newFiles = new Set([...allFiles].filter((f) => !viewedFiles.has(f)));
 
+    const newChangelogs = this.changelogs.filter((c) =>
+      newFiles.has(c.file_name)
+    );
+    let changelog: Changelog | null = null;
+
+    if (!Number.isNaN(Number(changelogId)) && typeof changelogId === "number") {
+      changelog =
+        this.changelogs.at(
+          Math.min(Math.max(changelogId, 1), this.changelogs.length)
+        ) ?? null;
+    }
+
     return {
       hasNew: newFiles.size > 0,
-      newChangelogs: this.changelogs.filter((c) => newFiles.has(c.file_name)),
+      newChangelogsContent: changelog
+        ? changelog.content
+        : newChangelogs.map((c) => c.content).join("\n\n\n"),
+      markRead: async () => {
+        const names = changelog
+          ? [changelog.file_name]
+          : newChangelogs.map((c) => c.file_name);
+        await Promise.allSettled(
+          names.map((n) =>
+            this.base.metadata.markChangelogRead({ key, changelogName: n })
+          )
+        );
+      },
       allChangelogs: this.changelogs,
     };
   }

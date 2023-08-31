@@ -6,6 +6,7 @@ import txns from "./txns";
 import activities from "./activities";
 import pnl from "./pnl";
 import pageIndicator from "./page-indicator";
+import changelog from "./changelog";
 
 export default {
   balance,
@@ -16,4 +17,5 @@ export default {
   activities,
   pnl,
   pageIndicator,
+  changelog,
 };
