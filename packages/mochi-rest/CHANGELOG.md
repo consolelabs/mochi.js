@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 1.5.0
+
+### Minor Changes
+
+- 85a49fb: Add changelog component + methods for checking for new changelogs
+
 ## 1.4.0
 
 ### Minor Changes

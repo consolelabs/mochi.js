@@ -1,5 +1,16 @@
 # @consolelabs/mochi-ui
 
+## 6.0.0
+
+### Minor Changes
+
+- 85a49fb: Add changelog component + methods for checking for new changelogs
+
+### Patch Changes
+
+- Updated dependencies [85a49fb]
+  - @consolelabs/mochi-rest@1.5.0
+
 ## 5.0.0
 
 ### Minor Changes
