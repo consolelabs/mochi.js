@@ -94,7 +94,7 @@ export const UI: {
   redis: null,
   api: null,
   resolve: async function (on, A, B = A) {
-    if (!this.api) throw new Error("MochiFormatter: api property must be set");
+    if (!this.api) throw new Error("MochiUI: api property must be set");
     let pA: Profile, pB: Profile;
     if (typeof A === "string") {
       const { data } = await this.api.profile.mochi.getById(A);
@@ -148,9 +148,9 @@ async function account(
       fallbackOrder = [
         Platform.Vault,
         Platform.App,
-        Platform.Mochi,
         Platform.Discord,
         Platform.Telegram,
+        Platform.Mochi,
       ];
       break;
     case Platform.Discord:
@@ -172,7 +172,7 @@ async function account(
       ];
       break;
     default:
-      throw new Error("MochiFormatter: platform not supported");
+      throw new Error("MochiUI: platform not supported");
   }
 
   let userA,
