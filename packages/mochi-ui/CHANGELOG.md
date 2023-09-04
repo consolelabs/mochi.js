@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 7.0.0
+
+### Patch Changes
+
+- c766199: Add filenme override to markRead method and change formatting of heading
+- Updated dependencies [c766199]
+  - @consolelabs/mochi-rest@1.6.0
+
 ## 6.0.2
 
 ### Patch Changes

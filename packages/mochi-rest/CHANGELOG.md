@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 1.6.0
+
+### Minor Changes
+
+- c766199: Add filenme override to markRead method and change formatting of heading
+
 ## 1.5.1
 
 ### Patch Changes
