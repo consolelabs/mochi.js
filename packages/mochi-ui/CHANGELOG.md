@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 6.0.2
+
+### Patch Changes
+
+- 6c362e2: Change fallback order for Web platform
+
 ## 6.0.1
 
 ### Patch Changes
