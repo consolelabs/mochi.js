@@ -130,11 +130,11 @@ export class Mochi {
     return {
       hasNew: newFiles.size > 0,
       changelogContent: changelog,
-      markRead: () =>
-        changelog?.file_name &&
+      markRead: (name: string = "") =>
+        (changelog?.file_name || name) &&
         this.base.metadata.markChangelogRead({
           key,
-          changelogName: changelog.file_name,
+          changelogName: changelog?.file_name ?? name,
         }),
     };
   }

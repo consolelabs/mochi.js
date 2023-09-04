@@ -41,10 +41,10 @@ function discord(content: any, ctx: Context) {
         break;
       }
       case "heading": {
-        text += `\n${ctx.firstHeading ? "\n" : ""}_${discord(
+        text += `\n${ctx.firstHeading ? "\n" : ""}*${discord(
           content.children,
           ctx
-        )}_`;
+        )}*`;
         ctx.firstHeading = true;
         break;
       }
@@ -93,18 +93,15 @@ function telegram(content: any, ctx: Context) {
         break;
       }
       case "heading": {
-        text += `\n${ctx.firstHeading ? "\n" : ""}_${telegram(
+        text += `\n${ctx.firstHeading ? "\n" : ""}*${telegram(
           content.children,
           ctx
-        )}_`;
+        )}*`;
         ctx.firstHeading = true;
         break;
       }
       case "paragraph": {
-        text += `\n${!ctx.firstParagraph ? "\n" : ""}${telegram(
-          content.children,
-          ctx
-        )}`;
+        text += `\n${telegram(content.children, ctx)}`;
         ctx.firstParagraph = true;
         break;
       }
