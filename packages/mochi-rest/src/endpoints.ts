@@ -83,6 +83,7 @@ export default {
       new Path("/profiles/:profileId").build({ profileId }),
     GET_BY_TELEGRAM_ID: (telegramId: Serializable) =>
       new Path("/profiles/get-by-telegram/:telegramId").build({ telegramId }),
+    GET_BY_TELEGRAM_USERNAMES: "/telegram",
     GET_BY_DISCORD_ID: (discordId: Serializable) =>
       new Path("/profiles/get-by-discord/:discordId").build({ discordId }),
     GET_BY_EMAIL: (email: Serializable) =>

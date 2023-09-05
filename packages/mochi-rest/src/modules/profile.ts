@@ -27,6 +27,7 @@ export class ProfileModule {
 
   telegram: {
     getById: Fetcher<{ telegramId: string; noFetchAmount?: boolean }, Profile>;
+    getByUsernames: Fetcher<string[], Record<string, string | undefined>>;
   };
 
   discord: {
@@ -100,6 +101,13 @@ export class ProfileModule {
           .url(endpoints.MOCHI_PROFILE.GET_BY_TELEGRAM_ID(telegramId))
           .query(noFetchAmount ? { noFetchAmount } : {})
           .resolve(parse(ProfileSchema))
+          .get();
+      },
+      getByUsernames: async function (usernames) {
+        return api
+          .url(endpoints.MOCHI_PROFILE.GET_BY_TELEGRAM_USERNAMES)
+          .query({ usernames: usernames.join("|") })
+          .resolve(parse(AnySchema))
           .get();
       },
     };
