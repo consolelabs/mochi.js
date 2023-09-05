@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 1.7.0
+
+### Minor Changes
+
+- 7abc833: Add resolve telegram usernames api
+
 ## 1.6.1
 
 ### Patch Changes
