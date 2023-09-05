@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 1.6.1
+
+### Patch Changes
+
+- eb849f4: Command alias
+
 ## 1.6.0
 
 ### Minor Changes
