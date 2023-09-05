@@ -28,6 +28,7 @@ const defaultOptions: Options = {
 };
 
 export class Mochi {
+  isReady: Promise<void> = new Promise(() => {});
   private opts: FullOptions;
   url: Pick<FullOptions, "baseUrl" | "profileUrl" | "payUrl"> = {
     payUrl: "",
@@ -72,18 +73,24 @@ export class Mochi {
     this.pay = new PayModule(this.opts);
   }
 
-  async init(): Promise<void> {
-    const results = await Promise.allSettled([
-      this.fetchCommandConfigs(),
-      this.fetchProductCopy(),
-      this.fetchChangelogs(),
-      this.fetchWhitelistTokens(),
-    ]);
-    for (const res of results) {
-      if (res.status === "rejected") {
-        logger.error(res.reason);
+  init() {
+    const isReady = new Promise<void>(async (res, rej) => {
+      const results = await Promise.allSettled([
+        this.fetchCommandConfigs(),
+        this.fetchProductCopy(),
+        this.fetchChangelogs(),
+        this.fetchWhitelistTokens(),
+      ]);
+      for (const res of results) {
+        if (res.status === "rejected") {
+          logger.error(res.reason);
+          rej(res.reason);
+        }
       }
-    }
+      res();
+    });
+    this.isReady = isReady;
+    return isReady;
   }
 
   randomTip() {
@@ -159,7 +166,10 @@ export class Mochi {
       } catch (e) {
         aliases = [];
       }
-      this.telegramAlias = new Map(aliases.map((a) => [a, cmd]));
+
+      for (const alias of aliases) {
+        this.telegramAlias.set(alias, cmd);
+      }
 
       aliases = [];
       try {
@@ -170,7 +180,9 @@ export class Mochi {
       } catch (e) {
         aliases = [];
       }
-      this.discordAlias = new Map(aliases.map((a) => [a, cmd]));
+      for (const alias of aliases) {
+        this.discordAlias.set(alias, cmd);
+      }
     }
     logger.info("Command config fetch OK");
   }
