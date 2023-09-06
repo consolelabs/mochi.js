@@ -2,7 +2,7 @@
   <img src="https://github.com/consolelabs/mochi.js/assets/25856620/86864905-d19b-4992-abe9-43111670e0b2" alt="mochi pose 04" width="40%" />
 </p>
 
-# Mochi Mock
+# Mochi Mock <img src="https://badgen.net/npm/v/@consolelabs/mochi-mock?cache=300" alt="npm latest version" />
 
 This package is used to mock json file normally returned by backend apis
 

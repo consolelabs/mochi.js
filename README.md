@@ -10,6 +10,12 @@
 
 🚀 [`mochi-rest`](./packages/mochi-rest/README.md): an SDK for Mochi's api ecosystems, built with Typescript and shipped with a response schema validator so that developers who are interested can build Mochi applications with confidence.
 
+| Package                                         | Version                                                                                                      |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [`mochi-ui`](./packages/mochi-ui/README.md)     | <img src="https://badgen.net/npm/v/@consolelabs/mochi-ui?cache=300&color=blue" alt="npm latest version" />   |
+| [`mochi-rest`](./packages/mochi-rest/README.md) | <img src="https://badgen.net/npm/v/@consolelabs/mochi-rest?cache=300&color=blue" alt="npm latest version" /> |
+| [`mochi-mock`](./packages/mochi-mock/README.md) | <img src="https://badgen.net/npm/v/@consolelabs/mochi-mock?cache=300&color=blue" alt="npm latest version" /> |
+
 ## 🤝 Contributing
 
 **Use squash commit strategy in PRs**

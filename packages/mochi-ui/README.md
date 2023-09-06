@@ -2,7 +2,7 @@
   <img src="https://github.com/consolelabs/mochi.js/assets/25856620/aa8250b3-4f3e-4231-aa9e-e788b8883ea4" alt="mochi pose 13" width="40%" />
 </p>
 
-# Mochi UI
+# Mochi UI <img src="https://badgen.net/npm/v/@consolelabs/mochi-ui?cache=300" alt="npm latest version" />
 
 This package includes the basic components that you need to render any Mochi data, generally speaking there are 3 main goal:
 
