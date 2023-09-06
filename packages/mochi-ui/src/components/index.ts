@@ -3,6 +3,8 @@ import cexWallets from "./cex-wallets";
 import mochiWallets from "./mochi-wallets";
 import onchainWallets from "./onchain-wallets";
 import txns from "./txns";
+import payLinks from "./pay-links";
+import payMes from "./pay-mes";
 import activities from "./activities";
 import pnl from "./pnl";
 import pageIndicator from "./page-indicator";
@@ -18,4 +20,6 @@ export default {
   pnl,
   pageIndicator,
   changelog,
+  payLinks,
+  payMes,
 };
