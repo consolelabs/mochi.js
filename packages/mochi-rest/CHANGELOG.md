@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 2.0.0
+
+### Major Changes
+
+- 360ea22: Change method getChangelogs to getLatestChangelog
+
 ## 1.7.0
 
 ### Minor Changes
