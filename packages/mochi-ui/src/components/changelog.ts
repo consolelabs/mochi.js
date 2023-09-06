@@ -14,13 +14,13 @@ type Context = {
   firstHeading: boolean;
 };
 
-const markdownConverter = {
-  [Platform.Telegram]: telegram,
-  [Platform.Discord]: discord,
-} satisfies Record<
+const markdownConverter: Record<
   Platform.Discord | Platform.Telegram,
   (content: any, ctx: any) => string
->;
+> = {
+  [Platform.Telegram]: telegram,
+  [Platform.Discord]: discord,
+};
 
 function discord(content: any, ctx: Context) {
   let text = "";
@@ -41,10 +41,10 @@ function discord(content: any, ctx: Context) {
         break;
       }
       case "heading": {
-        text += `\n${ctx.firstHeading ? "\n" : ""}*${discord(
+        text += `\n${ctx.firstHeading ? "\n" : ""}**${discord(
           content.children,
           ctx
-        )}*`;
+        )}**`;
         ctx.firstHeading = true;
         break;
       }
