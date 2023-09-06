@@ -114,29 +114,15 @@ export class Mochi {
   }
 
   // can safely assume that key is profile id
-  async getChangelogs(key: string, changelogId?: number) {
+  async getLatestChangelog(key: string) {
     const { ok, data, error } = await this.base.metadata.getChangelogView(key);
     if (!ok) throw new Error(error);
 
+    const changelog = this.changelogs.at(0) ?? null;
     const viewedFiles = new Set(data.map((d) => d.changelog_name));
-    const allFiles = new Set(this.changelogs.map((c) => c.file_name));
-    const newFiles = new Set([...allFiles].filter((f) => !viewedFiles.has(f)));
 
-    const newChangelog = this.changelogs.find((c) => newFiles.has(c.file_name));
-    let changelog: Changelog | null = null;
-
-    if (!Number.isNaN(Number(changelogId)) && typeof changelogId === "number") {
-      changelog =
-        this.changelogs.at(
-          Math.min(Math.max(changelogId, 1), this.changelogs.length)
-        ) ?? null;
-    } else {
-      changelog = newChangelog ?? null;
-    }
-
-    return {
-      hasNew: newFiles.size > 0,
-      changelogContent: changelog,
+    const result = {
+      changelog,
       markRead: (name: string = "") =>
         (changelog?.file_name || name) &&
         this.base.metadata.markChangelogRead({
@@ -144,6 +130,12 @@ export class Mochi {
           changelogName: changelog?.file_name ?? name,
         }),
     };
+
+    if (!changelog || viewedFiles.has(changelog.file_name)) {
+      result.changelog = null;
+    }
+
+    return result;
   }
 
   isTokenWhitelisted(symbol: string, address: string): boolean {
@@ -199,7 +191,12 @@ export class Mochi {
     const result = await this.base.metadata.getChangelogs();
     if (!result.ok)
       throw new Error(`Cannot fetch product changelogs ${result.error}`);
-    this.changelogs = result.data;
+    this.changelogs = result.data.sort((a, b) => {
+      const timeA = new Date(a.created_at).getTime();
+      const timeB = new Date(b.created_at).getTime();
+
+      return timeB - timeA;
+    });
     logger.info("Product changelogs fetch OK");
   }
 
