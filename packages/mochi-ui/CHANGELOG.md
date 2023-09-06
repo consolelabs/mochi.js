@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.0.2
+
+### Patch Changes
+
+- cfd9a08: Remove newline for first paragraph in discord
+
 ## 9.0.1
 
 ### Patch Changes
