@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.0.1
+
+### Patch Changes
+
+- dda0f3d: Change heading format style for discord platform
+
 ## 9.0.0
 
 ### Patch Changes
