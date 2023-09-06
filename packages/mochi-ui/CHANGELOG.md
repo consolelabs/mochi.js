@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.1.0
+
+### Minor Changes
+
+- Add new component paylinks and paymes
+
 ## 9.0.2
 
 ### Patch Changes
