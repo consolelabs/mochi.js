@@ -49,10 +49,7 @@ function discord(content: any, ctx: Context) {
         break;
       }
       case "paragraph": {
-        text += `\n${!ctx.firstParagraph ? "\n" : ""}${discord(
-          content.children,
-          ctx
-        )}`;
+        text += `\n${discord(content.children, ctx)}`;
         ctx.firstParagraph = true;
         break;
       }
