@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 2.0.1
+
+### Patch Changes
+
+- 39e6671: Expose get paylinks and paymes
+
 ## 2.0.0
 
 ### Major Changes

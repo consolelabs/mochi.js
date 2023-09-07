@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 9.1.1
+
+### Patch Changes
+
+- 39e6671: Expose get paylinks and paymes
+- Updated dependencies [39e6671]
+  - @consolelabs/mochi-rest@2.0.1
+
 ## 9.1.0
 
 ### Minor Changes
