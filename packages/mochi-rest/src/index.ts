@@ -15,6 +15,8 @@ export type {
   PayLinkTx,
   TransferTx,
   VaultTransferTx,
+  PaylinkStatus,
+  PayMe,
   PayLink,
 } from "./schemas";
 

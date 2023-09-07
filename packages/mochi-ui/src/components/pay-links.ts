@@ -5,18 +5,18 @@ import type { Paging } from "../types";
 import { formatTokenDigit } from "../formatDigit";
 import { formatUnits } from "ethers";
 import pageIndicator from "./page-indicator";
-import type { PayLink } from "@consolelabs/mochi-rest";
+import type { PayLink, PaylinkStatus } from "@consolelabs/mochi-rest";
 import groupBy from "lodash.groupby";
 
-const STATUS_MAP = {
-  claimed: "✅",
-  new: "🔵",
-  submitted: "🔵",
+const STATUS_MAP: Record<PaylinkStatus | "expire_soon", string> = {
+  success: "✅",
+  failed: "❌",
+  pending: "🔵",
   expired: "⚪",
   expire_soon: "⚠️",
 };
 
-const updateStatus = (status: PayLink["status"], date: Date) => {
+const updateStatus = (status: PaylinkStatus, date: Date) => {
   const today = new Date();
   if (date < today) {
     return status;
@@ -40,7 +40,7 @@ async function formatPayLink(
   pl: PayLink,
   on: Platform.Web | Platform.Telegram | Platform.Discord
 ) {
-  const claimedDate = new Date(pl.claimed_at);
+  const settledDate = new Date(pl.settled_at ?? null);
   const expiredDate = new Date(pl.expired_at);
   const createdDate = new Date(pl.created_at);
   const t = time.relative(createdDate.getTime());
@@ -52,18 +52,42 @@ async function formatPayLink(
     formatUnits(pl.amount || 0, pl.token.decimal)
   );
 
-  let text = `${status}`;
+  let text = "";
   switch (status) {
-    case "claimed":
-      const [claimer] = await UI.resolve(on, pl.claimer || pl.to_profile_id);
-      text = `claimed by ${claimer?.value} ${time.relative(
-        claimedDate.getTime()
-      )}`;
+    case "pending": {
+      text = "up for grab";
       break;
-    case "expired":
+    }
+    case "success": {
+      if (pl.type === "in") {
+        if (!pl.to_profile_id) {
+          text = `claimed from someone ${time.relative(settledDate.getTime())}`;
+          break;
+        }
+        const [author] = await UI.resolve(on, pl.to_profile_id);
+        text = `claimed from ${author?.value} ${time.relative(
+          settledDate.getTime()
+        )}`;
+      } else {
+        if (!pl.to_profile_id) {
+          text = `claimed by someone ${time.relative(settledDate.getTime())}`;
+          break;
+        }
+        const [claimer] = await UI.resolve(on, pl.to_profile_id);
+        text = `claimed by ${claimer?.value} ${time.relative(
+          settledDate.getTime()
+        )}`;
+      }
+      break;
+    }
+    case "failed": {
+      text = "failed";
+      break;
+    }
+    case "expired": {
       text = `expired ${time.relative(expiredDate.getTime())}`;
       break;
-
+    }
     default:
       break;
   }

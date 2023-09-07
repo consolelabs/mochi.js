@@ -24,6 +24,11 @@ import {
   InAppWalletsSchema,
   SimplifiedTokensSchema,
   SimplifiedToken,
+  PayLink,
+  Pagination,
+  PayMe,
+  ListPayLinkSchema,
+  ListPayMeSchema,
 } from "../schemas";
 import { FullOptions } from "../mochi";
 import endpoints from "../endpoints";
@@ -35,6 +40,8 @@ export class PayModule {
       { profileId: string; action?: string[]; page?: number },
       Array<OffchainTx>
     >;
+    getPaylinks: Fetcher<string, Array<PayLink>, Pagination>;
+    getPaymes: Fetcher<string, Array<PayMe>, Pagination>;
   };
 
   payRequest: {
@@ -110,6 +117,18 @@ export class PayModule {
           .url(endpoints.MOCHI_PAY.PROFILE_TRANSACTIONS)
           .resolve(parse(ListOffchainTxSchema))
           .query({ ...rest, page })
+          .get();
+      },
+      getPaylinks: async function (profileId: string) {
+        return api
+          .url(endpoints.MOCHI_PAY.GET_PAYLINKS(profileId))
+          .resolve(parse(ListPayLinkSchema)<Pagination>)
+          .get();
+      },
+      getPaymes: async function (profileId: string) {
+        return api
+          .url(endpoints.MOCHI_PAY.GET_PAYMES(profileId))
+          .resolve(parse(ListPayMeSchema)<Pagination>)
           .get();
       },
     };

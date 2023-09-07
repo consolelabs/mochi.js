@@ -110,6 +110,10 @@ export default {
     PAY_REQUESTS: "/pay-requests",
     MONTHLY_STATS: (profileId: Serializable) =>
       new Path("/profile/:profileId/monthly-stats").build({ profileId }),
+    GET_PAYLINKS: (profileId: Serializable) =>
+      new Path("/profile/:profileId/pay-link").build({ profileId }),
+    GET_PAYMES: (profileId: Serializable) =>
+      new Path("/profile/:profileId/pay-me").build({ profileId }),
     SUPPORTED_TOKENS: "/tokens",
     CONSOLE_TOKENS: "/console-tokens",
     SUPPORTED_CHAINS: "/chains",

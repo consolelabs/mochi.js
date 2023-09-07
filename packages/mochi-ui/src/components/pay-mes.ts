@@ -5,18 +5,18 @@ import type { Paging } from "../types";
 import { formatTokenDigit } from "../formatDigit";
 import { formatUnits } from "ethers";
 import pageIndicator from "./page-indicator";
-import type { PayLink } from "@consolelabs/mochi-rest";
+import type { PayMe, PaylinkStatus } from "@consolelabs/mochi-rest";
 import groupBy from "lodash.groupby";
 
-const STATUS_MAP = {
-  claimed: "✅",
-  new: "🔵",
-  submitted: "🔵",
+const STATUS_MAP: Record<PaylinkStatus | "expire_soon", string> = {
+  success: "✅",
+  failed: "❌",
+  pending: "🔵",
   expired: "⚪",
   expire_soon: "⚠️",
 };
 
-const updateStatus = (status: PayLink["status"], date: Date) => {
+const updateStatus = (status: PaylinkStatus, date: Date) => {
   const today = new Date();
   if (date < today) {
     return status;
@@ -30,39 +30,65 @@ const updateStatus = (status: PayLink["status"], date: Date) => {
 };
 
 type Props = {
-  payMes: Array<PayLink>;
+  payMes: Array<PayMe>;
   on?: Platform.Discord | Platform.Telegram | Platform.Web;
   withTitle?: boolean;
   groupDate?: boolean;
   title?: string;
-  profileId: string;
 };
 
 async function formatPayMe(
-  pm: PayLink,
-  on: Platform.Web | Platform.Telegram | Platform.Discord,
-  profileId: string
+  pm: PayMe,
+  on: Platform.Web | Platform.Telegram | Platform.Discord
 ) {
-  // const claimedDate = new Date(pm.claimed_at);
+  const settledDate = new Date(pm.settled_at ?? null);
   const expiredDate = new Date(pm.expired_at);
   const createdDate = new Date(pm.created_at);
   const t = time.relative(createdDate.getTime());
-  const code = pm.code;
   const status = updateStatus(pm.status, expiredDate);
+  const code = pm.code;
   const statusIcon = STATUS_MAP[status] || "🔵";
   const shortCode = `${code.slice(0, 2)}..${code.slice(-3)}`;
   const amount = formatTokenDigit(
     formatUnits(pm.amount || 0, pm.token.decimal)
   );
 
-  const isRequester = pm.from_profile_id === profileId;
-  const [otherProfile] = await UI.resolve(on, pm.to_profile_id);
+  let text = "";
+  switch (status) {
+    case "pending": {
+      text = "waiting";
+      break;
+    }
+    case "success": {
+      if (pm.type === "out") {
+        if (!pm.to_profile_id) {
+          text = `paid someone ${time.relative(settledDate.getTime())}`;
+          break;
+        }
+        const [author] = await UI.resolve(on, pm.to_profile_id);
+        text = `paid ${author?.value} ${time.relative(settledDate.getTime())}`;
+      } else {
+        if (!pm.to_profile_id) {
+          text = `paid by someone ${time.relative(settledDate.getTime())}`;
+          break;
+        }
+        const [claimer] = await UI.resolve(on, pm.to_profile_id);
+        text = `paid by ${claimer?.value} ${time.relative(
+          settledDate.getTime()
+        )}`;
+      }
+      break;
+    }
+    case "failed": {
+      text = "failed";
+      break;
+    }
+    case "expired":
+      text = `expired ${time.relative(expiredDate.getTime())}`;
+      break;
 
-  const action = status === "claimed" ? "paid" : "requested";
-
-  let text = `You ${action} ${otherProfile?.value}`;
-  if (!isRequester) {
-    text = `${otherProfile?.value} ${action} you`;
+    default:
+      break;
   }
 
   const result = {
@@ -76,7 +102,7 @@ async function formatPayMe(
   return result;
 }
 
-function latest(pm1: PayLink, pm2: PayLink) {
+function latest(pm1: PayMe, pm2: PayMe) {
   let time1, time2;
   time1 = new Date(pm1.created_at).getTime();
   time2 = new Date(pm2.created_at).getTime();
@@ -89,14 +115,13 @@ export default async function (
     page = 0,
     total = 1,
     on = Platform.Telegram,
-    profileId,
     withTitle,
     groupDate,
   }: Props & Paging,
   tableParams?: Parameters<typeof mdTable>[1]
 ) {
   let data = await Promise.all(
-    payMes.sort(latest).map((pl: PayLink) => formatPayMe(pl, on, profileId))
+    payMes.sort(latest).map((pl: PayMe) => formatPayMe(pl, on))
   );
 
   let text;
