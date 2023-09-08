@@ -6,7 +6,7 @@ const PaylinkStatusSchema = z.enum(["pending", "success", "failed", "expired"]);
 const BaseSchema = z.object({
   amount: z.string().nonempty(),
   settle_tx: z.string(),
-  settled_at: z.string().datetime(),
+  settled_at: z.string().datetime().or(z.null()),
   code: z.string(),
   created_at: z.string().datetime().nonempty(),
   expired_at: z.string().datetime().nonempty(),
