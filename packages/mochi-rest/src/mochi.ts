@@ -118,7 +118,7 @@ export class Mochi {
     const { ok, data, error } = await this.base.metadata.getChangelogView(key);
     if (!ok) throw new Error(error);
 
-    const changelog = this.changelogs.at(0) ?? null;
+    const changelog = this.changelogs.find((c) => !c.is_expired) ?? null;
     const viewedFiles = new Set(data.map((d) => d.changelog_name));
 
     const result = {

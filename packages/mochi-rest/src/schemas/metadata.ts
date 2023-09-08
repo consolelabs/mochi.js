@@ -45,6 +45,7 @@ export const ChangelogSchema = z.object({
   file_name: z.string().nonempty(),
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
+  is_expired: z.boolean(),
 });
 
 export const ListChangelogSchema = z.array(ChangelogSchema);
