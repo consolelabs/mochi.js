@@ -41,7 +41,7 @@ async function formatPayMe(
   pm: PayMe,
   on: Platform.Web | Platform.Telegram | Platform.Discord
 ) {
-  const settledDate = new Date(pm.settled_at ?? "");
+  const settledDate = pm.settled_at ? new Date(pm.settled_at) : new Date();
   const expiredDate = new Date(pm.expired_at);
   const createdDate = new Date(pm.created_at);
   const t = time.relative(createdDate.getTime());
@@ -55,8 +55,31 @@ async function formatPayMe(
 
   let text = "";
   switch (status) {
+    case "expire_soon":
     case "pending": {
-      text = "waiting";
+      if (pm.type === "out") {
+        if (!pm.to_profile_id) {
+          text = `Someone requested you ${time.relative(
+            createdDate.getTime()
+          )}`;
+          break;
+        }
+        const [author] = await UI.resolve(on, pm.to_profile_id);
+        text = `${author?.value} requested you ${time.relative(
+          createdDate.getTime()
+        )}`;
+      } else {
+        if (!pm.to_profile_id) {
+          text = `You requested someone ${time.relative(
+            createdDate.getTime()
+          )}`;
+          break;
+        }
+        const [claimer] = await UI.resolve(on, pm.to_profile_id);
+        text = `You requested ${claimer?.value} ${time.relative(
+          createdDate.getTime()
+        )}`;
+      }
       break;
     }
     case "success": {

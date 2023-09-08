@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 2.0.3
+
+### Patch Changes
+
+- 01db972: Check is_expired of changelog before showing
+
 ## 2.0.2
 
 ### Patch Changes

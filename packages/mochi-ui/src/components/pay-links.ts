@@ -40,7 +40,7 @@ async function formatPayLink(
   pl: PayLink,
   on: Platform.Web | Platform.Telegram | Platform.Discord
 ) {
-  const settledDate = new Date(pl.settled_at ?? "");
+  const settledDate = pl.settled_at ? new Date(pl.settled_at) : new Date();
   const expiredDate = new Date(pl.expired_at);
   const createdDate = new Date(pl.created_at);
   const t = time.relative(createdDate.getTime());
@@ -54,8 +54,8 @@ async function formatPayLink(
 
   let text = "";
   switch (status) {
+    case "expire_soon":
     case "pending": {
-      text = "up for grab";
       break;
     }
     case "success": {
@@ -97,7 +97,7 @@ async function formatPayLink(
     time: t,
     amount: amount + " " + pl.token.symbol.toUpperCase(),
     shortCode,
-    text: text,
+    text,
   };
 
   return result;
