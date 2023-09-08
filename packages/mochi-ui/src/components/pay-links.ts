@@ -40,7 +40,7 @@ async function formatPayLink(
   pl: PayLink,
   on: Platform.Web | Platform.Telegram | Platform.Discord
 ) {
-  const settledDate = new Date(pl.settled_at ?? null);
+  const settledDate = new Date(pl.settled_at ?? "");
   const expiredDate = new Date(pl.expired_at);
   const createdDate = new Date(pl.created_at);
   const t = time.relative(createdDate.getTime());

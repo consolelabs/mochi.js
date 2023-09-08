@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 2.0.2
+
+### Patch Changes
+
+- c33fdbd: Fix the settle_at field can be null
+
 ## 2.0.1
 
 ### Patch Changes

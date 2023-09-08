@@ -41,7 +41,7 @@ async function formatPayMe(
   pm: PayMe,
   on: Platform.Web | Platform.Telegram | Platform.Discord
 ) {
-  const settledDate = new Date(pm.settled_at ?? null);
+  const settledDate = new Date(pm.settled_at ?? "");
   const expiredDate = new Date(pm.expired_at);
   const createdDate = new Date(pm.created_at);
   const t = time.relative(createdDate.getTime());
