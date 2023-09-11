@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.1.5
+
+### Patch Changes
+
+- 37c3656: Change title in changelog component
+
 ## 9.1.4
 
 ### Patch Changes
