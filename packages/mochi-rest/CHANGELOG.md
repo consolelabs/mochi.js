@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 2.0.4
+
+### Patch Changes
+
+- 62d6adc: Add get swap route method + convert render from async to sync
+
 ## 2.0.3
 
 ### Patch Changes
