@@ -88,7 +88,7 @@ export const UI: {
     on: Platform.Web | Platform.Telegram | Platform.Discord,
     A: Profile,
     B?: Profile
-  ) => Promise<[UsernameFmt, UsernameFmt] | []>;
+  ) => [UsernameFmt, UsernameFmt] | [];
   resolve: (
     on: Platform.Web | Platform.Telegram | Platform.Discord,
     A: string | { id: string; type: "vault" },
@@ -122,11 +122,11 @@ export const UI: {
   },
 };
 
-async function render(
+function render(
   on: Platform.Web | Platform.Discord | Platform.Telegram,
   pA: Profile,
   pB = pA
-): Promise<[UsernameFmt, UsernameFmt] | []> {
+): [UsernameFmt, UsernameFmt] | [] {
   const accountA = {
     [Platform.Telegram]: telegram(pA, on),
     [Platform.Discord]: discord(pA, on),
