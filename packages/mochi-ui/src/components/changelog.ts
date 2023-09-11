@@ -133,7 +133,7 @@ export default async function ({ content, on }: Props) {
 
   return {
     images: ctx.images.filter((i) => i.includes("imgur.com")),
-    text: [`⊰⎯*What's new*⎯⊱`, text]
+    text: [`⊰⎯*Changelog*⎯⊱`, text]
       .join("\n")
       .replaceAll("#", "\\#")
       .replaceAll(".", "\\."),
