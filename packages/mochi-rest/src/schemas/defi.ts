@@ -202,3 +202,63 @@ export const TransferResultSchema = z.object({
 });
 
 export type TransferResult = z.infer<typeof TransferResultSchema>;
+
+export enum SwapRouteDataCode {
+  NoRoute = 0,
+  RouteDataFound,
+  HighPriceImpact,
+  ProviderError,
+}
+
+export const SwapRouteSchema = z.object({
+  code: z.nativeEnum(SwapRouteDataCode),
+  message: z.string(),
+  chainName: z.string().nonempty(),
+  provider: z.string().nonempty(),
+  data: z.object({
+    tokenIn: z.object({
+      id: z.number().nonnegative(),
+      address: z.string().nonempty(),
+      chain_id: z.number(),
+      decimals: z.number().nonnegative(),
+      symbol: z.string().nonempty(),
+      name: z.string(),
+      coingecko_id: z.string().nonempty(),
+      created_at: z.string().datetime(),
+      updated_at: z.string().datetime(),
+    }),
+    tokenOut: z.object({
+      id: z.number().nonnegative(),
+      address: z.string().nonempty(),
+      chain_id: z.number(),
+      decimals: z.number().nonnegative(),
+      symbol: z.string().nonempty(),
+      name: z.string(),
+      coingecko_id: z.string().nonempty(),
+      created_at: z.string().datetime(),
+      updated_at: z.string().datetime(),
+    }),
+    routerAddress: z.string().nonempty(),
+    routeSummary: z.object({
+      route: z.array(
+        z.array(
+          z.object({
+            pool: z.string().nonempty(),
+            tokenIn: z.string().nonempty(),
+            tokenOut: z.string().nonempty(),
+            tokenOutSymbol: z.string().nonempty(),
+            limitReturnAmount: z.string(),
+            swapAmount: z.string(),
+            amountOut: z.string().nonempty(),
+            exchange: z.string(),
+            poolLength: z.number(),
+            poolType: z.string(),
+          })
+        )
+      ),
+      amountIn: z.string(),
+    }),
+  }),
+});
+
+export type SwapRoute = z.infer<typeof SwapRouteSchema>;

@@ -87,7 +87,7 @@ export const UI: {
   render: (
     on: Platform.Web | Platform.Telegram | Platform.Discord,
     A: Profile,
-    B: Profile
+    B?: Profile
   ) => Promise<[UsernameFmt, UsernameFmt] | []>;
   resolve: (
     on: Platform.Web | Platform.Telegram | Platform.Discord,
@@ -128,18 +128,18 @@ async function render(
   pB = pA
 ): Promise<[UsernameFmt, UsernameFmt] | []> {
   const accountA = {
-    [Platform.Telegram]: await telegram(pA, on),
-    [Platform.Discord]: await discord(pA, on),
-    [Platform.Mochi]: await mochi(pA, on),
-    [Platform.App]: await application(pA, on),
-    [Platform.Vault]: await vault(pA, on),
+    [Platform.Telegram]: telegram(pA, on),
+    [Platform.Discord]: discord(pA, on),
+    [Platform.Mochi]: mochi(pA, on),
+    [Platform.App]: application(pA, on),
+    [Platform.Vault]: vault(pA, on),
   };
   const accountB = {
-    [Platform.Telegram]: await telegram(pB, on),
-    [Platform.Discord]: await discord(pB, on),
-    [Platform.Mochi]: await mochi(pB, on),
-    [Platform.App]: await application(pB, on),
-    [Platform.Vault]: await vault(pB, on),
+    [Platform.Telegram]: telegram(pB, on),
+    [Platform.Discord]: discord(pB, on),
+    [Platform.Mochi]: mochi(pB, on),
+    [Platform.App]: application(pB, on),
+    [Platform.Vault]: vault(pB, on),
   };
 
   let fallbackOrder: Array<
@@ -206,10 +206,10 @@ async function render(
 
   if (firstSamePlatform) return firstSamePlatform;
 
-  return [await mochi(pA, on), await mochi(pB, on)];
+  return [mochi(pA, on), mochi(pB, on)];
 }
 
-async function vault(p?: Profile, on = Platform.Vault): Promise<UsernameFmt> {
+function vault(p?: Profile, on = Platform.Vault): UsernameFmt {
   try {
     if (!p || "profile_name" in p)
       return { plain: "", value: "", id: "", url: "" };
@@ -235,10 +235,7 @@ async function vault(p?: Profile, on = Platform.Vault): Promise<UsernameFmt> {
   }
 }
 
-async function application(
-  p?: Profile,
-  on = Platform.App
-): Promise<UsernameFmt> {
+function application(p?: Profile, on = Platform.App): UsernameFmt {
   try {
     if (!p || !isMochiProfile(p))
       return { plain: "", value: "", id: "", url: "" };
@@ -274,10 +271,7 @@ async function application(
   }
 }
 
-async function discord(
-  p?: Profile,
-  on = Platform.Discord
-): Promise<UsernameFmt> {
+function discord(p?: Profile, on = Platform.Discord): UsernameFmt {
   try {
     if (!p || !isMochiProfile(p) || isApplication(p) || isVault(p))
       return { plain: "", value: "", id: "", url: "" };
@@ -318,10 +312,7 @@ async function discord(
   }
 }
 
-async function telegram(
-  p?: Profile,
-  on = Platform.Telegram
-): Promise<UsernameFmt> {
+function telegram(p?: Profile, on = Platform.Telegram): UsernameFmt {
   try {
     if (!p || !isMochiProfile(p) || isApplication(p) || isVault(p))
       return { plain: "", value: "", id: "", url: "" };
@@ -359,10 +350,7 @@ async function telegram(
   }
 }
 
-async function mochi(
-  p?: Profile | null,
-  on = Platform.Mochi
-): Promise<UsernameFmt> {
+function mochi(p?: Profile | null, on = Platform.Mochi): UsernameFmt {
   try {
     if (!p || !isMochiProfile(p))
       return { plain: "", value: "", id: "", url: "" };

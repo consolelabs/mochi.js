@@ -47,6 +47,8 @@ export const attachRequestId =
 export const convertQueryToSnakeCase =
   (next: any) => (url: string, opts: WretchOptions) => {
     const urlObj = new URL(url);
+    opts.convertSnakeCase ??= true;
+    if (!opts.convertSnakeCase) return next(urlObj.toString(), opts);
     const newSearchParams = new URLSearchParams();
     for (const [k, v] of urlObj.searchParams.entries()) {
       newSearchParams.set(snakeCase(k), v);

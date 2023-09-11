@@ -76,6 +76,8 @@ export default {
     METADATA_CHANGELOG_VIEW: "/product-metadata/changelogs/view",
 
     GET_DEFAULT_MONIKERS: "/config-defi/monikers/default",
+
+    GET_SWAP_ROUTE: "/swap/route",
   },
   MOCHI_PROFILE: {
     AUTH_BY_DISCORD: "/profiles/auth/discord",

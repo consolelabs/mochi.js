@@ -51,6 +51,8 @@ import {
   ListChangelogSchema,
   ViewChangelog,
   ListViewChangelogSchema,
+  SwapRoute,
+  SwapRouteSchema,
 } from "../schemas";
 import { FullOptions } from "../mochi";
 import endpoints from "../endpoints";
@@ -69,6 +71,13 @@ const base = wretch()
 export default base;
 
 export class BaseModule {
+  swap: {
+    getRoute: Fetcher<
+      { amount: string; from: string; to: string; profileId: string },
+      SwapRoute
+    >;
+  };
+
   vault: {
     getById: Fetcher<number, Vault>;
   };
@@ -212,6 +221,22 @@ export class BaseModule {
     if (apiKey) {
       api = api.auth(`Bearer ${apiKey}`);
     }
+
+    this.swap = {
+      getRoute: async function ({ to, from, amount, profileId }) {
+        return api
+          .url(endpoints.MOCHI.GET_SWAP_ROUTE)
+          .options({ convertSnakeCase: false })
+          .query({
+            from,
+            to,
+            amount,
+            profileId,
+          })
+          .resolve(parse(SwapRouteSchema))
+          .get();
+      },
+    };
 
     this.vault = {
       getById: async function (id: number) {
