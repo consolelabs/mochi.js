@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.1.4
+
+### Patch Changes
+
+- 1c5d1a3: Expose method to render profile without resolve step
+
 ## 9.1.3
 
 ### Patch Changes
