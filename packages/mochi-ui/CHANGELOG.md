@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.1.7
+
+### Patch Changes
+
+- 7677348: Remove promise signature of render method
+
 ## 9.1.6
 
 ### Patch Changes
