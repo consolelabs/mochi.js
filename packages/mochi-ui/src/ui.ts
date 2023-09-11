@@ -84,6 +84,11 @@ export const UI: {
   components: typeof components;
   redis: Redis | null;
   api: API | null;
+  render: (
+    on: Platform.Web | Platform.Telegram | Platform.Discord,
+    A: Profile,
+    B: Profile
+  ) => Promise<[UsernameFmt, UsernameFmt] | []>;
   resolve: (
     on: Platform.Web | Platform.Telegram | Platform.Discord,
     A: string | { id: string; type: "vault" },
@@ -93,6 +98,7 @@ export const UI: {
   components,
   redis: null,
   api: null,
+  render,
   resolve: async function (on, A, B = A) {
     if (!this.api) throw new Error("MochiUI: api property must be set");
     let pA: Profile, pB: Profile;
@@ -112,11 +118,11 @@ export const UI: {
       pB = data;
     }
 
-    return account(on, pA, pB);
+    return this.render(on, pA, pB);
   },
 };
 
-async function account(
+async function render(
   on: Platform.Web | Platform.Discord | Platform.Telegram,
   pA: Profile,
   pB = pA
