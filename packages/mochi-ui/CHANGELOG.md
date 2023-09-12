@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 9.1.8
+
+### Patch Changes
+
+- c4c5e37: Remove changelog mark view mechanism
+- Updated dependencies [c4c5e37]
+  - @consolelabs/mochi-rest@2.0.5
+
 ## 9.1.7
 
 ### Patch Changes

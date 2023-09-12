@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 2.0.5
+
+### Patch Changes
+
+- c4c5e37: Remove changelog mark view mechanism
+
 ## 2.0.4
 
 ### Patch Changes
