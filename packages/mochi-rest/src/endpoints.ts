@@ -73,7 +73,6 @@ export default {
       new Path("/product-metadata/copy/:type").build({ type: type ?? "" }),
     METADATA_COMMANDS: "/product-metadata/commands",
     METADATA_GET_CHANGELOGS: "/product-metadata/changelogs",
-    METADATA_CHANGELOG_VIEW: "/product-metadata/changelogs/view",
 
     GET_DEFAULT_MONIKERS: "/config-defi/monikers/default",
 

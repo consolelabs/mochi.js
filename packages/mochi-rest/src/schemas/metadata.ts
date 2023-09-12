@@ -50,13 +50,3 @@ export const ChangelogSchema = z.object({
 
 export const ListChangelogSchema = z.array(ChangelogSchema);
 export type Changelog = z.infer<typeof ChangelogSchema>;
-
-export const ViewChangelogSchema = z.object({
-  key: z.string().nonempty(),
-  changelog_name: z.string().nonempty(),
-  created_at: z.string().datetime(),
-  updated_at: z.string().datetime(),
-});
-
-export const ListViewChangelogSchema = z.array(ViewChangelogSchema);
-export type ViewChangelog = z.infer<typeof ViewChangelogSchema>;

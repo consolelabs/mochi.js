@@ -210,6 +210,32 @@ export enum SwapRouteDataCode {
   ProviderError,
 }
 
+export const RouteSchema = z.array(
+  z.array(
+    z.object({
+      pool: z.string().nonempty(),
+      tokenIn: z.string().nonempty(),
+      tokenOut: z.string().nonempty(),
+      tokenOutSymbol: z.string().nonempty(),
+      limitReturnAmount: z.string(),
+      swapAmount: z.string(),
+      amountOut: z.string().nonempty(),
+      exchange: z.string(),
+      poolLength: z.number(),
+      poolType: z.string(),
+    })
+  )
+);
+
+const RouteSummarySchema = z.object({
+  route: RouteSchema,
+  amountIn: z.string(),
+});
+
+export type RouteSummary = z.infer<typeof RouteSummarySchema>;
+
+export type Route = z.infer<typeof RouteSchema>;
+
 export const SwapRouteSchema = z.object({
   code: z.nativeEnum(SwapRouteDataCode),
   message: z.string(),
@@ -239,25 +265,7 @@ export const SwapRouteSchema = z.object({
       updated_at: z.string().datetime(),
     }),
     routerAddress: z.string().nonempty(),
-    routeSummary: z.object({
-      route: z.array(
-        z.array(
-          z.object({
-            pool: z.string().nonempty(),
-            tokenIn: z.string().nonempty(),
-            tokenOut: z.string().nonempty(),
-            tokenOutSymbol: z.string().nonempty(),
-            limitReturnAmount: z.string(),
-            swapAmount: z.string(),
-            amountOut: z.string().nonempty(),
-            exchange: z.string(),
-            poolLength: z.number(),
-            poolType: z.string(),
-          })
-        )
-      ),
-      amountIn: z.string(),
-    }),
+    routeSummary: RouteSummarySchema,
   }),
 });
 

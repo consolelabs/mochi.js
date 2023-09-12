@@ -114,28 +114,8 @@ export class Mochi {
   }
 
   // can safely assume that key is profile id
-  async getLatestChangelog(key: string) {
-    const { ok, data, error } = await this.base.metadata.getChangelogView(key);
-    if (!ok) throw new Error(error);
-
-    const changelog = this.changelogs.find((c) => !c.is_expired) ?? null;
-    const viewedFiles = new Set(data.map((d) => d.changelog_name));
-
-    const result = {
-      changelog,
-      markRead: (name: string = "") =>
-        (changelog?.file_name || name) &&
-        this.base.metadata.markChangelogRead({
-          key,
-          changelogName: changelog?.file_name ?? name,
-        }),
-    };
-
-    if (!changelog || viewedFiles.has(changelog.file_name)) {
-      result.changelog = null;
-    }
-
-    return result;
+  getLatestChangelog() {
+    return this.changelogs.find((c) => !c.is_expired) ?? null;
   }
 
   isTokenWhitelisted(symbol: string, address: string): boolean {

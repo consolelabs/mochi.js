@@ -49,8 +49,6 @@ import {
   Moniker,
   Changelog,
   ListChangelogSchema,
-  ViewChangelog,
-  ListViewChangelogSchema,
   SwapRoute,
   SwapRouteSchema,
 } from "../schemas";
@@ -86,8 +84,6 @@ export class BaseModule {
     getCopy: Fetcher<string | void, Copy>;
     getCommands: Fetcher<void, Array<Command>>;
     getChangelogs: Fetcher<void, Array<Changelog>>;
-    getChangelogView: Fetcher<string, Array<ViewChangelog>>;
-    markChangelogRead: Fetcher<{ key: string; changelogName: string }>;
   };
 
   tip: {
@@ -456,19 +452,6 @@ export class BaseModule {
           .url(endpoints.MOCHI.METADATA_GET_CHANGELOGS)
           .resolve(parse(ListChangelogSchema))
           .get();
-      },
-      getChangelogView: async function (key: string) {
-        return api
-          .url(endpoints.MOCHI.METADATA_CHANGELOG_VIEW)
-          .query({ key })
-          .resolve(parse(ListViewChangelogSchema))
-          .get();
-      },
-      markChangelogRead: async function ({ key, changelogName }) {
-        return api
-          .url(endpoints.MOCHI.METADATA_CHANGELOG_VIEW)
-          .resolve(parse(AnySchema))
-          .post({ key, changelogName });
       },
     };
 

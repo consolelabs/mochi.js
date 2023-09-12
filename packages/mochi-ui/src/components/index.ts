@@ -9,6 +9,7 @@ import activities from "./activities";
 import pnl from "./pnl";
 import pageIndicator from "./page-indicator";
 import changelog from "./changelog";
+import swapRoute from "./swap-route";
 
 export default {
   balance,
@@ -22,4 +23,5 @@ export default {
   changelog,
   payLinks,
   payMes,
+  swapRoute,
 };

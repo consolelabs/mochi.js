@@ -18,6 +18,9 @@ export type {
   PaylinkStatus,
   PayMe,
   PayLink,
+  SwapRouteDataCode,
+  Route,
+  RouteSummary,
 } from "./schemas";
 
 export { CommandScope } from "./schemas";
