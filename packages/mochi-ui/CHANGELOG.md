@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.1.10
+
+### Patch Changes
+
+- c163ec0: Fix payme and paylink showing wrong status and reformat short code
+
 ## 9.1.9
 
 ### Patch Changes
