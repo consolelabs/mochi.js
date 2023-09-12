@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 2.0.7
+
+### Patch Changes
+
+- a15db2f: Fix price change percentage could be negative
+
 ## 2.0.6
 
 ### Patch Changes
