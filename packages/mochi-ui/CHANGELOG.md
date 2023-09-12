@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 9.1.9
+
+### Patch Changes
+
+- 0eff7ff: Add help text for payme component
+- Updated dependencies [2f85735]
+  - @consolelabs/mochi-rest@2.0.6
+
 ## 9.1.8
 
 ### Patch Changes

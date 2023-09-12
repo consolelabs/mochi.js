@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 2.0.6
+
+### Patch Changes
+
+- 2f85735: Add compare coins api
+
 ## 2.0.5
 
 ### Patch Changes
