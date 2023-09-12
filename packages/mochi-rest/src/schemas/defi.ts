@@ -230,6 +230,7 @@ export const RouteSchema = z.array(
 const RouteSummarySchema = z.object({
   route: RouteSchema,
   amountIn: z.string(),
+  amountOut: z.string(),
 });
 
 export type RouteSummary = z.infer<typeof RouteSummarySchema>;

@@ -81,3 +81,12 @@ export const QueryCoinResponseSchema = z.object({
   target_coin: CoinSchema.or(z.null()),
 });
 export type QueryCoinResponse = z.infer<typeof QueryCoinResponseSchema>;
+
+export const CompareCoinSchema = z.object({
+  base_coin_suggestions: z.array(QueryCoinSchema).or(z.null()),
+  target_coin_suggestions: z.array(QueryCoinSchema).or(z.null()),
+  base_coin: CoinSchema.or(z.null()),
+  target_coin: CoinSchema.or(z.null()),
+});
+
+export type CompareCoin = z.infer<typeof CompareCoinSchema>;

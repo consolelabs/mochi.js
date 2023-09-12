@@ -51,6 +51,8 @@ import {
   ListChangelogSchema,
   SwapRoute,
   SwapRouteSchema,
+  CompareCoin,
+  CompareCoinSchema,
 } from "../schemas";
 import { FullOptions } from "../mochi";
 import endpoints from "../endpoints";
@@ -92,6 +94,10 @@ export class BaseModule {
 
   defi: {
     getGasTrackers: Fetcher<void, Array<Gas>>;
+    compareCoins: Fetcher<
+      { base: string; target: string; interval: number },
+      CompareCoin
+    >;
     searchCoin: Fetcher<{ query: string; chain?: string }, Array<QueryCoin>>;
     getCoin: Fetcher<
       {
@@ -248,6 +254,13 @@ export class BaseModule {
         return api
           .url(endpoints.MOCHI.GAS_TRACKER)
           .resolve(parse(ListGasSchema))
+          .get();
+      },
+      compareCoins: async function ({ base, target, interval }) {
+        return api
+          .url(endpoints.MOCHI.COMPARE_COINS)
+          .query({ base, target, interval })
+          .resolve(parse(CompareCoinSchema))
           .get();
       },
       searchCoin: async function ({ query, chain = "" }) {

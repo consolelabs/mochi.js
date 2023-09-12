@@ -7,6 +7,7 @@ export default {
     GET_VAULT_BY_ID: (vaultId: Serializable) =>
       new Path("/vault/:vaultId").build({ vaultId }),
     GAS_TRACKER: "/defi/gas-tracker",
+    COMPARE_COINS: "/defi/coins/compare",
     COINS: "/defi/coins",
     GET_COIN_BY_ID: (coinId: Serializable) =>
       new Path("/defi/coins/:coinId").build({ coinId }),
