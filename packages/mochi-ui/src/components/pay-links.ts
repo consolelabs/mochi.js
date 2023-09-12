@@ -18,10 +18,12 @@ const STATUS_MAP: Record<PaylinkStatus | "expire_soon", string> = {
 
 const updateStatus = (status: PaylinkStatus, date: Date) => {
   const today = new Date();
-  if (date < today) {
+
+  if (date.getTime() < today.getTime()) {
     return status;
   }
-  const diff = today.getTime() - date.getTime();
+
+  const diff = date.getTime() - today.getTime();
   const diffDay = Math.ceil(diff / (1000 * 3600 * 24));
   if (diffDay <= 3) {
     return "expire_soon";
@@ -47,7 +49,7 @@ async function formatPayLink(
   const code = pl.code;
   const status = updateStatus(pl.status, expiredDate);
   const statusIcon = STATUS_MAP[status] || "🔵";
-  const shortCode = `${code.slice(0, 2)}..${code.slice(-3)}`;
+  const shortCode = code.slice(0, 5);
   const amount = formatTokenDigit(
     formatUnits(pl.amount || 0, pl.token.decimal)
   );
@@ -59,20 +61,13 @@ async function formatPayLink(
       break;
     }
     case "success": {
+      if (!pl.to_profile_id) break;
       if (pl.type === "in") {
-        if (!pl.to_profile_id) {
-          text = `claimed from someone ${time.relative(settledDate.getTime())}`;
-          break;
-        }
         const [author] = await UI.resolve(on, pl.to_profile_id);
         text = `claimed from ${author?.value} ${time.relative(
           settledDate.getTime()
         )}`;
       } else {
-        if (!pl.to_profile_id) {
-          text = `claimed by someone ${time.relative(settledDate.getTime())}`;
-          break;
-        }
         const [claimer] = await UI.resolve(on, pl.to_profile_id);
         text = `claimed by ${claimer?.value} ${time.relative(
           settledDate.getTime()
