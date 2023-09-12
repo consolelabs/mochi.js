@@ -192,6 +192,7 @@ export default async function (
   return {
     text: [
       ...(withTitle ? ["📜 *Pay me request status*"] : []),
+      "Need help? Try `/payme -h`",
       ...(groupDate && withTitle ? [""] : []),
       text,
       "",
