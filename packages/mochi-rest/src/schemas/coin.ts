@@ -19,6 +19,10 @@ const PriceByCurrency = z.object({
   usd: z.number().nonnegative(),
 });
 
+const PriceChangePercentageByCurrency = z.object({
+  usd: z.number(),
+});
+
 export const CoinSchema = z.object({
   id: z.string().nonempty(),
   name: z.string().nonempty(),
@@ -33,9 +37,9 @@ export const CoinSchema = z.object({
     market_cap: PriceByCurrency,
     total_market_cap: PriceByCurrency.or(z.null()),
     current_price: PriceByCurrency,
-    price_change_percentage_1h_in_currency: PriceByCurrency,
-    price_change_percentage_24h_in_currency: PriceByCurrency,
-    price_change_percentage_7d_in_currency: PriceByCurrency,
+    price_change_percentage_1h_in_currency: PriceChangePercentageByCurrency,
+    price_change_percentage_24h_in_currency: PriceChangePercentageByCurrency,
+    price_change_percentage_7d_in_currency: PriceChangePercentageByCurrency,
   }),
 });
 
