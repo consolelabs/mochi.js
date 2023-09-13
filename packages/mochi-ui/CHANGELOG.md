@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.1.12
+
+### Patch Changes
+
+- c4c683f: Add method receiptLink
+
 ## 9.1.11
 
 ### Patch Changes
