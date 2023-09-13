@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.1.13
+
+### Patch Changes
+
+- 9446928: Add new rule to take 2 numbers instead of 1 when taking non-zero numbers after decimal point
+
 ## 9.1.12
 
 ### Patch Changes
