@@ -9,6 +9,7 @@ import pageIndicator from "./page-indicator";
 import groupby from "lodash.groupby";
 import { HOMEPAGE } from "../constant";
 import type { VaultTransferTx, TransferTx, Tx } from "@consolelabs/mochi-rest";
+import string from "../string";
 
 type Props = {
   txns: Array<Tx>;
@@ -72,9 +73,7 @@ async function formatTxn(
     return result;
   }
 
-  result.external_id = `[\`${tx.external_id.slice(0, 5)}\`](${HOMEPAGE}/tx/${
-    tx.external_id
-  })`;
+  result.external_id = string.receiptLink(tx.external_id);
 
   if ("action" in tx) {
     switch (tx.action) {

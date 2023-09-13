@@ -7,6 +7,7 @@ import { formatUnits } from "ethers";
 import pageIndicator from "./page-indicator";
 import type { PayLink, PaylinkStatus } from "@consolelabs/mochi-rest";
 import groupBy from "lodash.groupby";
+import string from "../string";
 
 const STATUS_MAP: Record<PaylinkStatus | "expire_soon", string> = {
   success: "✅",
@@ -49,7 +50,6 @@ async function formatPayLink(
   const code = pl.code;
   const status = updateStatus(pl.status, expiredDate);
   const statusIcon = STATUS_MAP[status] || "🔵";
-  const shortCode = code.slice(0, 5);
   const amount = formatTokenDigit(
     formatUnits(pl.amount || 0, pl.token.decimal)
   );
@@ -91,7 +91,7 @@ async function formatPayLink(
     status: statusIcon,
     time: t,
     amount: amount + " " + pl.token.symbol.toUpperCase(),
-    shortCode,
+    shortCode: string.receiptLink(code),
     text,
   };
 

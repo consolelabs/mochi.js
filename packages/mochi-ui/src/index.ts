@@ -9,6 +9,7 @@ import {
 import time from "./time";
 import functions from "./functions";
 import address from "./address";
+import string from "./string";
 export * from "./address";
 
 export default UI;
@@ -23,4 +24,5 @@ export const utils = {
   time,
   functions,
   address,
+  string,
 };
