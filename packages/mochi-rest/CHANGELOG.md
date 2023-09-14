@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 2.0.8
+
+### Patch Changes
+
+- ad5b290: Add emojis, fix changelog
+
 ## 2.0.7
 
 ### Patch Changes
