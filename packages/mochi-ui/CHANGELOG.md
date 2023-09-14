@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.1.15
+
+### Patch Changes
+
+- 7900094: Fix receipt link with code format
+
 ## 9.1.14
 
 ### Patch Changes
