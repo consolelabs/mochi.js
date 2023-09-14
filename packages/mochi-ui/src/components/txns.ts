@@ -73,7 +73,7 @@ async function formatTxn(
     return result;
   }
 
-  result.external_id = string.receiptLink(tx.external_id);
+  result.external_id = string.receiptLink(tx.external_id, true);
 
   if ("action" in tx) {
     switch (tx.action) {
