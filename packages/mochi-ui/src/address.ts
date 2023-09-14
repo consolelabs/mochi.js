@@ -155,6 +155,8 @@ export enum AddressChainType {
   SOL = "solana-chain",
   SUI = "sui-chain",
   RON = "ronin-chain",
+  APT = "aptos-chain",
+  NEAR = "near-chain",
   UNKNOWN = "",
 }
 

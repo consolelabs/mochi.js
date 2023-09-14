@@ -50,3 +50,13 @@ export const ChangelogSchema = z.object({
 
 export const ListChangelogSchema = z.array(ChangelogSchema);
 export type Changelog = z.infer<typeof ChangelogSchema>;
+
+const EmojiSchema = z.object({
+  code: z.string().nonempty(),
+  emoji: z.string().nonempty(),
+  emoji_url: z.string().url().or(z.literal("")),
+});
+
+export const EmojiListSchema = z.array(EmojiSchema);
+
+export type Emoji = z.infer<typeof EmojiSchema>;

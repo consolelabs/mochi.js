@@ -53,6 +53,8 @@ import {
   SwapRouteSchema,
   CompareCoin,
   CompareCoinSchema,
+  Emoji,
+  EmojiListSchema,
 } from "../schemas";
 import { FullOptions } from "../mochi";
 import endpoints from "../endpoints";
@@ -86,6 +88,7 @@ export class BaseModule {
     getCopy: Fetcher<string | void, Copy>;
     getCommands: Fetcher<void, Array<Command>>;
     getChangelogs: Fetcher<void, Array<Changelog>>;
+    getEmojis: Fetcher<void, Array<Emoji>>;
   };
 
   tip: {
@@ -464,6 +467,12 @@ export class BaseModule {
         return api
           .url(endpoints.MOCHI.METADATA_GET_CHANGELOGS)
           .resolve(parse(ListChangelogSchema))
+          .get();
+      },
+      getEmojis: async function () {
+        return api
+          .url(endpoints.MOCHI.METADATA_GET_EMOJIS)
+          .resolve(parse(EmojiListSchema))
           .get();
       },
     };

@@ -10,6 +10,8 @@ const AssociatedAccountSchema = z.object({
     "solana-chain",
     "sui-chain",
     "ronin-chain",
+    "aptos-chain",
+    "near-chain",
     "discord",
     "telegram",
     "twitter",

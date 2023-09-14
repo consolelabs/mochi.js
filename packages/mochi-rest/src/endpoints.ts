@@ -74,6 +74,7 @@ export default {
       new Path("/product-metadata/copy/:type").build({ type: type ?? "" }),
     METADATA_COMMANDS: "/product-metadata/commands",
     METADATA_GET_CHANGELOGS: "/product-metadata/changelogs",
+    METADATA_GET_EMOJIS: "/product-metadata/emoji",
 
     GET_DEFAULT_MONIKERS: "/config-defi/monikers/default",
 

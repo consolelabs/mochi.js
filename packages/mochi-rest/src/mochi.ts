@@ -1,6 +1,6 @@
 import deepmerge from "deepmerge";
 import baseWretch, { BaseModule, PayModule, ProfileModule } from "./modules";
-import { Changelog, Command } from "./schemas";
+import { Changelog, Command, Emoji } from "./schemas";
 import { logger } from "./logger";
 import { apiUrls } from "./constant";
 import { WretchError } from "wretch/resolver";
@@ -54,6 +54,7 @@ export class Mochi {
 
   private copy: { tip: string[]; fact: string[] } = { tip: [], fact: [] };
   changelogs: Changelog[] = [];
+  emojis: Map<string, Emoji> = new Map();
 
   constructor(_opts: Options) {
     const opts = deepmerge(defaultOptions, _opts);
@@ -80,6 +81,7 @@ export class Mochi {
         this.fetchProductCopy(),
         this.fetchChangelogs(),
         this.fetchWhitelistTokens(),
+        this.fetchEmojis(),
       ]);
       for (const res of results) {
         if (res.status === "rejected") {
@@ -120,6 +122,15 @@ export class Mochi {
 
   isTokenWhitelisted(symbol: string, address: string): boolean {
     return this.whitelistTokens.get(symbol) === address;
+  }
+
+  private async fetchEmojis() {
+    const result = await this.base.metadata.getEmojis();
+    if (!result.ok) {
+      throw new Error(`Cannot fetch emojis configs ${result.error}`);
+    }
+    this.emojis = new Map(result.data.map((e) => [e.code, e]));
+    logger.info("Emoji config fetch OK");
   }
 
   private async fetchCommandConfigs() {

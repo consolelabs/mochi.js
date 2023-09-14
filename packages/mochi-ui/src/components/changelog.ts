@@ -1,11 +1,14 @@
 import { remark } from "remark";
 import { Platform } from "../index";
 import remarkGfm from "remark-gfm";
+import API from "@consolelabs/mochi-rest";
 
 type Props = {
+  title: string;
   // expect content to be markdown format
   content: string;
   on: Platform.Discord | Platform.Telegram;
+  api?: API;
 };
 
 type Context = {
@@ -54,7 +57,7 @@ function discord(content: any, ctx: Context) {
         break;
       }
       case "image": {
-        text += `[image](${content.url})`;
+        text += `[view](${content.url})`;
         ctx.images.push(content.url);
         break;
       }
@@ -103,7 +106,7 @@ function telegram(content: any, ctx: Context) {
         break;
       }
       case "image": {
-        text += `[image](${content.url})`;
+        text += `[view](${content.url})`;
         ctx.images.push(content.url);
         break;
       }
@@ -120,7 +123,18 @@ function telegram(content: any, ctx: Context) {
   return text;
 }
 
-export default async function ({ content, on }: Props) {
+function emojiByPlatform(on: Platform.Telegram | Platform.Discord, api?: API) {
+  switch (on) {
+    case Platform.Telegram:
+      return "🎊";
+    case Platform.Discord:
+      return api?.emojis.get("ANIMATED_PARTY_POPPER")?.emoji ?? "🎊";
+    default:
+      return "🎊";
+  }
+}
+
+export default async function ({ api, title, content, on }: Props) {
   const ast = remark().use(remarkGfm).parse(content);
   const convert = markdownConverter[on];
 
@@ -133,7 +147,13 @@ export default async function ({ content, on }: Props) {
 
   return {
     images: ctx.images.filter((i) => i.includes("imgur.com")),
-    text: [`⊰⎯*Changelog*⎯⊱`, text]
+    text: [
+      `${emojiByPlatform(on, api)} Product Update: ${title} ${emojiByPlatform(
+        on,
+        api
+      )}`,
+      text,
+    ]
       .join("\n")
       .replaceAll("#", "\\#")
       .replaceAll(".", "\\."),

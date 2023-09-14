@@ -38,6 +38,8 @@ export default async function (
             "near-chain",
             "sui-chain",
             "ronin-chain",
+            "aptos-chain",
+            "near-chain",
           ].includes(w.chain);
         })
         .map((w) => ({ ...w, amount: Number(w.amount ?? 0) }))
