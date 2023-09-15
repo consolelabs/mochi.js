@@ -13,8 +13,8 @@ export type Err = {
 };
 
 export type Meta<P> = Extract<P, void> extends never
-  ? { metadata: Pagination }
-  : { metadata?: never };
+  ? { metadata: Pagination; pagination: Pagination }
+  : { metadata?: never; pagination?: never };
 
 export type Fetcher<
   I extends void | string | number | boolean | object = void,

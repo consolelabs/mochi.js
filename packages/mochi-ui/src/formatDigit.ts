@@ -7,16 +7,15 @@ export function formatPercentDigit(params: FormatParam) {
 }
 
 export function formatUsdDigit(params: FormatParam) {
+  const tooSmall = Math.abs(toNum(params)) <= 0.01;
+  if (tooSmall) return "$0.01";
   const isNeg = Math.sign(toNum(params)) < 0;
-  const showZero = Math.abs(toNum(params)) <= 0.0001;
   const num = call(params, formatDigit, {
     fractionDigits: toNum(params) >= 100 ? 0 : 2,
     scientificFormat: true,
     shorten: toNum(params) >= 100,
   });
-  return `${showZero ? "~ " : ""}${isNeg ? "-" : ""}$${
-    showZero ? 0 : num.slice(isNeg ? 1 : 0)
-  }`;
+  return `${isNeg ? "-" : ""}$${num.slice(isNeg ? 1 : 0)}`;
 }
 
 export function formatUsdPriceDigit(params: FormatParam) {

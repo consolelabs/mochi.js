@@ -88,7 +88,11 @@ export class BaseModule {
     getCopy: Fetcher<string | void, Copy>;
     getCommands: Fetcher<void, Array<Command>>;
     getChangelogs: Fetcher<void, Array<Changelog>>;
-    getEmojis: Fetcher<void, Array<Emoji>>;
+    getEmojis: Fetcher<
+      { page?: number; size?: number } | void,
+      Array<Emoji>,
+      Pagination
+    >;
   };
 
   tip: {
@@ -469,10 +473,11 @@ export class BaseModule {
           .resolve(parse(ListChangelogSchema))
           .get();
       },
-      getEmojis: async function () {
+      getEmojis: async function (param) {
         return api
           .url(endpoints.MOCHI.METADATA_GET_EMOJIS)
-          .resolve(parse(EmojiListSchema))
+          .query({ page: param?.page ?? 0, size: param?.size ?? 100 })
+          .resolve(parse(EmojiListSchema)<Pagination>)
           .get();
       },
     };

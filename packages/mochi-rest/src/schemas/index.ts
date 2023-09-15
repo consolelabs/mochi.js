@@ -51,11 +51,8 @@ export function getParser(catcher?: (error: WretchError | ZodError) => void) {
         ok: true,
         data: result.data as z.infer<S>,
         error: null,
-        metadata: {
-          page: 0,
-          size: 0,
-          total: 0,
-        },
+        metadata: json.metadata,
+        pagination: json.pagination,
       } as unknown as Ok<O> & Meta<P>;
     };
   };

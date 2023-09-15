@@ -125,11 +125,25 @@ export class Mochi {
   }
 
   private async fetchEmojis() {
-    const result = await this.base.metadata.getEmojis();
-    if (!result.ok) {
-      throw new Error(`Cannot fetch emojis configs ${result.error}`);
+    const list: Array<Emoji> = [];
+    let page = 0;
+    const size = 100 as const;
+    const page1 = await this.base.metadata.getEmojis({ page, size });
+    if (!page1.ok) {
+      throw new Error(`Cannot fetch emojis configs ${page1.error}`);
     }
-    this.emojis = new Map(result.data.map((e) => [e.code, e]));
+    list.concat(...page1.data);
+    const { total } = page1.pagination;
+    const totalPage = Math.ceil(total / size) - 1;
+    while (page < totalPage) {
+      page++;
+      const data = await this.base.metadata.getEmojis({ page, size });
+      if (!data.ok) {
+        throw new Error(`Cannot fetch emojis configs ${data.error}`);
+      }
+      list.concat(...data.data);
+    }
+    this.emojis = new Map(list.map((e) => [e.code, e]));
     logger.info("Emoji config fetch OK");
   }
 
