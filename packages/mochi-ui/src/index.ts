@@ -5,6 +5,7 @@ import {
   formatUsdDigit,
   formatTokenDigit,
   formatPercentDigit,
+  formatUsdPriceDigit,
 } from "./formatDigit";
 import time from "./time";
 import functions from "./functions";
@@ -21,6 +22,7 @@ export const utils = {
   formatUsdDigit,
   formatTokenDigit,
   formatPercentDigit,
+  formatUsdPriceDigit,
   time,
   functions,
   address,
