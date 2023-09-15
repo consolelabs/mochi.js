@@ -102,7 +102,7 @@ async function formatPayMe(
     status: statusIcon,
     time: t,
     amount: amount + " " + pm.token.symbol.toUpperCase(),
-    shortCode: string.receiptLink(code),
+    shortCode: string.receiptLink(code, true),
     text: text,
   };
 
@@ -144,8 +144,7 @@ export default async function (
           ...(tableParams ?? {}),
           cols: ["shortCode", "amount", "text"],
           alignment: ["left", "right", "left"],
-          wrapCol: [true, true, false],
-          wrapLastCol: false,
+          wrapCol: [false, true, false],
           row(formatted, index) {
             return payMes[index].status + " " + formatted;
           },
@@ -160,7 +159,7 @@ export default async function (
       ...(tableParams ?? {}),
       cols: ["shortCode", "amount", "text"],
       alignment: ["left", "right", "left"],
-      wrapCol: [true, true, false],
+      wrapCol: [false, true, false],
     });
   }
 
