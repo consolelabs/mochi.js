@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.1.18
+
+### Patch Changes
+
+- b83e171: Export formatUsdPriceDigit
+
 ## 9.1.17
 
 ### Patch Changes
