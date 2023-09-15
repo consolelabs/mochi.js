@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.1.16
+
+### Patch Changes
+
+- f828cb8: Fix unformatt short code in paymes and paylinks
+
 ## 9.1.15
 
 ### Patch Changes
