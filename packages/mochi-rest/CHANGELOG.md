@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 2.0.9
+
+### Patch Changes
+
+- 26437de: formatUsdDigit and emoji metadata fetch by chunks
+
 ## 2.0.8
 
 ### Patch Changes

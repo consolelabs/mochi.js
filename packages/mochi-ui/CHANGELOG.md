@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 9.1.17
+
+### Patch Changes
+
+- 26437de: formatUsdDigit and emoji metadata fetch by chunks
+- Updated dependencies [26437de]
+  - @consolelabs/mochi-rest@2.0.9
+
 ## 9.1.16
 
 ### Patch Changes
