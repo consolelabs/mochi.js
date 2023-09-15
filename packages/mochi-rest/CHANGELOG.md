@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 2.0.10
+
+### Patch Changes
+
+- 433ab34: Fix stuff
+
 ## 2.0.9
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 9.1.19
+
+### Patch Changes
+
+- 433ab34: Fix stuff
+- Updated dependencies [433ab34]
+  - @consolelabs/mochi-rest@2.0.10
+
 ## 9.1.18
 
 ### Patch Changes
