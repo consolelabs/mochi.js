@@ -66,10 +66,16 @@ export function formatDigit({
   const [left, right = ""] = s.split(".");
   const numsArr = right.split("");
   let rightStr = (numsArr.shift() as string) || "";
+  let extraDecimal = takeExtraDecimal;
   while (
     Number(rightStr) === 0 ||
-    rightStr.length < fractionDigits + takeExtraDecimal
+    rightStr.length < fractionDigits ||
+    extraDecimal > 0
   ) {
+    if (Number(rightStr) > 0) {
+      extraDecimal--;
+      extraDecimal = Math.max(extraDecimal, 0);
+    }
     const nextDigit = numsArr.shift();
     if (nextDigit === undefined) break;
     rightStr += nextDigit;

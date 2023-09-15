@@ -132,7 +132,7 @@ export class Mochi {
     if (!page1.ok) {
       throw new Error(`Cannot fetch emojis configs ${page1.error}`);
     }
-    list.concat(...page1.data);
+    list.push(...page1.data);
     const { total } = page1.pagination;
     const totalPage = Math.ceil(total / size) - 1;
     while (page < totalPage) {
@@ -141,10 +141,10 @@ export class Mochi {
       if (!data.ok) {
         throw new Error(`Cannot fetch emojis configs ${data.error}`);
       }
-      list.concat(...data.data);
+      list.push(...data.data);
     }
-    this.emojis = new Map(list.map((e) => [e.code, e]));
-    logger.info("Emoji config fetch OK");
+    this.emojis = new Map(list.map((e) => [e.code.toUpperCase(), e]));
+    logger.info(`Emoji config fetch OK ⎯  ${this.emojis.size}`);
   }
 
   private async fetchCommandConfigs() {
