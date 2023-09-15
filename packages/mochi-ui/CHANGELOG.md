@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.1.20
+
+### Patch Changes
+
+- be9ca9b: formatDigit
+
 ## 9.1.19
 
 ### Patch Changes
