@@ -148,10 +148,10 @@ export default async function ({ api, title, content, on }: Props) {
   return {
     images: ctx.images.filter((i) => i.includes("imgur.com")),
     text: [
-      `${emojiByPlatform(on, api)} Product Update: ${title} ${emojiByPlatform(
+      `*${emojiByPlatform(on, api)} Product Update ${emojiByPlatform(
         on,
         api
-      )}`,
+      )}\n\n${title}*`,
       text,
     ]
       .join("\n")
