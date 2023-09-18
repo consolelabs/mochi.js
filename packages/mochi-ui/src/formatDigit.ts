@@ -33,6 +33,7 @@ export function formatTokenDigit(params: FormatParam) {
   return call(params, formatDigit, {
     fractionDigits: toNum(params) >= 1000 ? 0 : 2,
     shorten: toNum(params) >= 1000,
+    scientificFormat: true,
   });
 }
 

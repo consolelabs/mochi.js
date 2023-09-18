@@ -49,6 +49,7 @@ test.each([
   [-0.123, "-0.12"],
   [-23456, "-23,456"],
   [123456, "123.5K"],
+  [0.0000000009, "9e-10"],
 ])("formatTokenDigit", (input, output) => {
   expect(formatTokenDigit(input)).toEqual(output);
 });
