@@ -30,7 +30,7 @@ import {
   ListPayLinkSchema,
   ListPayMeSchema,
 } from "../schemas";
-import { FullOptions } from "../mochi";
+import { Options } from "../mochi";
 import endpoints from "../endpoints";
 
 export class PayModule {
@@ -86,7 +86,7 @@ export class PayModule {
     getLeaderboard: Fetcher<void, Leaderboard>;
   };
 
-  constructor({ addons, payUrl, apiKey, catcher, log }: FullOptions) {
+  constructor({ addons, payUrl, apiKey, catcher, log }: Options) {
     const parse = getParser(catcher);
     let api = base.url(payUrl, true);
     api = api.options({ log });

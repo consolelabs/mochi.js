@@ -56,7 +56,7 @@ import {
   Emoji,
   EmojiListSchema,
 } from "../schemas";
-import { FullOptions } from "../mochi";
+import { Options } from "../mochi";
 import endpoints from "../endpoints";
 
 const base = wretch()
@@ -212,7 +212,7 @@ export class BaseModule {
     getDefaultMonikers: Fetcher<void, Array<Moniker>>;
   };
 
-  constructor({ addons, baseUrl, apiKey, catcher, log }: FullOptions) {
+  constructor({ addons, baseUrl, apiKey, catcher, log }: Options) {
     const parse = getParser(catcher);
     let api = base.url(baseUrl, true);
     api = api.options({ log });

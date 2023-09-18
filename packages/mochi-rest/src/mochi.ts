@@ -2,35 +2,33 @@ import deepmerge from "deepmerge";
 import baseWretch, { BaseModule, PayModule, ProfileModule } from "./modules";
 import { Changelog, Command, Emoji } from "./schemas";
 import { logger } from "./logger";
-import { apiUrls } from "./constant";
 import { WretchError } from "wretch/resolver";
 import { ZodError } from "zod";
 import { WretchAddon } from "wretch/types";
 
-interface Options {
-  apiKey?: string;
-  preview?: boolean;
+export interface Options {
+  baseUrl: string;
+  profileUrl: string;
+  payUrl: string;
+
   catcher?: (error: WretchError | ZodError) => void;
+  apiKey?: string;
   log?: boolean;
   addons?: WretchAddon<any>[];
 }
 
-export interface FullOptions extends Options {
-  baseUrl: string;
-  profileUrl: string;
-  payUrl: string;
-}
-
 const defaultOptions: Options = {
-  preview: false,
   log: true,
   addons: [],
+  payUrl: "",
+  baseUrl: "",
+  profileUrl: "",
 };
 
 export class Mochi {
   isReady: Promise<void> = new Promise(() => {});
-  private opts: FullOptions;
-  url: Pick<FullOptions, "baseUrl" | "profileUrl" | "payUrl"> = {
+  private opts: Options;
+  url: Options = {
     payUrl: "",
     profileUrl: "",
     baseUrl: "",
@@ -58,17 +56,7 @@ export class Mochi {
 
   constructor(_opts: Options) {
     const opts = deepmerge(defaultOptions, _opts);
-    this.opts = deepmerge<FullOptions>(opts, {
-      baseUrl: opts.preview
-        ? apiUrls.preview.API_SERVER_URL
-        : apiUrls.prod.API_SERVER_URL,
-      profileUrl: opts.preview
-        ? apiUrls.preview.API_PROFILE_SERVER_URL
-        : apiUrls.prod.API_PROFILE_SERVER_URL,
-      payUrl: opts.preview
-        ? apiUrls.preview.API_PAY_SERVER_URL
-        : apiUrls.prod.API_PAY_SERVER_URL,
-    });
+    this.opts = opts;
     this.base = new BaseModule(this.opts);
     this.profile = new ProfileModule(this.opts);
     this.pay = new PayModule(this.opts);
