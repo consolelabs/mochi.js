@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 9.1.21
+
+### Patch Changes
+
+- 380d9f6: Add scientific notation to token format
+
 ## 9.1.20
 
 ### Patch Changes
