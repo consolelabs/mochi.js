@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 3.0.0
+
+### Major Changes
+
+- 2b5df61: Using rest client now requires api urls to be passed in
+
 ## 2.0.10
 
 ### Patch Changes
