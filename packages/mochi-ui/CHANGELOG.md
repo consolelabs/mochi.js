@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.1
+
+### Patch Changes
+
+- 6d9af93: Add new amount component
+
 ## 10.0.0
 
 ### Patch Changes
