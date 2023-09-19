@@ -10,6 +10,7 @@ import pnl from "./pnl";
 import pageIndicator from "./page-indicator";
 import changelog from "./changelog";
 import swapRoute from "./swap-route";
+import amount from "./amount";
 
 export default {
   balance,
@@ -24,4 +25,5 @@ export default {
   payLinks,
   payMes,
   swapRoute,
+  amount,
 };

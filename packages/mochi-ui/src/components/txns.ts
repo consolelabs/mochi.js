@@ -2,18 +2,20 @@ import time from "../time";
 import UI, { Platform } from "..";
 import { mdTable } from "../markdownTable";
 import type { Paging } from "../types";
-import { formatTokenDigit } from "../formatDigit";
 import { formatUnits } from "ethers";
 import address from "../address";
 import pageIndicator from "./page-indicator";
 import groupby from "lodash.groupby";
 import { HOMEPAGE } from "../constant";
 import type { VaultTransferTx, TransferTx, Tx } from "@consolelabs/mochi-rest";
+import API from "@consolelabs/mochi-rest";
 import string from "../string";
+import amountComp from "./amount";
 
 type Props = {
   txns: Array<Tx>;
   on?: Platform.Discord | Platform.Telegram | Platform.Web;
+  api?: API;
   top?: number;
   groupDate?: boolean;
   withTitle?: boolean;
@@ -41,7 +43,8 @@ function isVault(
 async function formatTxn(
   tx: Tx,
   on: Platform.Web | Platform.Telegram | Platform.Discord,
-  global: boolean
+  global: boolean,
+  api?: API
 ) {
   const date = new Date("created_at" in tx ? tx.created_at : tx.signed_at);
   const t = time.relative(date.getTime());
@@ -82,10 +85,15 @@ async function formatTxn(
           case "in": {
             let amount = "";
             if (!Number.isNaN(Number(tx.token.decimal))) {
-              amount = formatTokenDigit(
-                formatUnits(tx.amount || 0, tx.token.decimal)
-              );
-              amount = `${amount} ${tx.token.symbol.toUpperCase()}`;
+              const { text } = await amountComp({
+                on,
+                amount: formatUnits(tx.amount || 0, tx.token.decimal),
+                symbol: tx.token.symbol.toUpperCase(),
+                api,
+                prefix: "+",
+              });
+              result.amount = text;
+              amount = text;
             }
             if (global) {
               const [from, to] = await UI.resolve(
@@ -103,7 +111,6 @@ async function formatTxn(
                     }
                   : tx.other_profile_id
               );
-              result.amount = `+${amount}`;
               if (from?.value && to?.value) {
                 result.text = `${to.value} to ${from.value}`;
               }
@@ -118,7 +125,7 @@ async function formatTxn(
                   : tx.other_profile_id
               );
 
-              result.text = `+${amount}${
+              result.text = `${amount}${
                 from?.value ? ` from ${from.value}` : ""
               }`;
             }
@@ -127,10 +134,15 @@ async function formatTxn(
           case "out": {
             let amount = "";
             if (!Number.isNaN(Number(tx.token.decimal))) {
-              amount = formatTokenDigit(
-                formatUnits(tx.amount || 0, tx.token.decimal)
-              );
-              amount = `${amount} ${tx.token.symbol.toUpperCase()}`;
+              const { text } = await amountComp({
+                on,
+                amount: formatUnits(tx.amount || 0, tx.token.decimal),
+                symbol: tx.token.symbol.toUpperCase(),
+                api,
+                prefix: "-",
+              });
+              result.amount = text;
+              amount = text;
             }
             if (global) {
               const [from, to] = await UI.resolve(
@@ -148,7 +160,6 @@ async function formatTxn(
                     }
                   : tx.other_profile_id
               );
-              result.amount = `-${amount}`;
               if (from?.value && to?.value) {
                 result.text = `${from.value} to ${to.value}`;
               }
@@ -162,7 +173,7 @@ async function formatTxn(
                     }
                   : tx.other_profile_id
               );
-              result.text = `-${amount}${to?.value ? ` to ${to.value}` : ""}`;
+              result.text = `${amount}${to?.value ? ` to ${to.value}` : ""}`;
             }
             break;
           }
@@ -170,31 +181,43 @@ async function formatTxn(
         break;
       }
       case "deposit": {
-        const amount = formatTokenDigit(
-          formatUnits(tx.amount, tx.token.decimal)
-        );
+        const { text: amount } = await amountComp({
+          on,
+          api,
+          symbol: tx.token.symbol.toUpperCase(),
+          amount: formatUnits(tx.amount, tx.token.decimal),
+          prefix: "+",
+        });
         const normalized = await address.normalizeAddress(
           tx.other_profile_source
         );
-        result.text = `+${amount} ${tx.token.symbol.toUpperCase()} deposited to \`${address.shorten(
+        result.text = `${amount} deposited to \`${address.shorten(
           normalized
         )}\``;
         break;
       }
       case "withdraw": {
-        const amount = formatTokenDigit(
-          formatUnits(tx.amount, tx.token.decimal)
-        );
+        const { text: amount } = await amountComp({
+          on,
+          api,
+          symbol: tx.token.symbol.toUpperCase(),
+          amount: formatUnits(tx.amount, tx.token.decimal),
+          prefix: "-",
+        });
         const resolved = await address.lookup(tx.other_profile_source);
-        result.text = `-${amount} ${tx.token.symbol.toUpperCase()} withdrawn to \`${resolved}\``;
+        result.text = `${amount} withdrawn to \`${resolved}\``;
         break;
       }
       case "airdrop": {
-        const amount = formatTokenDigit(
-          formatUnits(tx.amount, tx.token.decimal)
-        );
+        const { text: amount } = await amountComp({
+          on,
+          api,
+          symbol: tx.token.symbol.toUpperCase(),
+          amount: formatUnits(tx.amount, tx.token.decimal),
+          prefix: "-",
+        });
         const numOfWinners = tx.other_profile_ids.length;
-        result.text = `-${amount} ${tx.token.symbol.toUpperCase()} airdropped${
+        result.text = `${amount} airdropped${
           numOfWinners > 0
             ? ` to ${numOfWinners} ${numOfWinners > 1 ? "people" : "person"}`
             : " but no one joined"
@@ -202,9 +225,13 @@ async function formatTxn(
         break;
       }
       case "paylink": {
-        const amount = formatTokenDigit(
-          formatUnits(tx.amount, tx.token.decimal)
-        );
+        const { text: amount } = await amountComp({
+          on,
+          api,
+          symbol: tx.token.symbol.toUpperCase(),
+          amount: formatUnits(tx.amount, tx.token.decimal),
+          prefix: "-",
+        });
         let by;
         if (tx.other_profile_id) {
           const [sender] = await UI.resolve(on, tx.other_profile_id);
@@ -212,15 +239,17 @@ async function formatTxn(
         } else {
           by = address.lookup(tx.other_profile_source);
         }
-        result.text = `-${amount} ${tx.token.symbol.toUpperCase()} [Pay Link](${HOMEPAGE}/pay/${
-          tx.metadata.paylink_code
-        }) claimed by ${by}`;
+        result.text = `${amount} [Pay Link](${HOMEPAGE}/pay/${tx.metadata.paylink_code}) claimed by ${by}`;
         break;
       }
       case "payme": {
-        const amount = formatTokenDigit(
-          formatUnits(tx.amount, tx.token.decimal)
-        );
+        const { text: amount } = await amountComp({
+          on,
+          api,
+          symbol: tx.token.symbol.toUpperCase(),
+          amount: formatUnits(tx.amount, tx.token.decimal),
+          prefix: "+",
+        });
         let by;
         if (tx.other_profile_id) {
           const [sender] = await UI.resolve(on, tx.other_profile_id);
@@ -228,7 +257,7 @@ async function formatTxn(
         } else {
           by = address.lookup(tx.other_profile_source);
         }
-        result.text = `+${amount} ${tx.token.symbol.toUpperCase()} [Pay Me](${HOMEPAGE}/pay) paid by ${by}`;
+        result.text = `${amount} [Pay Me](${HOMEPAGE}/pay) paid by ${by}`;
         break;
       }
     }
@@ -325,6 +354,7 @@ export default async function (
     groupDate = false,
     withTitle = false,
     global = false,
+    api,
   }: Props & Paging,
   tableParams?: Parameters<typeof mdTable>[1]
 ) {
@@ -337,7 +367,7 @@ export default async function (
       txns
         .sort(latest)
         .filter(beforeMap)
-        .map((tx) => formatTxn(tx, on, global))
+        .map((tx) => formatTxn(tx, on, global, api))
     )
   ).filter((t) => t.text);
 

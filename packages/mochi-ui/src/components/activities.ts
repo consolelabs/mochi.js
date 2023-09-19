@@ -1,13 +1,14 @@
 import time from "../time";
 import UI, { Platform } from "..";
 import { mdTable } from "../markdownTable";
-import { formatTokenDigit } from "../formatDigit";
 import { formatUnits } from "ethers";
 import { ActivityType } from "../constant";
 import address from "../address";
 import { capitalCase } from "change-case";
 import type { Paging } from "../types";
 import groupBy from "lodash.groupby";
+import amountComp from "./amount";
+import API from "@consolelabs/mochi-rest";
 
 interface Activity {
   created_at: string;
@@ -24,12 +25,14 @@ type Props = {
   activities: Array<Activity>;
   onlyShow?: ActivityType[];
   top?: number;
+  api?: API;
   on: Platform.Web | Platform.Discord | Platform.Telegram;
   groupDate?: boolean;
 };
 
 function formatActivity(
-  on: Platform.Web | Platform.Discord | Platform.Telegram
+  on: Platform.Web | Platform.Discord | Platform.Telegram,
+  api?: API
 ) {
   return async function (activity: Activity) {
     const date = new Date(activity.created_at);
@@ -64,9 +67,10 @@ function formatActivity(
 
         if (!amount || !token) throw notEnoughDataError;
 
+        const { text } = await amountComp({ on, api, amount, symbol: token });
         result.text = activity.content_raw
-          .replace("{.amount}", amount)
-          .replace("{.token}", token);
+          .replace("{.amount}", text)
+          .replace(" {.token}", "");
         break;
       }
       case ActivityType.Receive: {
@@ -82,10 +86,15 @@ function formatActivity(
           throw new Error("MochiFormatter: activity platform not supported");
         if (!amount || !decimal || !token) throw notEnoughDataError;
 
-        const formattedAmount = formatTokenDigit(formatUnits(amount, +decimal));
+        const { text } = await amountComp({
+          on,
+          api,
+          amount: formatUnits(amount, +decimal),
+          symbol: token,
+        });
         result.text = activity.content_raw
-          .replace("{.amount}", formattedAmount)
-          .replace("{.token}", token)
+          .replace("{.amount}", text)
+          .replace(" {.token}", "")
           .replace("{.target_profile_id}", username.value);
         break;
       }
@@ -102,10 +111,15 @@ function formatActivity(
           throw new Error("MochiFormatter: activity platform not supported");
         if (!amount || !decimal || !token) throw notEnoughDataError;
 
-        const formattedAmount = formatTokenDigit(formatUnits(amount, +decimal));
+        const { text } = await amountComp({
+          on,
+          api,
+          amount: formatUnits(amount, +decimal),
+          symbol: token,
+        });
         result.text = activity.content_raw
-          .replace("{.amount}", formattedAmount)
-          .replace("{.token}", token)
+          .replace("{.amount}", text)
+          .replace(" {.token}", "")
           .replace("{.target_profile_id}", username.value);
         break;
       }
