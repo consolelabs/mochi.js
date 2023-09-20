@@ -16,6 +16,7 @@ const AssociatedAccountSchema = z.object({
     "telegram",
     "twitter",
     "binance",
+    "email",
   ]),
   platform_identifier: z.string(),
   platform_metadata: z.object({ username: z.string() }).partial(),

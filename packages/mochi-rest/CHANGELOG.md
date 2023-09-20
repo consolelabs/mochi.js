@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 3.0.1
+
+### Patch Changes
+
+- Add support for mail identity
+
 ## 3.0.0
 
 ### Major Changes

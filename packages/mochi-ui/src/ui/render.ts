@@ -16,6 +16,7 @@ export type UsernameFmt = {
     | Platform.Telegram
     | Platform.Twitter
     | Platform.Vault
+    | Platform.Email
     | null;
 };
 
@@ -35,6 +36,8 @@ export enum Platform {
   Twitter = "twitter",
   Discord = "discord",
   Telegram = "telegram",
+  //
+  Email = "email",
 }
 
 const PLATFORM_EMOJI_PREFIX = new Proxy(
@@ -45,6 +48,7 @@ const PLATFORM_EMOJI_PREFIX = new Proxy(
     [Platform.App]: "🔌",
     [Platform.Mochi]: "🍡",
     [Platform.Vault]: "🏦",
+    [Platform.Email]: "✉️",
   },
   {
     get(obj, prop) {
@@ -66,6 +70,7 @@ const PLATFORM_PREFIX = new Proxy(
     [Platform.App]: "app:",
     [Platform.Mochi]: "mochi:",
     [Platform.Vault]: "vault:",
+    [Platform.Email]: "mail:",
   },
   {
     get(obj, prop) {
@@ -90,6 +95,7 @@ export default function render(
     [Platform.Mochi]: mochi(pA, on),
     [Platform.App]: application(pA, on),
     [Platform.Vault]: vault(pA, on),
+    [Platform.Email]: email(pA, on),
   };
   const accountB = {
     [Platform.Telegram]: telegram(pB, on),
@@ -97,6 +103,7 @@ export default function render(
     [Platform.Mochi]: mochi(pB, on),
     [Platform.App]: application(pB, on),
     [Platform.Vault]: vault(pB, on),
+    [Platform.Email]: email(pB, on),
   };
 
   let fallbackOrder: Array<
@@ -105,6 +112,7 @@ export default function render(
     | Platform.Telegram
     | Platform.Discord
     | Platform.Vault
+    | Platform.Email
   >;
   switch (on) {
     case Platform.Web:
@@ -113,6 +121,7 @@ export default function render(
         Platform.App,
         Platform.Discord,
         Platform.Telegram,
+        Platform.Email,
         Platform.Mochi,
       ];
       break;
@@ -122,6 +131,7 @@ export default function render(
         Platform.App,
         Platform.Discord,
         Platform.Telegram,
+        Platform.Email,
         Platform.Mochi,
       ];
       break;
@@ -131,6 +141,7 @@ export default function render(
         Platform.App,
         Platform.Telegram,
         Platform.Discord,
+        Platform.Email,
         Platform.Mochi,
       ];
       break;
@@ -164,6 +175,46 @@ export default function render(
   if (firstSamePlatform) return firstSamePlatform;
 
   return [mochi(pA, on), mochi(pB, on)];
+}
+
+function email(p?: Profile, on = Platform.Email): UsernameFmt {
+  try {
+    if (!p || !isMochiProfile(p) || isApplication(p) || isVault(p))
+      return { plain: "", value: "", id: "", url: "" };
+
+    const email = p.associated_accounts.find(
+      (aa) => aa.platform === Platform.Email
+    );
+
+    const textPrefix = on !== Platform.Email ? PLATFORM_PREFIX["email"] : "";
+    const emojiPrefix =
+      on !== Platform.Email ? PLATFORM_EMOJI_PREFIX["email"] : "";
+    let prefix =
+      on === Platform.Web ? `${emojiPrefix} ` : `${emojiPrefix} ${textPrefix}`;
+
+    prefix = prefix.trimStart();
+
+    if (!email || !email.platform_identifier)
+      return {
+        plain: "",
+        value: "",
+        id: "",
+        url: "",
+      };
+
+    return {
+      id: email.platform_identifier,
+      url: `${HOMEPAGE}/profile/${p.id}`,
+      value:
+        on === Platform.Email
+          ? email.platform_identifier
+          : `[${prefix}${email.platform_identifier}](${HOMEPAGE}/profile/${p.id})`,
+      plain: `${prefix}${email.platform_identifier}`,
+      platform: Platform.Email,
+    };
+  } catch (e) {
+    return { plain: "", value: "", id: "", url: "" };
+  }
 }
 
 function vault(p?: Profile, on = Platform.Vault): UsernameFmt {

@@ -421,5 +421,6 @@ export default async function (
       ...(pager ? [pager] : []),
     ].join("\n"),
     totalPage: total,
+    length: data.length,
   };
 }

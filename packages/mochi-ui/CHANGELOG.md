@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 10.0.3
+
+### Patch Changes
+
+- Add support for mail identity
+- Updated dependencies
+  - @consolelabs/mochi-rest@3.0.1
+
 ## 10.0.2
 
 ### Patch Changes
