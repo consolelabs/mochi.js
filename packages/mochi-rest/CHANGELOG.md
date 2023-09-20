@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 3.0.2
+
+### Patch Changes
+
+- Adjust fetch size of emojis
+
 ## 3.0.1
 
 ### Patch Changes

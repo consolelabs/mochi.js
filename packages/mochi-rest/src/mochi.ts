@@ -115,7 +115,7 @@ export class Mochi {
   private async fetchEmojis() {
     const list: Array<Emoji> = [];
     let page = 0;
-    const size = 100 as const;
+    const size = 30 as const;
     const page1 = await this.base.metadata.getEmojis({ page, size });
     if (!page1.ok) {
       throw new Error(`Cannot fetch emojis configs ${page1.error}`);
