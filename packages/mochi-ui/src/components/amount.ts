@@ -29,6 +29,8 @@ export default async function ({ amount, symbol, api, on, prefix }: Props) {
         text = text.replaceAll("<emoji>", "");
       }
     }
+  } else {
+    text = text.replaceAll("<emoji>", "");
   }
 
   text = text.trim();

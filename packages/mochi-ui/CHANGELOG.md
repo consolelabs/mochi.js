@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.2
+
+### Patch Changes
+
+- Fix <emoji> not replaced in telegram platform
+
 ## 10.0.1
 
 ### Patch Changes
