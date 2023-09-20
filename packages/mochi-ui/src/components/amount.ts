@@ -23,15 +23,12 @@ export default async function ({ amount, symbol, api, on, prefix }: Props) {
           emoji.emoji.replaceAll("_", symbol.toLowerCase())
         );
       } else if (on === Platform.Web) {
-        text = text.replaceAll("<emoji>", "");
         image = emoji.emoji_url;
-      } else {
-        text = text.replaceAll("<emoji>", "");
       }
     }
-  } else {
-    text = text.replaceAll("<emoji>", "");
   }
+
+  text = text.replaceAll("<emoji>", "");
 
   text = text.trim();
   return {

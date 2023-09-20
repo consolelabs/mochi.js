@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.5
+
+### Patch Changes
+
+- Fix amount format
+
 ## 10.0.4
 
 ### Patch Changes
