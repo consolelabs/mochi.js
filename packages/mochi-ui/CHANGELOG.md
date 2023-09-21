@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.7
+
+### Patch Changes
+
+- 3cb3634: title paylink component
+
 ## 10.0.6
 
 ### Patch Changes
