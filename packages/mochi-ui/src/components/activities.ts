@@ -67,9 +67,9 @@ function formatActivity(
 
         if (!amount || !token) throw notEnoughDataError;
 
-        const { text } = await amountComp({ on, api, amount, symbol: token });
+        const { full } = await amountComp({ on, api, amount, symbol: token });
         result.text = activity.content_raw
-          .replace("{.amount}", text)
+          .replace("{.amount}", full)
           .replace(" {.token}", "");
         break;
       }
@@ -86,14 +86,14 @@ function formatActivity(
           throw new Error("MochiFormatter: activity platform not supported");
         if (!amount || !decimal || !token) throw notEnoughDataError;
 
-        const { text } = await amountComp({
+        const { full } = await amountComp({
           on,
           api,
           amount: formatUnits(amount, +decimal),
           symbol: token,
         });
         result.text = activity.content_raw
-          .replace("{.amount}", text)
+          .replace("{.amount}", full)
           .replace(" {.token}", "")
           .replace("{.target_profile_id}", username.value);
         break;
@@ -111,14 +111,14 @@ function formatActivity(
           throw new Error("MochiFormatter: activity platform not supported");
         if (!amount || !decimal || !token) throw notEnoughDataError;
 
-        const { text } = await amountComp({
+        const { full } = await amountComp({
           on,
           api,
           amount: formatUnits(amount, +decimal),
           symbol: token,
         });
         result.text = activity.content_raw
-          .replace("{.amount}", text)
+          .replace("{.amount}", full)
           .replace(" {.token}", "")
           .replace("{.target_profile_id}", username.value);
         break;

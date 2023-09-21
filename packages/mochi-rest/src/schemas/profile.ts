@@ -108,6 +108,7 @@ export const StatsSchema = z.object({
   most_send: z.object({
     token: TokenSchema,
     profile_id: z.string().nonempty(),
+    other_profile_id: z.string().nonempty(),
     amount: z.string().nonempty(),
     usd_amount: z.number(),
     price: z.number(),
@@ -115,6 +116,7 @@ export const StatsSchema = z.object({
   most_receive: z.object({
     token: TokenSchema,
     profile_id: z.string().nonempty(),
+    other_profile_id: z.string().nonempty(),
     amount: z.string().nonempty(),
     usd_amount: z.number(),
     price: z.number(),

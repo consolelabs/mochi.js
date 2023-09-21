@@ -50,6 +50,7 @@ async function formatTxn(
   const t = time.relative(date.getTime());
   const result = {
     time: t,
+    emoji: "",
     amount: "",
     text: "",
     external_id: "",
@@ -85,7 +86,7 @@ async function formatTxn(
           case "in": {
             let amount = "";
             if (!Number.isNaN(Number(tx.token.decimal))) {
-              const { text } = await amountComp({
+              const { text, full, emoji } = await amountComp({
                 on,
                 amount: formatUnits(tx.amount || 0, tx.token.decimal),
                 symbol: tx.token.symbol.toUpperCase(),
@@ -93,7 +94,8 @@ async function formatTxn(
                 prefix: "+",
               });
               result.amount = text;
-              amount = text;
+              result.emoji = emoji;
+              amount = full;
             }
             if (global) {
               const [from, to] = await UI.resolve(
@@ -134,7 +136,7 @@ async function formatTxn(
           case "out": {
             let amount = "";
             if (!Number.isNaN(Number(tx.token.decimal))) {
-              const { text } = await amountComp({
+              const { text, full, emoji } = await amountComp({
                 on,
                 amount: formatUnits(tx.amount || 0, tx.token.decimal),
                 symbol: tx.token.symbol.toUpperCase(),
@@ -142,7 +144,8 @@ async function formatTxn(
                 prefix: "-",
               });
               result.amount = text;
-              amount = text;
+              result.emoji = emoji;
+              amount = full;
             }
             if (global) {
               const [from, to] = await UI.resolve(
@@ -181,7 +184,7 @@ async function formatTxn(
         break;
       }
       case "deposit": {
-        const { text: amount } = await amountComp({
+        const { full: amount, emoji } = await amountComp({
           on,
           api,
           symbol: tx.token.symbol.toUpperCase(),
@@ -191,13 +194,14 @@ async function formatTxn(
         const normalized = await address.normalizeAddress(
           tx.other_profile_source
         );
+        result.emoji = emoji;
         result.text = `${amount} deposited to \`${address.shorten(
           normalized
         )}\``;
         break;
       }
       case "withdraw": {
-        const { text: amount } = await amountComp({
+        const { full: amount, emoji } = await amountComp({
           on,
           api,
           symbol: tx.token.symbol.toUpperCase(),
@@ -205,11 +209,12 @@ async function formatTxn(
           prefix: "-",
         });
         const resolved = await address.lookup(tx.other_profile_source);
+        result.emoji = emoji;
         result.text = `${amount} withdrawn to \`${resolved}\``;
         break;
       }
       case "airdrop": {
-        const { text: amount } = await amountComp({
+        const { full: amount, emoji } = await amountComp({
           on,
           api,
           symbol: tx.token.symbol.toUpperCase(),
@@ -217,6 +222,7 @@ async function formatTxn(
           prefix: "-",
         });
         const numOfWinners = tx.other_profile_ids.length;
+        result.emoji = emoji;
         result.text = `${amount} airdropped${
           numOfWinners > 0
             ? ` to ${numOfWinners} ${numOfWinners > 1 ? "people" : "person"}`
@@ -225,7 +231,7 @@ async function formatTxn(
         break;
       }
       case "paylink": {
-        const { text: amount } = await amountComp({
+        const { full: amount, emoji } = await amountComp({
           on,
           api,
           symbol: tx.token.symbol.toUpperCase(),
@@ -239,11 +245,12 @@ async function formatTxn(
         } else {
           by = address.lookup(tx.other_profile_source);
         }
+        result.emoji = emoji;
         result.text = `${amount} [Pay Link](${HOMEPAGE}/pay/${tx.metadata.paylink_code}) claimed by ${by}`;
         break;
       }
       case "payme": {
-        const { text: amount } = await amountComp({
+        const { full: amount, emoji } = await amountComp({
           on,
           api,
           symbol: tx.token.symbol.toUpperCase(),
@@ -257,6 +264,7 @@ async function formatTxn(
         } else {
           by = address.lookup(tx.other_profile_source);
         }
+        result.emoji = emoji;
         result.text = `${amount} [Pay Me](${HOMEPAGE}/pay) paid by ${by}`;
         break;
       }
@@ -387,7 +395,9 @@ export default async function (
           ...(tableParams ?? {}),
           cols: global ? ["amount", "text"] : ["external_id", "text"],
           alignment: ["left", "left"],
-          wrapCol: global ? [true, false] : [false, false],
+          wrapCol: [global, false],
+          row: (f, i) =>
+            global && on === Platform.Discord ? `${txns[i].emoji}${f}` : f,
         }),
         ...(isLast ? [] : [""]),
       ].join("\n");
@@ -414,7 +424,13 @@ export default async function (
 
   return {
     text: [
-      ...(withTitle ? ["📜 *History*"] : []),
+      ...(withTitle
+        ? [
+            `📜 *${on === Platform.Discord ? "*" : ""}History${
+              on === Platform.Discord ? "*" : ""
+            }*`,
+          ]
+        : []),
       ...(groupDate && withTitle ? [""] : []),
       text,
       "",

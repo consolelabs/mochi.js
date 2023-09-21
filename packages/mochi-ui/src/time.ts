@@ -3,6 +3,11 @@ const rtf = new Intl.RelativeTimeFormat("en", {
   numeric: "auto",
 });
 
+const customRelativeFormatMap = new Map([
+  ["yesterday", "ystd"],
+  ["tomorrow", "tmr"],
+]);
+
 function relative(ms: string | number) {
   let num = Number(ms) - Date.now();
   // convert to number of days
@@ -16,7 +21,9 @@ function relative(ms: string | number) {
   num = num / 24;
   // round
   num = Math.round(num);
-  return rtf.format(num, "day");
+  const output = rtf.format(num, "day");
+
+  return customRelativeFormatMap.get(output.toLowerCase()) || output;
 }
 
 function convertSecondToMinute(second: number): string {

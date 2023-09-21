@@ -11,28 +11,30 @@ interface Props {
 }
 
 export default async function ({ amount, symbol, api, on, prefix }: Props) {
-  let text = `<emoji> ${prefix || ""}${formatTokenDigit(amount)} ${symbol}`;
+  const text = `${prefix || ""}${formatTokenDigit(amount)} ${symbol}`;
+  let full = `<emoji> ${text}`;
   let image = null;
+  let emoji = api?.emojis.get("COIN")?.emoji ?? "<a:_:1093923016691421205>";
 
   if (api && [Platform.Discord, Platform.Web].includes(on)) {
-    const emoji = api.emojis.get(symbol);
-    if (emoji) {
+    const emojiObj = api.emojis.get(symbol);
+    if (emojiObj) {
       if (on === Platform.Discord) {
-        text = text.replaceAll(
-          "<emoji>",
-          emoji.emoji.replaceAll("_", symbol.toLowerCase())
-        );
+        emoji = emojiObj.emoji.replaceAll("_", symbol.toLowerCase());
+        full = full.replaceAll("<emoji>", emoji);
       } else if (on === Platform.Web) {
-        image = emoji.emoji_url;
+        image = emojiObj.emoji_url;
       }
     }
   }
 
-  text = text.replaceAll("<emoji>", "");
+  full = full.replaceAll("<emoji>", "");
 
-  text = text.trim();
+  full = full.trim();
   return {
     text,
+    emoji,
+    full,
     image,
   };
 }

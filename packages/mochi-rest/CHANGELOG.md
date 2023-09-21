@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 3.0.3
+
+### Patch Changes
+
+- amount, activities, txns, pay-mes, relative time
+
 ## 3.0.2
 
 ### Patch Changes

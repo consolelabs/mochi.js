@@ -65,11 +65,6 @@ async function formatPayMe(
         text = `${author?.value} requested you ${time.relative(
           createdDate.getTime()
         )}`;
-      } else {
-        const [claimer] = await UI.resolve(on, pm.to_profile_id);
-        text = `You requested ${claimer?.value} ${time.relative(
-          createdDate.getTime()
-        )}`;
       }
       break;
     }
@@ -78,11 +73,6 @@ async function formatPayMe(
       if (pm.type === "out") {
         const [author] = await UI.resolve(on, pm.to_profile_id);
         text = `paid ${author?.value} ${time.relative(settledDate.getTime())}`;
-      } else {
-        const [claimer] = await UI.resolve(on, pm.to_profile_id);
-        text = `paid by ${claimer?.value} ${time.relative(
-          settledDate.getTime()
-        )}`;
       }
       break;
     }

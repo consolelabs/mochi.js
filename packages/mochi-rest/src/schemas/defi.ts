@@ -59,8 +59,12 @@ const MochiTxSchema = z.object({
   external_id: z.string().nonempty(),
   from_profile_id: z.string().nonempty(),
   other_profile_id: z.string().nonempty(),
-  from_profile_source: z.enum(["mochi-balance", "mochi-vault"]),
-  other_profile_source: z.enum(["mochi-balance", "mochi-vault"]),
+  from_profile_source: z
+    .enum(["mochi-balance", "mochi-vault"])
+    .or(z.string().nonempty()),
+  other_profile_source: z
+    .enum(["mochi-balance", "mochi-vault"])
+    .or(z.string().nonempty()),
   source_platform: z.enum(["discord", "telegram"]),
   amount: z.string().nonempty(),
   token: TokenSchema,
@@ -80,6 +84,7 @@ export type DepositTx = z.infer<typeof MochiDepositTxSchema>;
 
 export const MochiWithdrawTxSchema = MochiTxSchema.extend({
   action: z.literal("withdraw"),
+  other_profile_id: z.literal(""),
 });
 export type WithdrawTx = z.infer<typeof MochiWithdrawTxSchema>;
 

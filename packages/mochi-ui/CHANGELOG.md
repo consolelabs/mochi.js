@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 10.0.6
+
+### Patch Changes
+
+- amount, activities, txns, pay-mes, relative time
+- Updated dependencies
+  - @consolelabs/mochi-rest@3.0.3
+
 ## 10.0.5
 
 ### Patch Changes
