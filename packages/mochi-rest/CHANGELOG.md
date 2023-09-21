@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 3.0.4
+
+### Patch Changes
+
+- Fix typing for leaderboard response
+
 ## 3.0.3
 
 ### Patch Changes

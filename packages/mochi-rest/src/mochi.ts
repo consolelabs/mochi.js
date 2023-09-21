@@ -131,7 +131,18 @@ export class Mochi {
       }
       list.push(...data.data);
     }
-    this.emojis = new Map(list.map((e) => [e.code.toUpperCase(), e]));
+    this.emojis = new Map();
+    const emojis: Array<[string, Emoji]> = list.map((e) => [
+      e.code.toUpperCase(),
+      e,
+    ]);
+    for (const [code, e] of emojis) {
+      if (!this.emojis.has(code)) {
+        this.emojis.set(code, e);
+      } else {
+        logger.warn(`Emoji code duplicated ⎯  ${code}`);
+      }
+    }
     logger.info(`Emoji config fetch OK ⎯  ${this.emojis.size}`);
   }
 

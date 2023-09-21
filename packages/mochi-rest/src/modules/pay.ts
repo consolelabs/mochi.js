@@ -83,7 +83,10 @@ export class PayModule {
   };
 
   users: {
-    getLeaderboard: Fetcher<void, Leaderboard>;
+    getLeaderboard: Fetcher<
+      void | "alltime" | "weekly" | "monthly",
+      Leaderboard
+    >;
   };
 
   constructor({ addons, payUrl, apiKey, catcher, log }: Options) {
@@ -241,10 +244,10 @@ export class PayModule {
     };
 
     this.users = {
-      getLeaderboard: async function () {
+      getLeaderboard: async function (interval = "alltime") {
         return api
           .url(endpoints.MOCHI_PAY.LEADERBOARD)
-          .query({ size: 10 })
+          .query({ interval, size: 10 })
           .resolve(parse(LeaderboardSchema))
           .get();
       },

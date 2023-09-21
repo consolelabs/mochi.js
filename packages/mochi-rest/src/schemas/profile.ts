@@ -71,8 +71,44 @@ export const ProfileSchema = z.discriminatedUnion("type", [
 export type Profile = z.infer<typeof ProfileSchema>;
 
 export const LeaderboardSchema = z.object({
-  top_sender: z.array(UserProfileSchema),
-  top_receiver: z.array(UserProfileSchema),
+  top_sender: z.array(
+    z.object({
+      profile: UserProfileSchema.merge(
+        z.object({
+          associated_accounts: z.array(
+            AssociatedAccountSchema.merge(
+              z.object({
+                pnl: z.undefined(),
+                total_amount: z.undefined(),
+              })
+            )
+          ),
+          pnl: z.undefined(),
+          type: z.undefined(),
+        })
+      ),
+      usd_amount: z.number().nonnegative(),
+    })
+  ),
+  top_receiver: z.array(
+    z.object({
+      profile: UserProfileSchema.merge(
+        z.object({
+          associated_accounts: z.array(
+            AssociatedAccountSchema.merge(
+              z.object({
+                pnl: z.undefined(),
+                total_amount: z.undefined(),
+              })
+            )
+          ),
+          pnl: z.undefined(),
+          type: z.undefined(),
+        })
+      ),
+      usd_amount: z.number().nonnegative(),
+    })
+  ),
 });
 export type Leaderboard = z.infer<typeof LeaderboardSchema>;
 
