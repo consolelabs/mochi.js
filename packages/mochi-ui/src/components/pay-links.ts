@@ -164,6 +164,7 @@ export default async function (
   return {
     text: [
       ...(withTitle ? ["📜 *Pay link status*"] : []),
+      "Need help? Try `/paylink -h`",
       ...(groupDate && withTitle ? [""] : []),
       text,
       "",
