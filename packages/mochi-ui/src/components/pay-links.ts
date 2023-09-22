@@ -56,7 +56,6 @@ async function formatPayLink(
 
   let text = "";
   switch (status) {
-    case "expire_soon":
     case "pending": {
       text = "new";
       break;
@@ -68,6 +67,11 @@ async function formatPayLink(
         text = `claimed by ${claimer?.value} ${time.relative(
           settledDate.getTime()
         )}`;
+      } else {
+        const [author] = await UI.resolve(on, pl.to_profile_id);
+        text = `claimed from ${author?.value} ${time.relative(
+          settledDate.getTime()
+        )}`;
       }
       break;
     }
@@ -75,6 +79,7 @@ async function formatPayLink(
       text = `expired ${time.relative(expiredDate.getTime())}`;
       break;
     }
+    case "expire_soon":
     case "failed":
     default:
       break;
@@ -121,7 +126,7 @@ export default async function (
       const isLast = i === Object.keys(groupByDate).length - 1;
       const [time, payLinks] = e;
       return [
-        `🗓 Created ${time}`,
+        `🗓 *Created ${time}*`,
         mdTable(payLinks, {
           ...(tableParams ?? {}),
           cols: ["shortCode", "amount", "text"],

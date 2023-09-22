@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.10
+
+### Patch Changes
+
+- Add bold format for paylink group header
+
 ## 10.0.9
 
 ### Patch Changes
