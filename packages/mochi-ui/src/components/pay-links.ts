@@ -58,16 +58,12 @@ async function formatPayLink(
   switch (status) {
     case "expire_soon":
     case "pending": {
+      text = "new";
       break;
     }
     case "success": {
       if (!pl.to_profile_id) break;
-      if (pl.type === "in") {
-        const [author] = await UI.resolve(on, pl.to_profile_id);
-        text = `claimed from ${author?.value} ${time.relative(
-          settledDate.getTime()
-        )}`;
-      } else {
+      if (pl.type !== "in") {
         const [claimer] = await UI.resolve(on, pl.to_profile_id);
         text = `claimed by ${claimer?.value} ${time.relative(
           settledDate.getTime()
@@ -75,14 +71,11 @@ async function formatPayLink(
       }
       break;
     }
-    case "failed": {
-      text = "failed";
-      break;
-    }
     case "expired": {
       text = `expired ${time.relative(expiredDate.getTime())}`;
       break;
     }
+    case "failed":
     default:
       break;
   }
@@ -132,7 +125,7 @@ export default async function (
         mdTable(payLinks, {
           ...(tableParams ?? {}),
           cols: ["shortCode", "amount", "text"],
-          alignment: ["left", "right", "left"],
+          alignment: ["left", "left", "left"],
           wrapCol: [false, true, false],
           row(formatted, index) {
             return payLinks[index].status + " " + formatted;
@@ -147,7 +140,7 @@ export default async function (
     text = mdTable(data, {
       ...(tableParams ?? {}),
       cols: ["shortCode", "amount", "text"],
-      alignment: ["left", "right", "left"],
+      alignment: ["left", "left", "left"],
       wrapCol: [false, true, false],
     });
   }

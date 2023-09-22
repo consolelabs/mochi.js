@@ -242,11 +242,18 @@ async function formatTxn(
         if (tx.other_profile_id) {
           const [sender] = await UI.resolve(on, tx.other_profile_id);
           by = sender?.value;
+          result.text = `${amount} [Pay Link](${HOMEPAGE}/pay/${
+            tx.metadata.code
+          }) ${tx.status === "success" ? `to ${by}` : ""}`;
+        } else if (tx.other_profile_source) {
+          by = await address.lookup(tx.other_profile_source);
+          result.text = `${amount} [Pay Link](${HOMEPAGE}/pay/${
+            tx.metadata.code
+          }) ${tx.status === "success" ? `to ${by}` : ""}`;
         } else {
-          by = address.lookup(tx.other_profile_source);
+          result.text = `${amount} [Pay Link](${HOMEPAGE}/pay/${tx.metadata.code})`;
         }
         result.emoji = emoji;
-        result.text = `${amount} [Pay Link](${HOMEPAGE}/pay/${tx.metadata.paylink_code}) claimed by ${by}`;
         break;
       }
       case "payme": {
@@ -261,11 +268,18 @@ async function formatTxn(
         if (tx.other_profile_id) {
           const [sender] = await UI.resolve(on, tx.other_profile_id);
           by = sender?.value;
+          result.text = `${amount} [Pay Me](${HOMEPAGE}/pay) ${
+            tx.status === "success" ? "from" : "request sent to"
+          } ${by}`;
+        } else if (tx.other_profile_source) {
+          by = await address.lookup(tx.other_profile_source);
+          result.text = `${amount} [Pay Me](${HOMEPAGE}/pay) ${
+            tx.status === "success" ? "from" : "request sent to"
+          } ${by}`;
         } else {
-          by = address.lookup(tx.other_profile_source);
+          result.text = `${amount} [Pay Me](${HOMEPAGE}/pay)`;
         }
         result.emoji = emoji;
-        result.text = `${amount} [Pay Me](${HOMEPAGE}/pay) paid by ${by}`;
         break;
       }
     }

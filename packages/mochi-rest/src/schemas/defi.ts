@@ -108,14 +108,20 @@ export type SwapTx = z.infer<typeof MochiSwapTxSchema>;
 export const MochiPayLinkTxSchema = MochiTxSchema.extend({
   action: z.literal("paylink"),
   metadata: z.object({
-    paylink_code: z.string().nonempty(),
+    code: z.string().nonempty(),
   }),
+  other_profile_id: z.string(),
+  other_profile_source: z.enum(["mochi-balance", "mochi-vault"]).or(z.string()),
+  status: z.enum(["success", "failed", "pending", "expired"]),
 });
 export type PayLinkTx = z.infer<typeof MochiPayLinkTxSchema>;
 
 export const MochiPayMeTxSchema = MochiTxSchema.extend({
   action: z.literal("payme"),
   metadata: z.object({}),
+  other_profile_id: z.string(),
+  other_profile_source: z.enum(["mochi-balance", "mochi-vault"]).or(z.string()),
+  status: z.enum(["success", "failed", "pending", "expired"]),
 });
 export type PayMeTx = z.infer<typeof MochiPayMeTxSchema>;
 

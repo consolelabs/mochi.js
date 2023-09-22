@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 3.0.5
+
+### Patch Changes
+
+- Fix mochi identity bring emoji out of hyperlink, fix payme/paylink status text
+
 ## 3.0.4
 
 ### Patch Changes

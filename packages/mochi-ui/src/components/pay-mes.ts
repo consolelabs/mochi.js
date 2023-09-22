@@ -44,7 +44,6 @@ async function formatPayMe(
   pm: PayMe,
   on: Platform.Web | Platform.Telegram | Platform.Discord
 ) {
-  const settledDate = pm.settled_at ? new Date(pm.settled_at) : new Date();
   const expiredDate = new Date(pm.expired_at);
   const createdDate = new Date(pm.created_at);
   const t = time.relative(createdDate.getTime());
@@ -57,14 +56,20 @@ async function formatPayMe(
 
   let text = "";
   switch (status) {
+    case "failed":
+    case "expired":
     case "expire_soon":
     case "pending": {
-      if (!pm.to_profile_id) break;
+      if (!pm.to_profile_id) {
+        text = "You requested";
+        break;
+      }
       if (pm.type === "out") {
         const [author] = await UI.resolve(on, pm.to_profile_id);
-        text = `${author?.value} requested you ${time.relative(
-          createdDate.getTime()
-        )}`;
+        text = `${author?.value} requested you`;
+      } else {
+        const [claimer] = await UI.resolve(on, pm.to_profile_id);
+        text = `You requested ${claimer?.value}`;
       }
       break;
     }
@@ -72,18 +77,13 @@ async function formatPayMe(
       if (!pm.to_profile_id) break;
       if (pm.type === "out") {
         const [author] = await UI.resolve(on, pm.to_profile_id);
-        text = `paid ${author?.value} ${time.relative(settledDate.getTime())}`;
+        text = `You paid ${author?.value}`;
+      } else {
+        const [claimer] = await UI.resolve(on, pm.to_profile_id);
+        text = `${claimer?.value} paid you`;
       }
       break;
     }
-    case "failed": {
-      text = "failed";
-      break;
-    }
-    case "expired":
-      text = `expired ${time.relative(expiredDate.getTime())}`;
-      break;
-
     default:
       break;
   }
@@ -133,7 +133,7 @@ export default async function (
         mdTable(payMes, {
           ...(tableParams ?? {}),
           cols: ["shortCode", "amount", "text"],
-          alignment: ["left", "right", "left"],
+          alignment: ["left", "left", "left"],
           wrapCol: [false, true, false],
           row(formatted, index) {
             return payMes[index].status + " " + formatted;
@@ -148,7 +148,7 @@ export default async function (
     text = mdTable(data, {
       ...(tableParams ?? {}),
       cols: ["shortCode", "amount", "text"],
-      alignment: ["left", "right", "left"],
+      alignment: ["left", "left", "left"],
       wrapCol: [false, true, false],
     });
   }

@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 10.0.9
+
+### Patch Changes
+
+- Fix mochi identity bring emoji out of hyperlink, fix payme/paylink status text
+- Updated dependencies
+  - @consolelabs/mochi-rest@3.0.5
+
 ## 10.0.8
 
 ### Patch Changes
