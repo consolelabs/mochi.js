@@ -246,13 +246,11 @@ export class PayModule {
 
     this.users = {
       getLeaderboard: async function (interval = "alltime") {
-        const res = await api
+        return api
           .url(endpoints.MOCHI_PAY.LEADERBOARD)
           .query({ interval, size: 10 })
           .resolve(parse(LeaderboardSchema))
           .get();
-        logger.info(res);
-        return res;
       },
     };
   }

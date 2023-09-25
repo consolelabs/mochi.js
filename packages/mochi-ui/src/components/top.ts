@@ -39,44 +39,42 @@ export default async function ({ api, on, timerange }: Props) {
   );
   if (!ok) throw new Error("Couldn't get leaderboard data");
 
-  const topSender = leaderboard.top_sender.map((d) => {
+  const topSender = leaderboard.top_sender.map((d, i) => {
     const [name] = UI.render(on, d.profile as any);
 
     return {
+      pos: pos[i],
       name: name?.value ?? "",
       usd: utils.formatUsdDigit(d.usd_amount),
     };
   });
 
-  const topReceiver = leaderboard.top_receiver.map((d) => {
+  const topReceiver = leaderboard.top_receiver.map((d, i) => {
     const [name] = UI.render(on, d.profile as any);
 
     return {
+      pos: pos[i],
       name: name?.value ?? "",
       usd: utils.formatUsdDigit(d.usd_amount),
     };
   });
 
   const sender = utils.mdTable(topSender, {
-    cols: ["usd", "name"],
-    wrapCol: on === Platform.Discord ? [true, false] : [true, false, false],
-    alignment: ["right", "left"],
-    ...(on === Platform.Discord
-      ? {
-          row: (f, i) => `${pos[i]}${VERTICAL_BAR}${f}`,
-        }
-      : {}),
+    cols: on === Platform.Discord ? ["usd", "name"] : ["pos", "usd", "name"],
+    wrapCol: on === Platform.Discord ? [true, false] : [true, true, false],
+    alignment:
+      on === Platform.Discord ? ["right", "left"] : ["left", "right", "left"],
+    row: (f, i) =>
+      on === Platform.Discord ? `${pos[i]}${VERTICAL_BAR}${f}` : f,
   });
 
   const receiver = utils.mdTable(topReceiver, {
-    cols: ["usd", "name"],
-    wrapCol: on === Platform.Discord ? [true, false] : [true, false, false],
-    alignment: ["right", "left"],
-    ...(on === Platform.Discord
-      ? {
-          row: (f, i) => `${pos[i]}${VERTICAL_BAR}${f}`,
-        }
-      : {}),
+    cols: on === Platform.Discord ? ["usd", "name"] : ["pos", "usd", "name"],
+    wrapCol: on === Platform.Discord ? [true, false] : [true, true, false],
+    alignment:
+      on === Platform.Discord ? ["right", "left"] : ["left", "right", "left"],
+    row: (f, i) =>
+      on === Platform.Discord ? `${pos[i]}${VERTICAL_BAR}${f}` : f,
   });
 
   let timePhrase = "";
@@ -125,7 +123,9 @@ export default async function ({ api, on, timerange }: Props) {
   lines.push(`This data is recorded ${timePhrase}`);
 
   return {
-    title: `${leaderboardTitle} Tip Leaderboard`,
+    title: `${
+      on === Platform.Telegram ? "*" : ""
+    }${leaderboardTitle} Tip Leaderboard${on === Platform.Telegram ? "*" : ""}`,
     text: lines.join("\n"),
   };
 }
