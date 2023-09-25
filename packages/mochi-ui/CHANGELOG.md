@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.13
+
+### Patch Changes
+
+- Fix group date title in some components
+
 ## 10.0.12
 
 ### Patch Changes

@@ -178,7 +178,9 @@ export default async function (
       const [time, activities] = e;
 
       return [
-        `🗓 ${time}`,
+        `🗓 ${on === Platform.Telegram ? "*" : "**"}${time}${
+          on === Platform.Telegram ? "*" : "**"
+        }`,
         mdTable(activities, {
           ...(tableParams ?? {}),
           cols: ["text"],

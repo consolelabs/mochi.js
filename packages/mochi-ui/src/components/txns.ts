@@ -49,7 +49,7 @@ async function formatTxn(
 ) {
   const date = new Date("created_at" in tx ? tx.created_at : tx.signed_at);
   const t = groupDate
-    ? time.relative(date.getTime(), "Created")
+    ? time.relative(date.getTime(), "Created ")
     : time.relativeShort(date.getTime());
   const result = {
     time: t,
@@ -407,7 +407,9 @@ export default async function (
       const isLast = i === Object.keys(groupByDate).length - 1;
       const [time, txns] = e;
       return [
-        `🗓 *${time}*`,
+        `🗓 ${on === Platform.Telegram ? "*" : "**"}${time}${
+          on === Platform.Telegram ? "*" : "**"
+        }`,
         mdTable(txns, {
           ...(tableParams ?? {}),
           cols: global ? ["amount", "text"] : ["external_id", "text"],

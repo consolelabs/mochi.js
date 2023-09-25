@@ -46,7 +46,7 @@ async function formatPayLink(
   const settledDate = pl.settled_at ? new Date(pl.settled_at) : new Date();
   const expiredDate = new Date(pl.expired_at);
   const createdDate = new Date(pl.created_at);
-  const t = time.relative(createdDate.getTime(), "Created");
+  const t = time.relative(createdDate.getTime(), "Created ");
   const code = pl.code;
   const status = updateStatus(pl.status, expiredDate);
   const statusIcon = STATUS_MAP[status] || "🔵";
@@ -126,7 +126,9 @@ export default async function (
       const isLast = i === Object.keys(groupByDate).length - 1;
       const [time, payLinks] = e;
       return [
-        `🗓 *${time}*`,
+        `🗓 ${on === Platform.Telegram ? "*" : "**"}${time}${
+          on === Platform.Telegram ? "*" : "**"
+        }`,
         mdTable(payLinks, {
           ...(tableParams ?? {}),
           cols: ["shortCode", "amount", "text"],
