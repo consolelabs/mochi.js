@@ -99,7 +99,6 @@ export default async function ({ api, on, timerange }: Props) {
   }
 
   const lines = [];
-  lines.push("");
   lines.push(
     `${on === Platform.Telegram ? "*" : "**"}🚀 Top 10 senders${
       on === Platform.Telegram ? "*" : "**"
@@ -125,7 +124,7 @@ export default async function ({ api, on, timerange }: Props) {
   }
   lines.push("");
 
-  lines.push(`_This data is recorded ${timePhrase}_`);
+  lines.push(`This data is recorded ${timePhrase}`);
 
   return {
     title: `${leaderboardTitle} Tip Leaderboard`,

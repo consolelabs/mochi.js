@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.12
+
+### Patch Changes
+
+- Fix italic text in top component
+
 ## 10.0.11
 
 ### Patch Changes
