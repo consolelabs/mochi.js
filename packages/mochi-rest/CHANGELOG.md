@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 3.0.7
+
+### Patch Changes
+
+- Debug
+
 ## 3.0.6
 
 ### Patch Changes

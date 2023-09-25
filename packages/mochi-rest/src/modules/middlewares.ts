@@ -20,6 +20,7 @@ export const log = (next: any) => (url: string, opts: WretchOptions) => {
           opts.body ? ` with body ${opts.body}` : ""
         }`
       );
+      logger.info(r);
     } else {
       logger.error(
         `[API failed - ${opts.method}/${r.status}]: ${url}${

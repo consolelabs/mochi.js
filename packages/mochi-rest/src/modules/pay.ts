@@ -32,6 +32,7 @@ import {
 } from "../schemas";
 import { Options } from "../mochi";
 import endpoints from "../endpoints";
+import { logger } from "../logger";
 
 export class PayModule {
   profile: {
@@ -245,11 +246,13 @@ export class PayModule {
 
     this.users = {
       getLeaderboard: async function (interval = "alltime") {
-        return api
+        const res = await api
           .url(endpoints.MOCHI_PAY.LEADERBOARD)
           .query({ interval, size: 10 })
           .resolve(parse(LeaderboardSchema))
           .get();
+        logger.info(res);
+        return res;
       },
     };
   }

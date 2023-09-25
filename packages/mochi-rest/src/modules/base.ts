@@ -6,7 +6,6 @@ import {
   convertQueryToSnakeCase,
   log,
 } from "./middlewares";
-import { throttlingCache } from "wretch/middlewares/throttlingCache";
 import type { Fetcher } from "../utils";
 import {
   AnySchema,
@@ -66,7 +65,6 @@ const base = wretch()
     convertQueryToSnakeCase,
     convertBodyToSnakeCase,
     log,
-    throttlingCache(),
   ])
   .addon(QueryStringAddon);
 
