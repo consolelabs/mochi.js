@@ -1,4 +1,4 @@
-const rtf = new Intl.RelativeTimeFormat("en", {
+const rtf = new Intl.RelativeTimeFormat("en-US", {
   style: "narrow",
   numeric: "auto",
 });
@@ -20,7 +20,7 @@ function relative(ms: string | number, prefix = "") {
   // to days
   num = num / 24;
   // round
-  num = Math.round(num);
+  num = Math.floor(num);
   const output = rtf.format(num, "day");
 
   return prefix + output;

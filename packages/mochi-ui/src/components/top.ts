@@ -96,7 +96,7 @@ export default async function ({ api, on, timerange }: Props) {
 
   const lines = [];
   lines.push(
-    `${on === Platform.Telegram ? "*" : "**"}🚀 Top 10 senders${
+    `${on === Platform.Telegram ? "*" : "**\\"}🚀 Top 10 senders${
       on === Platform.Telegram ? "*" : "**"
     }`
   );
@@ -109,7 +109,7 @@ export default async function ({ api, on, timerange }: Props) {
 
   lines.push("");
   lines.push(
-    `${on === Platform.Telegram ? "*" : "**"}🎯 Top 10 receivers${
+    `${on === Platform.Telegram ? "*" : "**\\"}🎯 Top 10 receivers${
       on === Platform.Telegram ? "*" : "**"
     }`
   );
