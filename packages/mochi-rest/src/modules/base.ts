@@ -6,7 +6,7 @@ import {
   convertQueryToSnakeCase,
   log,
 } from "./middlewares";
-import { throttlingCache } from "wretch/middlewares";
+import { throttlingCache } from "wretch/middlewares/throttlingCache";
 import type { Fetcher } from "../utils";
 import {
   AnySchema,
@@ -88,11 +88,7 @@ export class BaseModule {
     getCopy: Fetcher<string | void, Copy>;
     getCommands: Fetcher<void, Array<Command>>;
     getChangelogs: Fetcher<void, Array<Changelog>>;
-    getEmojis: Fetcher<
-      { page?: number; size?: number } | void,
-      Array<Emoji>,
-      Pagination
-    >;
+    getEmojis: Fetcher<{ codes: string[] } | void, Array<Emoji>, Pagination>;
   };
 
   tip: {
@@ -476,7 +472,7 @@ export class BaseModule {
       getEmojis: async function (param) {
         return api
           .url(endpoints.MOCHI.METADATA_GET_EMOJIS)
-          .query({ page: param?.page ?? 0, size: param?.size ?? 100 })
+          .query({ codes: param?.codes.join(",") ?? "" })
           .resolve(parse(EmojiListSchema)<Pagination>)
           .get();
       },

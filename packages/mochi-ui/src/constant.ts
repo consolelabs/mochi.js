@@ -1,5 +1,6 @@
 export const MIN_DUST_USD = 0.001;
 export const APPROX = "≈";
+export const VERTICAL_BAR = "｜";
 export const HOMEPAGE = "https://mochi.gg";
 export const DISCORD_PROFILE = "https://dicordapp.com/users";
 export const TELEGRAM_PROFILE = "tg://user?id=";

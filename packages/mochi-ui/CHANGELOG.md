@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 10.0.11
+
+### Patch Changes
+
+- new recap/top component
+- Updated dependencies
+  - @consolelabs/mochi-rest@3.0.6
+
 ## 10.0.10
 
 ### Patch Changes

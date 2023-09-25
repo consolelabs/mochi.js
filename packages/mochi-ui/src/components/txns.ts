@@ -44,10 +44,13 @@ async function formatTxn(
   tx: Tx,
   on: Platform.Web | Platform.Telegram | Platform.Discord,
   global: boolean,
+  groupDate: boolean,
   api?: API
 ) {
   const date = new Date("created_at" in tx ? tx.created_at : tx.signed_at);
-  const t = time.relative(date.getTime());
+  const t = groupDate
+    ? time.relative(date.getTime(), "Created")
+    : time.relativeShort(date.getTime());
   const result = {
     time: t,
     emoji: "",
@@ -389,7 +392,7 @@ export default async function (
       txns
         .sort(latest)
         .filter(beforeMap)
-        .map((tx) => formatTxn(tx, on, global, api))
+        .map((tx) => formatTxn(tx, on, global, groupDate, api))
     )
   ).filter((t) => t.text);
 
@@ -404,7 +407,7 @@ export default async function (
       const isLast = i === Object.keys(groupByDate).length - 1;
       const [time, txns] = e;
       return [
-        `🗓 ${time}`,
+        `🗓 *${time}*`,
         mdTable(txns, {
           ...(tableParams ?? {}),
           cols: global ? ["amount", "text"] : ["external_id", "text"],
@@ -436,13 +439,23 @@ export default async function (
     totalPage: total,
   });
 
+  let emoji = "📜";
+  if (api && on === Platform.Discord) {
+    const { ok, data } = await api.base.metadata.getEmojis({
+      codes: ["PROPOSAL"],
+    });
+    if (ok) {
+      emoji = data.at(0)?.emoji ?? "📜";
+    }
+  }
+
   return {
     text: [
       ...(withTitle
         ? [
-            `📜 *${on === Platform.Discord ? "*" : ""}History${
-              on === Platform.Discord ? "*" : ""
-            }*`,
+            `${emoji} ${on === Platform.Discord ? "**" : "*"}History${
+              on === Platform.Discord ? "**" : "*"
+            }`,
           ]
         : []),
       ...(groupDate && withTitle ? [""] : []),

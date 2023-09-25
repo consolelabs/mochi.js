@@ -11,6 +11,8 @@ import pageIndicator from "./page-indicator";
 import changelog from "./changelog";
 import swapRoute from "./swap-route";
 import amount from "./amount";
+import recap from "./recap";
+import top from "./top";
 
 export default {
   balance,
@@ -26,4 +28,6 @@ export default {
   payMes,
   swapRoute,
   amount,
+  recap,
+  top,
 };

@@ -123,12 +123,21 @@ function telegram(content: any, ctx: Context) {
   return text;
 }
 
-function emojiByPlatform(on: Platform.Telegram | Platform.Discord, api?: API) {
+async function emojiByPlatform(
+  on: Platform.Telegram | Platform.Discord,
+  api?: API
+) {
   switch (on) {
     case Platform.Telegram:
       return "🎊";
-    case Platform.Discord:
-      return api?.emojis.get("ANIMATED_PARTY_POPPER")?.emoji ?? "🎊";
+    case Platform.Discord: {
+      if (!api) return "🎊";
+      const { ok, data } = await api.base.metadata.getEmojis({
+        codes: ["ANIMATED_PARTY_POPPER"],
+      });
+      if (!ok) return "🎊";
+      return data.at(0)?.emoji ?? "🎊";
+    }
     default:
       return "🎊";
   }

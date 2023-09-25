@@ -14,10 +14,11 @@ export default async function ({ amount, symbol, api, on, prefix }: Props) {
   const text = `${prefix || ""}${formatTokenDigit(amount)} ${symbol}`;
   let full = `<emoji> ${text}`;
   let image = null;
-  let emoji = api?.emojis.get("COIN")?.emoji ?? "<a:_:1093923016691421205>";
+  let emoji = api?.fallbackCoinEmoji.emoji ?? "";
 
   if (api && [Platform.Discord, Platform.Web].includes(on)) {
-    const emojiObj = api.emojis.get(symbol);
+    const { data } = await api.base.metadata.getEmojis({ codes: [symbol] });
+    let emojiObj = data?.at(0);
     if (emojiObj) {
       if (on === Platform.Discord) {
         emoji = emojiObj.emoji.replaceAll("_", symbol.toLowerCase());

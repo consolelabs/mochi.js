@@ -21,6 +21,7 @@ export type {
   SwapRouteDataCode,
   Route,
   RouteSummary,
+  Stats,
 } from "./schemas";
 
 export { CommandScope } from "./schemas";

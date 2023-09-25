@@ -46,7 +46,7 @@ async function formatPayMe(
 ) {
   const expiredDate = new Date(pm.expired_at);
   const createdDate = new Date(pm.created_at);
-  const t = time.relative(createdDate.getTime());
+  const t = time.relative(createdDate.getTime(), "Created");
   const status = updateStatus(pm.status, expiredDate);
   const code = pm.code;
   const statusIcon = STATUS_MAP[status] || "🔵";
@@ -129,7 +129,7 @@ export default async function (
       const isLast = i === Object.keys(groupByDate).length - 1;
       const [time, payMes] = e;
       return [
-        `🗓 *Created ${time}*`,
+        `🗓 *${time}*`,
         mdTable(payMes, {
           ...(tableParams ?? {}),
           cols: ["shortCode", "amount", "text"],

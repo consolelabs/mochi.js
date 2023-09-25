@@ -52,7 +52,7 @@ export class Mochi {
 
   private copy: { tip: string[]; fact: string[] } = { tip: [], fact: [] };
   changelogs: Changelog[] = [];
-  emojis: Map<string, Emoji> = new Map();
+  fallbackCoinEmoji: Emoji = { code: "", emoji: "", emoji_url: "" };
 
   constructor(_opts: Options) {
     const opts = deepmerge(defaultOptions, _opts);
@@ -69,7 +69,7 @@ export class Mochi {
         this.fetchProductCopy(),
         this.fetchChangelogs(),
         this.fetchWhitelistTokens(),
-        this.fetchEmojis(),
+        this.fetchFallbackCoinEmoji(),
       ]);
       for (const res of results) {
         if (res.status === "rejected") {
@@ -110,40 +110,6 @@ export class Mochi {
 
   isTokenWhitelisted(symbol: string, address: string): boolean {
     return this.whitelistTokens.get(symbol) === address;
-  }
-
-  private async fetchEmojis() {
-    const list: Array<Emoji> = [];
-    let page = 0;
-    const size = 30 as const;
-    const page1 = await this.base.metadata.getEmojis({ page, size });
-    if (!page1.ok) {
-      throw new Error(`Cannot fetch emojis configs ${page1.error}`);
-    }
-    list.push(...page1.data);
-    const { total } = page1.pagination;
-    const totalPage = Math.ceil(total / size) - 1;
-    while (page < totalPage) {
-      page++;
-      const data = await this.base.metadata.getEmojis({ page, size });
-      if (!data.ok) {
-        throw new Error(`Cannot fetch emojis configs ${data.error}`);
-      }
-      list.push(...data.data);
-    }
-    this.emojis = new Map();
-    const emojis: Array<[string, Emoji]> = list.map((e) => [
-      e.code.toUpperCase(),
-      e,
-    ]);
-    for (const [code, e] of emojis) {
-      if (!this.emojis.has(code)) {
-        this.emojis.set(code, e);
-      } else {
-        logger.warn(`Emoji code duplicated ⎯  ${code}`);
-      }
-    }
-    logger.info(`Emoji config fetch OK ⎯  ${this.emojis.size}`);
   }
 
   private async fetchCommandConfigs() {
@@ -212,5 +178,14 @@ export class Mochi {
       result.data.map((t) => [t.symbol, t.address])
     );
     logger.info("Whitelist tokens fetch OK");
+  }
+
+  private async fetchFallbackCoinEmoji() {
+    const result = await this.base.metadata.getEmojis({ codes: ["COIN"] });
+    const emoji = result.data?.at(0);
+    if (!result.ok || !emoji)
+      throw new Error(`Cannot fetch fallback coin emoji ${result.error}`);
+    this.fallbackCoinEmoji = emoji;
+    logger.info("Fallback coin emoji fetch OK");
   }
 }

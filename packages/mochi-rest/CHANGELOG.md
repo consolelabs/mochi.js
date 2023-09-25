@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 3.0.6
+
+### Patch Changes
+
+- new recap/top component
+
 ## 3.0.5
 
 ### Patch Changes
