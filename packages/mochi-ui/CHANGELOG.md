@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.14
+
+### Patch Changes
+
+- Fix alignment in top component
+
 ## 10.0.13
 
 ### Patch Changes

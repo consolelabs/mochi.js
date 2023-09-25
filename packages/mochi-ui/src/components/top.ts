@@ -61,7 +61,7 @@ export default async function ({ api, on, timerange }: Props) {
     cols: ["usd", "name"],
     wrapCol: on === Platform.Discord ? [true, false] : [true, false, false],
     alignment:
-      on === Platform.Discord ? ["right", "left"] : ["left", "left", "left"],
+      on === Platform.Discord ? ["right", "left"] : ["left", "right", "left"],
     ...(on === Platform.Discord
       ? {
           row: (f, i) => `${pos[i]}${VERTICAL_BAR}${f}`,
@@ -73,7 +73,7 @@ export default async function ({ api, on, timerange }: Props) {
     cols: ["usd", "name"],
     wrapCol: on === Platform.Discord ? [true, false] : [true, false, false],
     alignment:
-      on === Platform.Discord ? ["right", "left"] : ["left", "left", "left"],
+      on === Platform.Discord ? ["right", "left"] : ["left", "right", "left"],
     ...(on === Platform.Discord
       ? {
           row: (f, i) => `${pos[i]}${VERTICAL_BAR}${f}`,
