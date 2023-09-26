@@ -9,6 +9,7 @@ type Props = {
 };
 
 let pos: Array<string> = [];
+let title: Array<string> = [];
 
 export default async function ({ api, on, timerange }: Props) {
   if (on === Platform.Discord) {
@@ -18,21 +19,64 @@ export default async function ({ api, on, timerange }: Props) {
           "ANIMATED_BADGE_1",
           "ANIMATED_BADGE_2",
           "ANIMATED_BADGE_3",
-          "BLANK",
+          "NUM_4",
+          "NUM_5",
+          "NUM_6",
+          "NUM_7",
+          "NUM_8",
+          "NUM_9",
+          "ANIMATED_SHRUGGING",
         ],
       });
       if (ok) {
-        const [badge1, badge2, badge3, blank] = data;
+        const [
+          badge1,
+          badge2,
+          badge3,
+          num4,
+          num5,
+          num6,
+          num7,
+          num8,
+          num9,
+          num10,
+        ] = data;
         pos = [
-          badge3.emoji,
-          badge1.emoji,
           badge2.emoji,
-          ...Array(7).fill(blank.emoji),
+          badge1.emoji,
+          badge3.emoji,
+          num4.emoji,
+          num5.emoji,
+          num6.emoji,
+          num7.emoji,
+          num8.emoji,
+          num9.emoji,
+          num10.emoji,
         ];
+      }
+
+      const { ok: okTitleEmoji, data: titleEmoji } =
+        await api.base.metadata.getEmojis({
+          codes: ["ANIMATED_MONEY", "SHARE"],
+        });
+      if (okTitleEmoji) {
+        const [money, sharing] = titleEmoji;
+        title = [money.emoji, sharing.emoji];
       }
     }
   } else {
-    pos = ["1st", "2nd", "3rd", ...Array(7).fill("")];
+    pos = [
+      "1st",
+      "2nd",
+      "3rd",
+      "4th",
+      "5th",
+      "6th",
+      "7th",
+      "8th",
+      "9th",
+      "10th",
+    ];
   }
   const { ok, data: leaderboard } = await api.pay.users.getLeaderboard(
     timerange
@@ -95,10 +139,14 @@ export default async function ({ api, on, timerange }: Props) {
   }
 
   const lines = [];
+
+  const senderTitleEmoji = on === Platform.Telegram ? `🚀` : title[0];
+  const receiverTitleEmoji = on === Platform.Telegram ? `🎯` : title[1];
+
   lines.push(
-    `${on === Platform.Telegram ? "*" : "**\\"}🚀 Top 10 senders${
+    `${senderTitleEmoji}${
       on === Platform.Telegram ? "*" : "**"
-    }`
+    } Top 10 senders${on === Platform.Telegram ? "*" : "**"}`
   );
 
   if (sender.length == 0) {
@@ -109,9 +157,9 @@ export default async function ({ api, on, timerange }: Props) {
 
   lines.push("");
   lines.push(
-    `${on === Platform.Telegram ? "*" : "**\\"}🎯 Top 10 receivers${
+    `${receiverTitleEmoji}${
       on === Platform.Telegram ? "*" : "**"
-    }`
+    } Top 10 receivers${on === Platform.Telegram ? "*" : "**"}`
   );
   if (receiver.length == 0) {
     lines.push("There are no outstanding receivers, yet\\.");
