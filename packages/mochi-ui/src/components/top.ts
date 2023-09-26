@@ -24,11 +24,10 @@ export default async function ({ api, on, timerange }: Props) {
           "NUM_7",
           "NUM_8",
           "NUM_9",
-          "NUM_10",
+          "ANIMATED_SHRUGGING",
         ],
       });
       if (ok) {
-        console.log(data);
         const [
           badge1,
           badge2,
