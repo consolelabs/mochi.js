@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.21
+
+### Patch Changes
+
+- 7059356: Use new emoji
+
 ## 10.0.20
 
 ### Patch Changes
