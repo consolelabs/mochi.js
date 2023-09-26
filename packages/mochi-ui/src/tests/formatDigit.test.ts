@@ -14,7 +14,7 @@ test.each([
   [-123, "-$123"],
   [-23456, "-$23,456"],
   [123456, "$123.5K"],
-  [0.00001, "$0.01"],
+  [0.00001, "< $0.01"],
   [10.00001, "$10.00001"],
 ])("formatUsdDigit", (input, output) => {
   expect(formatUsdDigit(input)).toEqual(output);

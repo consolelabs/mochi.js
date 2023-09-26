@@ -8,7 +8,7 @@ export function formatPercentDigit(params: FormatParam) {
 
 export function formatUsdDigit(params: FormatParam) {
   const tooSmall = Math.abs(toNum(params)) <= 0.01;
-  if (tooSmall) return "$0.01";
+  if (tooSmall) return "< $0.01";
   const isNeg = Math.sign(toNum(params)) < 0;
   const num = call(params, formatDigit, {
     fractionDigits: toNum(params) >= 100 ? 0 : 2,

@@ -48,7 +48,7 @@ const PLATFORM_EMOJI_PREFIX = new Proxy(
     [Platform.App]: "🔌",
     [Platform.Mochi]: "🍡",
     [Platform.Vault]: "🏦",
-    [Platform.Email]: "✉️",
+    [Platform.Email]: "📩",
   },
   {
     get(obj, prop) {

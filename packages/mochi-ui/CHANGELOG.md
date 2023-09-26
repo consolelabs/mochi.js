@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.20
+
+### Patch Changes
+
+- Add rendering rule for small numbers e.g. < $0.01 and change the Mochi mail emoji
+
 ## 10.0.19
 
 ### Patch Changes
