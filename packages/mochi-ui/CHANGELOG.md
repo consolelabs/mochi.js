@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.22
+
+### Patch Changes
+
+- Change status text of payme
+
 ## 10.0.21
 
 ### Patch Changes

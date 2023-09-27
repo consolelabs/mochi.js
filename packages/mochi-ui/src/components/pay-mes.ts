@@ -61,7 +61,7 @@ async function formatPayMe(
     case "expire_soon":
     case "pending": {
       if (!pm.to_profile_id) {
-        text = "You created a pay link";
+        text = "You created a request";
         break;
       }
       if (pm.type === "out") {
