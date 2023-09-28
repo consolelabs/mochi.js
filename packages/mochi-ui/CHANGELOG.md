@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.23
+
+### Patch Changes
+
+- Remove "Created" prefix, remove "mail:" prefix
+
 ## 10.0.22
 
 ### Patch Changes

@@ -70,7 +70,7 @@ const PLATFORM_PREFIX = new Proxy(
     [Platform.App]: "app:",
     [Platform.Mochi]: "mochi:",
     [Platform.Vault]: "vault:",
-    [Platform.Email]: "mail:",
+    [Platform.Email]: "",
   },
   {
     get(obj, prop) {

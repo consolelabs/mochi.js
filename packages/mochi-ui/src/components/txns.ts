@@ -40,7 +40,7 @@ function isVault(
   );
 }
 
-async function formatTxn(
+export async function formatTxn(
   tx: Tx,
   on: Platform.Web | Platform.Telegram | Platform.Discord,
   global: boolean,
@@ -49,7 +49,7 @@ async function formatTxn(
 ) {
   const date = new Date("created_at" in tx ? tx.created_at : tx.signed_at);
   const t = groupDate
-    ? time.relative(date.getTime(), "Created ")
+    ? time.relative(date.getTime())
     : time.relativeShort(date.getTime());
   const result = {
     time: t,
@@ -340,7 +340,7 @@ function filterOnchainOnlyTransfer(tx: Tx) {
   return true;
 }
 
-function beforeMap(tx: Tx) {
+export function filterNoise(tx: Tx) {
   for (const checker of [filterSpamToken, filterOnchainOnlyTransfer]) {
     const stillValid = checker(tx);
     if (!stillValid) {
@@ -351,7 +351,7 @@ function beforeMap(tx: Tx) {
   return true;
 }
 
-function latest(tx1: Tx, tx2: Tx) {
+export function latest(tx1: Tx, tx2: Tx) {
   let time1, time2;
   if ("signed_at" in tx1) {
     time1 = new Date(tx1.signed_at).getTime();
@@ -391,7 +391,7 @@ export default async function (
     await Promise.all(
       txns
         .sort(latest)
-        .filter(beforeMap)
+        .filter(filterNoise)
         .map((tx) => formatTxn(tx, on, global, groupDate, api))
     )
   ).filter((t) => t.text);

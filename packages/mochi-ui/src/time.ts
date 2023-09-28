@@ -8,7 +8,7 @@ const customRelativeFormatMap = new Map([
   ["tomorrow", "tmr"],
 ]);
 
-function relative(ms: string | number, prefix = "") {
+function relative(ms: string | number) {
   let num = Number(ms) - Date.now();
   // convert to number of days
   // to seconds
@@ -23,11 +23,11 @@ function relative(ms: string | number, prefix = "") {
   num = Math.floor(num);
   const output = rtf.format(num, "day");
 
-  return prefix + output;
+  return output;
 }
 
-function relativeShort(ms: string | number, prefix = "") {
-  const output = relative(ms, prefix);
+function relativeShort(ms: string | number) {
+  const output = relative(ms);
 
   return customRelativeFormatMap.get(output.toLowerCase()) || output;
 }
