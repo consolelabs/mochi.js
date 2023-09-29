@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.25
+
+### Patch Changes
+
+- c3fe740: Use discord emoji if on discord
+
 ## 10.0.24
 
 ### Patch Changes
