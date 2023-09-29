@@ -9,6 +9,7 @@ import type { PayLink, PaylinkStatus } from "@consolelabs/mochi-rest";
 import groupBy from "lodash.groupby";
 import string from "../string";
 import API from "@consolelabs/mochi-rest";
+import { VERTICAL_BAR } from "../constant";
 
 const STATUS_MAP: Record<PaylinkStatus | "expire_soon", string> = {
   success: "✅",
@@ -56,6 +57,18 @@ async function formatPayLink(
   const amount = formatTokenDigit(
     formatUnits(pl.amount || 0, pl.token.decimal)
   );
+  let emoji = "";
+  if (api) {
+    const { data } = await api.base.metadata.getEmojis({
+      codes: [pl.token.symbol],
+    });
+    const e = data?.at(0);
+    if (e) {
+      emoji = e.emoji;
+    } else {
+      emoji = api.fallbackCoinEmoji.emoji;
+    }
+  }
 
   let text = "";
   switch (status) {
@@ -88,16 +101,6 @@ async function formatPayLink(
       break;
   }
 
-  let emoji = api?.fallbackCoinEmoji.emoji ?? "";
-  if (api) {
-    const { data } = await api?.base.metadata.getEmojis({
-      codes: [pl.token.symbol.toUpperCase()],
-    });
-    if (data) {
-      emoji = data[0].emoji;
-    }
-  }
-
   const result = {
     status: `${on === Platform.Discord ? "\\" + statusIcon : statusIcon}`,
     time: t,
@@ -106,8 +109,8 @@ async function formatPayLink(
         ? emoji + `\`${amount} ${pl.token.symbol.toUpperCase()}\``
         : `\`${amount} ${pl.token.symbol.toUpperCase()}\``,
     shortCode: string.receiptLink(code, true),
-    text: text,
-    emoji: emoji,
+    text,
+    emoji,
   };
 
   return result;
@@ -153,6 +156,20 @@ export default async function (
           alignment: ["left", "left", "left"],
           wrapCol: [false, false, false],
           row(formatted, index) {
+            if (on === Platform.Discord) {
+              const [code, amount, text] = formatted.split(VERTICAL_BAR);
+              return (
+                payLinks[index].status +
+                " " +
+                code +
+                VERTICAL_BAR +
+                payLinks[index].emoji +
+                " " +
+                amount +
+                VERTICAL_BAR +
+                text
+              );
+            }
             return payLinks[index].status + " " + formatted;
           },
         }),
