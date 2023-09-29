@@ -8,6 +8,8 @@ import pageIndicator from "./page-indicator";
 import type { PayLink, PaylinkStatus } from "@consolelabs/mochi-rest";
 import groupBy from "lodash.groupby";
 import string from "../string";
+import API from "@consolelabs/mochi-rest";
+import { VERTICAL_BAR } from "../constant";
 
 const STATUS_MAP: Record<PaylinkStatus | "expire_soon", string> = {
   success: "✅",
@@ -37,11 +39,13 @@ type Props = {
   on?: Platform.Discord | Platform.Telegram | Platform.Web;
   withTitle?: boolean;
   groupDate?: boolean;
+  api?: API;
 };
 
 async function formatPayLink(
   pl: PayLink,
-  on: Platform.Web | Platform.Telegram | Platform.Discord
+  on: Platform.Web | Platform.Telegram | Platform.Discord,
+  api?: API
 ) {
   const settledDate = pl.settled_at ? new Date(pl.settled_at) : new Date();
   const expiredDate = new Date(pl.expired_at);
@@ -53,6 +57,18 @@ async function formatPayLink(
   const amount = formatTokenDigit(
     formatUnits(pl.amount || 0, pl.token.decimal)
   );
+  let emoji = "";
+  if (api) {
+    const { data } = await api.base.metadata.getEmojis({
+      codes: [pl.token.symbol],
+    });
+    const e = data?.at(0);
+    if (e) {
+      emoji = e.emoji;
+    } else {
+      emoji = api.fallbackCoinEmoji.emoji;
+    }
+  }
 
   let text = "";
   switch (status) {
@@ -86,11 +102,12 @@ async function formatPayLink(
   }
 
   const result = {
-    status: statusIcon,
+    status: `${on === Platform.Discord ? "\\" + statusIcon : statusIcon}`,
     time: t,
     amount: amount + " " + pl.token.symbol.toUpperCase(),
     shortCode: string.receiptLink(code, true),
     text,
+    emoji,
   };
 
   return result;
@@ -111,11 +128,12 @@ export default async function (
     on = Platform.Telegram,
     withTitle,
     groupDate,
+    api,
   }: Props & Paging,
   tableParams?: Parameters<typeof mdTable>[1]
 ) {
   let data = await Promise.all(
-    payLinks.sort(latest).map((pl: PayLink) => formatPayLink(pl, on))
+    payLinks.sort(latest).map((pl: PayLink) => formatPayLink(pl, on, api))
   );
 
   let text;
@@ -135,6 +153,20 @@ export default async function (
           alignment: ["left", "left", "left"],
           wrapCol: [false, true, false],
           row(formatted, index) {
+            if (on === Platform.Discord) {
+              const [code, amount, text] = formatted.split(VERTICAL_BAR);
+              return (
+                payLinks[index].status +
+                " " +
+                code +
+                VERTICAL_BAR +
+                payLinks[index].emoji +
+                " " +
+                amount +
+                VERTICAL_BAR +
+                text
+              );
+            }
             return payLinks[index].status + " " + formatted;
           },
         }),
@@ -163,13 +195,23 @@ export default async function (
 
   return {
     text: [
-      ...(withTitle ? ["📜 *Pay link status*"] : []),
-      "Need help? Try `/paylink -h`",
+      ...(withTitle
+        ? [
+            `${on === Platform.Telegram ? `📜 *` : `\\📜 **`}Pay link status${
+              on === Platform.Telegram ? "*" : "**"
+            }`,
+          ]
+        : []),
+      `${
+        on === Platform.Telegram ? "Need help? Try `/paylink -h`" : "undefined"
+      }`,
       ...(groupDate && withTitle ? [""] : []),
       text,
       "",
       ...pager,
-    ].join("\n"),
+    ]
+      .filter((line) => line != "undefined")
+      .join("\n"),
     totalPage: total,
   };
 }

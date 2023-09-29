@@ -8,6 +8,8 @@ import pageIndicator from "./page-indicator";
 import type { PayMe, PaylinkStatus } from "@consolelabs/mochi-rest";
 import groupBy from "lodash.groupby";
 import string from "../string";
+import { VERTICAL_BAR } from "../constant";
+import API from "@consolelabs/mochi-rest";
 
 const STATUS_MAP: Record<PaylinkStatus | "expire_soon", string> = {
   success: "✅",
@@ -38,11 +40,13 @@ type Props = {
   withTitle?: boolean;
   groupDate?: boolean;
   title?: string;
+  api?: API;
 };
 
 async function formatPayMe(
   pm: PayMe,
-  on: Platform.Web | Platform.Telegram | Platform.Discord
+  on: Platform.Web | Platform.Telegram | Platform.Discord,
+  api?: API
 ) {
   const expiredDate = new Date(pm.expired_at);
   const createdDate = new Date(pm.created_at);
@@ -53,6 +57,18 @@ async function formatPayMe(
   const amount = formatTokenDigit(
     formatUnits(pm.amount || 0, pm.token.decimal)
   );
+  let emoji = "";
+  if (api) {
+    const { data } = await api.base.metadata.getEmojis({
+      codes: [pm.token.symbol],
+    });
+    const e = data?.at(0);
+    if (e) {
+      emoji = e.emoji;
+    } else {
+      emoji = api.fallbackCoinEmoji.emoji;
+    }
+  }
 
   let text = "";
   switch (status) {
@@ -89,11 +105,12 @@ async function formatPayMe(
   }
 
   const result = {
-    status: statusIcon,
+    status: `${on === Platform.Discord ? "\\" + statusIcon : statusIcon}`,
     time: t,
     amount: amount + " " + pm.token.symbol.toUpperCase(),
     shortCode: string.receiptLink(code, true),
-    text: text,
+    text,
+    emoji,
   };
 
   return result;
@@ -114,11 +131,12 @@ export default async function (
     on = Platform.Telegram,
     withTitle,
     groupDate,
+    api,
   }: Props & Paging,
   tableParams?: Parameters<typeof mdTable>[1]
 ) {
   let data = await Promise.all(
-    payMes.sort(latest).map((pl: PayMe) => formatPayMe(pl, on))
+    payMes.sort(latest).map((pl: PayMe) => formatPayMe(pl, on, api))
   );
 
   let text;
@@ -128,6 +146,7 @@ export default async function (
     const lines = Object.entries(groupByDate).map((e, i) => {
       const isLast = i === Object.keys(groupByDate).length - 1;
       const [time, payMes] = e;
+
       return [
         `🗓 ${on === Platform.Telegram ? "*" : "**"}${time}${
           on === Platform.Telegram ? "*" : "**"
@@ -138,6 +157,20 @@ export default async function (
           alignment: ["left", "left", "left"],
           wrapCol: [false, true, false],
           row(formatted, index) {
+            if (on === Platform.Discord) {
+              const [code, amount, text] = formatted.split(VERTICAL_BAR);
+              return (
+                payMes[index].status +
+                " " +
+                code +
+                VERTICAL_BAR +
+                payMes[index].emoji +
+                " " +
+                amount +
+                VERTICAL_BAR +
+                text
+              );
+            }
             return payMes[index].status + " " + formatted;
           },
         }),
@@ -151,7 +184,7 @@ export default async function (
       ...(tableParams ?? {}),
       cols: ["shortCode", "amount", "text"],
       alignment: ["left", "left", "left"],
-      wrapCol: [false, true, false],
+      wrapCol: [false, false, false],
     });
   }
 
@@ -166,13 +199,23 @@ export default async function (
 
   return {
     text: [
-      ...(withTitle ? ["📜 *Pay me request status*"] : []),
-      "Need help? Try `/payme -h`",
+      ...(withTitle
+        ? [
+            `${
+              on === Platform.Telegram ? `📜 *` : `\\📜 **`
+            }Pay me request status${on === Platform.Telegram ? "*" : "**"}`,
+          ]
+        : []),
+      `${
+        on === Platform.Telegram ? "Need help? Try `/payme -h`" : "undefined"
+      }`,
       ...(groupDate && withTitle ? [""] : []),
       text,
       "",
       ...pager,
-    ].join("\n"),
+    ]
+      .filter((line) => line !== "undefined")
+      .join("\n"),
     totalPage: total,
   };
 }
