@@ -144,7 +144,7 @@ export default async function (
       const isLast = i === Object.keys(groupByDate).length - 1;
       const [time, payLinks] = e;
       return [
-        `🗓 ${on === Platform.Telegram ? "*" : "**"}${time}${
+        `${on === Platform.Telegram ? "🗓 *" : "\\🗓 **"}${time}${
           on === Platform.Telegram ? "*" : "**"
         }`,
         mdTable(payLinks, {
@@ -193,13 +193,26 @@ export default async function (
     totalPage: total,
   });
 
+  let proposalEmoji = "";
+  if (api) {
+    const { data } = await api.base.metadata.getEmojis({
+      codes: ["PROPOSAL"],
+    });
+    const e = data?.at(0);
+    if (e) {
+      proposalEmoji = e.emoji;
+    } else {
+      proposalEmoji = api.fallbackCoinEmoji.emoji;
+    }
+  }
+
   return {
     text: [
       ...(withTitle
         ? [
-            `${on === Platform.Telegram ? `📜 *` : `\\📜 **`}Pay link status${
-              on === Platform.Telegram ? "*" : "**"
-            }`,
+            `${
+              on === Platform.Telegram ? `📜 *` : proposalEmoji + " **"
+            }Pay link request status${on === Platform.Telegram ? "*" : "**"}`,
           ]
         : []),
       `${
