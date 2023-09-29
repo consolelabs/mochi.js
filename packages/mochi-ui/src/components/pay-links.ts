@@ -104,10 +104,7 @@ async function formatPayLink(
   const result = {
     status: `${on === Platform.Discord ? "\\" + statusIcon : statusIcon}`,
     time: t,
-    amount:
-      on === Platform.Discord
-        ? emoji + `\`${amount} ${pl.token.symbol.toUpperCase()}\``
-        : `\`${amount} ${pl.token.symbol.toUpperCase()}\``,
+    amount: amount + " " + pl.token.symbol.toUpperCase(),
     shortCode: string.receiptLink(code, true),
     text,
     emoji,
@@ -154,7 +151,7 @@ export default async function (
           ...(tableParams ?? {}),
           cols: ["shortCode", "amount", "text"],
           alignment: ["left", "left", "left"],
-          wrapCol: [false, false, false],
+          wrapCol: [false, true, false],
           row(formatted, index) {
             if (on === Platform.Discord) {
               const [code, amount, text] = formatted.split(VERTICAL_BAR);
