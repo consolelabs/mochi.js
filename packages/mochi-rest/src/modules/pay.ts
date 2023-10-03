@@ -32,7 +32,6 @@ import {
 } from "../schemas";
 import { Options } from "../mochi";
 import endpoints from "../endpoints";
-import { logger } from "../logger";
 
 export class PayModule {
   profile: {
@@ -177,9 +176,9 @@ export class PayModule {
 
         // group all EVM wallets into 1
         wallets = wallets.filter((w, i: number) => {
-          if (!w.chain.is_evm) return true;
+          if (w.chain.type !== "evm") return true;
           if (
-            w.chain.is_evm &&
+            w.chain.type === "evm" &&
             wallets.findIndex(
               (wa) => wa.wallet_address === w.wallet_address
             ) === i

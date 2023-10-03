@@ -9,7 +9,7 @@ export const ChainSchema = z.object({
   rpc: z.string(),
   explorer: z.string(),
   icon: z.string(),
-  is_evm: z.boolean(),
+  type: z.enum(["evm", "solana", "ton", "bitcoin", "ronin"]),
 });
 
 export type Chain = z.infer<typeof ChainSchema>;
