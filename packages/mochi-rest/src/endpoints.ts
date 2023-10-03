@@ -82,6 +82,7 @@ export default {
   },
   MOCHI_PROFILE: {
     AUTH_BY_DISCORD: "/profiles/auth/discord",
+    AUTH_BY_TELEGRAM: "/profiles/auth/telegram",
     GET_BY_ID: (profileId: Serializable) =>
       new Path("/profiles/:profileId").build({ profileId }),
     GET_BY_TELEGRAM_ID: (telegramId: Serializable) =>
@@ -95,6 +96,8 @@ export default {
       new Path("/profiles/:profileId/activities").build({ profileId }),
     REQUEST_CODE: (profileId: Serializable) =>
       new Path("/profiles/:profileId/codes").build({ profileId }),
+    CONNECT_DISCORD: "/profiles/me/accounts/connect-discord",
+    CONNECT_TELEGRAM: "/profiles/me/accounts/connect-telegram",
   },
   MOCHI_PAY: {
     WITHDRAW: "/mochi-wallet/withdraw",

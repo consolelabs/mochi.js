@@ -18,7 +18,7 @@ import base from "./base";
 
 export class ProfileModule {
   auth: {
-    byDiscord: Fetcher<string, AuthRequest>;
+    byDiscord: Fetcher<string | void, AuthRequest>;
   };
 
   mochi: {
@@ -55,6 +55,10 @@ export class ProfileModule {
 
   connect: {
     requestCode: Fetcher<string, Code>;
+    byDiscord: Fetcher<
+      { platform?: "web" | "telegram" | "discord"; code: string },
+      AuthRequest
+    >;
   };
 
   constructor({ addons, profileUrl, apiKey, catcher, log }: Options) {
@@ -75,16 +79,6 @@ export class ProfileModule {
     if (apiKey) {
       api = api.auth(`Bearer ${apiKey}`);
     }
-
-    this.auth = {
-      byDiscord: async function (code: string) {
-        return await api
-          .url(endpoints.MOCHI_PROFILE.AUTH_BY_DISCORD)
-          .query({ code })
-          .resolve(parse(AuthRequestSchema))
-          .get();
-      },
-    };
 
     this.mochi = {
       getById: async function (profileId) {
@@ -154,12 +148,31 @@ export class ProfileModule {
       },
     };
 
+    // this is used for login
+    this.auth = {
+      byDiscord: async function (urlLocation?: string) {
+        return await api
+          .url(endpoints.MOCHI_PROFILE.AUTH_BY_DISCORD)
+          .query(urlLocation ? { urlLocation } : {})
+          .resolve(parse(AuthRequestSchema))
+          .get();
+      },
+    };
+
+    // this is used for connecting social accounts
     this.connect = {
       requestCode: async function (profileId) {
         return api
           .url(endpoints.MOCHI_PROFILE.REQUEST_CODE(profileId))
           .resolve(parse(CodeSchema))
           .post();
+      },
+      byDiscord: async function ({ platform, code }) {
+        return await api
+          .url(endpoints.MOCHI_PROFILE.CONNECT_DISCORD)
+          .query({ code, ...(platform ? { platform } : {}) })
+          .resolve(parse(AuthRequestSchema))
+          .get();
       },
     };
   }
