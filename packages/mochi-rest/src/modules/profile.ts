@@ -17,10 +17,6 @@ import type { Fetcher } from "../utils";
 import base from "./base";
 
 export class ProfileModule {
-  auth: {
-    byDiscord: Fetcher<string | void, AuthRequest>;
-  };
-
   mochi: {
     getById: Fetcher<string, Profile>;
   };
@@ -53,10 +49,17 @@ export class ProfileModule {
     markRead: Fetcher<{ profileId: string; ids: (string | number)[] }>;
   };
 
+  auth: {
+    byDiscord: Fetcher<
+      { platform: "web" | "telegram" | "discord"; urlLocation: string },
+      AuthRequest
+    >;
+  };
+
   connect: {
     requestCode: Fetcher<string, Code>;
     byDiscord: Fetcher<
-      { platform?: "web" | "telegram" | "discord"; code: string },
+      { platform: "web" | "telegram" | "discord"; code: string },
       AuthRequest
     >;
   };
@@ -150,10 +153,10 @@ export class ProfileModule {
 
     // this is used for login
     this.auth = {
-      byDiscord: async function (urlLocation?: string) {
+      byDiscord: async function ({ urlLocation, platform }) {
         return await api
           .url(endpoints.MOCHI_PROFILE.AUTH_BY_DISCORD)
-          .query(urlLocation ? { urlLocation } : {})
+          .query({ urlLocation, platform })
           .resolve(parse(AuthRequestSchema))
           .get();
       },
@@ -170,7 +173,7 @@ export class ProfileModule {
       byDiscord: async function ({ platform, code }) {
         return await api
           .url(endpoints.MOCHI_PROFILE.CONNECT_DISCORD)
-          .query({ code, ...(platform ? { platform } : {}) })
+          .query({ code, platform })
           .resolve(parse(AuthRequestSchema))
           .get();
       },

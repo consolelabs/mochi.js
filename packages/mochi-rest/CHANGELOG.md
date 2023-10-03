@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 3.0.11
+
+### Patch Changes
+
+- Update auth/connect method
+
 ## 3.0.10
 
 ### Patch Changes
