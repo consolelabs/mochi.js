@@ -175,7 +175,7 @@ export class ProfileModule {
           .url(endpoints.MOCHI_PROFILE.CONNECT_DISCORD)
           .query({ code, platform })
           .resolve(parse(AuthRequestSchema))
-          .get();
+          .post();
       },
     };
   }

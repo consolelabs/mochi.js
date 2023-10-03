@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 3.0.12
+
+### Patch Changes
+
+- Fix method of connect
+
 ## 3.0.11
 
 ### Patch Changes
