@@ -1,6 +1,6 @@
 {
   "name": "@consolelabs/mochi-rest",
-  "version": "3.0.13",
+  "version": "3.0.14",
   "description": "mochi api rest client",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -35,6 +35,6 @@
     "pino-pretty": "^10.2.0",
     "snakecase-keys": "^5.4.6",
     "wretch": "^2.6.0",
-    "zod": "^3.21.4"
+    "zod": "^3.22.4"
   }
 }
