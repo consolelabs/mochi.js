@@ -163,13 +163,6 @@ export default async function ({ on, api, profileId }: Props) {
   );
   const { text: historyText } = await history(stats, on);
 
-  console.log(
-    "aaa",
-    `${on === Platform.Telegram ? "*" : ""}Your last 30 days recap${
-      on === Platform.Telegram ? "*" : ""
-    }`
-  );
-
   return {
     title: `${on === Platform.Telegram ? "*" : ""}Your last 30 days recap${
       on === Platform.Telegram ? "*" : ""

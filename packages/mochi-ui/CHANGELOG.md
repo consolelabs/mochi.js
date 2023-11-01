@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.32
+
+### Patch Changes
+
+- Remove console.log statement
+
 ## 10.0.30
 
 ### Patch Changes
