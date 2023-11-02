@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const ChainSchema = z.object({
-  id: z.string().uuid().nonempty(),
-  chain_id: z.string().nonempty(),
-  name: z.string().nonempty(),
+  id: z.string().uuid(),
+  chain_id: z.string().min(1),
+  name: z.string().min(1),
   short_name: z.string().optional(),
-  symbol: z.string().nonempty(),
+  symbol: z.string().min(1),
   rpc: z.string(),
   explorer: z.string(),
   icon: z.string(),
@@ -17,21 +17,21 @@ export type Chain = z.infer<typeof ChainSchema>;
 export const ChainsSchema = z.array(ChainSchema);
 
 export const TokenSchema = z.object({
-  id: z.string().uuid().nonempty(),
-  name: z.string().nonempty(),
-  symbol: z.string().nonempty(),
+  id: z.string().uuid(),
+  name: z.string().min(1),
+  symbol: z.string().min(1),
   decimal: z.number().nonnegative(),
-  chain_id: z.string().nonempty(),
+  chain_id: z.string().min(1),
   native: z.boolean(),
-  address: z.string().nonempty(),
+  address: z.string().min(1),
   icon: z.string(),
   coin_gecko_id: z.string(),
   price: z.number(),
   chain: ChainSchema.or(z.null()),
 });
 export const SimplifiedTokenSchema = z.object({
-  address: z.string().nonempty(),
-  symbol: z.string().nonempty(),
+  address: z.string().min(1),
+  symbol: z.string().min(1),
 });
 export type SimplifiedToken = z.infer<typeof SimplifiedTokenSchema>;
 export const SimplifiedTokensSchema = z.array(SimplifiedTokenSchema);
@@ -40,12 +40,12 @@ export type Token = z.infer<typeof TokenSchema>;
 export const TokensSchema = z.array(TokenSchema);
 
 export const BalanceSchema = z.object({
-  id: z.string().uuid().nonempty(),
-  profile_id: z.string().nonempty(),
-  token_id: z.string().uuid().nonempty(),
-  amount: z.string().nonempty(),
-  created_at: z.string().datetime().nonempty(),
-  updated_at: z.string().datetime().nonempty(),
+  id: z.string().uuid(),
+  profile_id: z.string().min(1),
+  token_id: z.string().uuid(),
+  amount: z.string().min(1),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
   token: TokenSchema,
 });
 
@@ -54,19 +54,19 @@ export const BalancesSchema = z.array(BalanceSchema);
 
 const MochiTxSchema = z.object({
   type: z.enum(["in", "out"]),
-  created_at: z.string().datetime().nonempty(),
+  created_at: z.string().datetime().min(1),
   internal_id: z.number(),
-  external_id: z.string().nonempty(),
-  from_profile_id: z.string().nonempty(),
-  other_profile_id: z.string().nonempty(),
+  external_id: z.string().min(1),
+  from_profile_id: z.string().min(1),
+  other_profile_id: z.string().min(1),
   from_profile_source: z
     .enum(["mochi-balance", "mochi-vault"])
-    .or(z.string().nonempty()),
+    .or(z.string().min(1)),
   other_profile_source: z
     .enum(["mochi-balance", "mochi-vault"])
-    .or(z.string().nonempty()),
-  source_platform: z.enum(["discord", "telegram"]),
-  amount: z.string().nonempty(),
+    .or(z.string().min(1)),
+  source_platform: z.enum(["discord", "telegram", "web"]),
+  amount: z.string().min(1),
   token: TokenSchema,
 });
 
@@ -98,8 +98,8 @@ export const MochiSwapTxSchema = MochiTxSchema.extend({
   action: z.literal("swap"),
   amount: z.never(),
   token: z.never(),
-  amount_in: z.string().nonempty(),
-  amount_out: z.string().nonempty(),
+  amount_in: z.string().min(1),
+  amount_out: z.string().min(1),
   from_token: TokenSchema,
   to_token: TokenSchema,
 });
@@ -108,7 +108,7 @@ export type SwapTx = z.infer<typeof MochiSwapTxSchema>;
 export const MochiPayLinkTxSchema = MochiTxSchema.extend({
   action: z.literal("paylink"),
   metadata: z.object({
-    code: z.string().nonempty(),
+    code: z.string().min(1),
   }),
   other_profile_id: z.string(),
   other_profile_source: z.enum(["mochi-balance", "mochi-vault"]).or(z.string()),
@@ -136,7 +136,7 @@ export const MochiVaultTransferTx = MochiTxSchema.extend({
 export type VaultTransferTx = z.infer<typeof MochiVaultTransferTx>;
 
 export const OnchainTxSchema = z.object({
-  signed_at: z.string().nonempty(),
+  signed_at: z.string().min(1),
   has_transfer: z.boolean(),
   actions: z.array(
     z.object({
@@ -183,7 +183,7 @@ export type WithdrawRequest = {
 
 export const DepositInfoSchema = z.object({
   contract: z.object({
-    address: z.string().nonempty(),
+    address: z.string().min(1),
     chain: ChainSchema,
   }),
 });
@@ -191,25 +191,27 @@ export const DepositInfoSchema = z.object({
 export type DepositInfo = z.infer<typeof DepositInfoSchema>;
 
 const TransferRequestSchema = z.object({
-  sender: z.string().nonempty(),
-  recipients: z.array(z.string().nonempty()),
+  sender: z.string().min(1),
+  recipients: z.array(z.string().min(1)),
   amount: z.number().nonnegative(),
-  amount_string: z.string().nonempty(),
-  token: z.string().nonempty(),
-  token_price: z.number(),
-  each: z.boolean(),
-  all: z.boolean(),
+  token: z.string().min(1),
   transfer_type: z.enum(["transfer", "airdrop"]),
-  chain_id: z.string().nonempty(),
-  decimal: z.number(),
-  platform: z.enum(["telegram", "discord"]),
+  platform: z.enum(["telegram", "discord", "web"]),
+  chain_id: z.string().min(1),
+
+  //
+  amount_string: z.string().min(1).optional(),
+  token_price: z.number().optional(),
+  each: z.boolean().optional(),
+  all: z.boolean().optional(),
+  decimal: z.number().optional(),
 });
 
 export type TransferRequest = z.infer<typeof TransferRequestSchema>;
 
 export const TransferResultSchema = z.object({
   amount_each: z.number(),
-  external_id: z.string().nonempty(),
+  external_id: z.string().min(1),
 });
 
 export type TransferResult = z.infer<typeof TransferResultSchema>;
@@ -224,13 +226,13 @@ export enum SwapRouteDataCode {
 export const RouteSchema = z.array(
   z.array(
     z.object({
-      pool: z.string().nonempty(),
-      tokenIn: z.string().nonempty(),
-      tokenOut: z.string().nonempty(),
-      tokenOutSymbol: z.string().nonempty(),
+      pool: z.string().min(1),
+      tokenIn: z.string().min(1),
+      tokenOut: z.string().min(1),
+      tokenOutSymbol: z.string().min(1),
       limitReturnAmount: z.string(),
       swapAmount: z.string(),
-      amountOut: z.string().nonempty(),
+      amountOut: z.string().min(1),
       exchange: z.string(),
       poolLength: z.number(),
       poolType: z.string(),
@@ -251,32 +253,32 @@ export type Route = z.infer<typeof RouteSchema>;
 export const SwapRouteSchema = z.object({
   code: z.nativeEnum(SwapRouteDataCode),
   message: z.string(),
-  chainName: z.string().nonempty(),
-  provider: z.string().nonempty(),
+  chainName: z.string().min(1),
+  provider: z.string().min(1),
   data: z.object({
     tokenIn: z.object({
       id: z.number().nonnegative(),
-      address: z.string().nonempty(),
+      address: z.string().min(1),
       chain_id: z.number(),
       decimals: z.number().nonnegative(),
-      symbol: z.string().nonempty(),
+      symbol: z.string().min(1),
       name: z.string(),
-      coingecko_id: z.string().nonempty(),
+      coingecko_id: z.string().min(1),
       created_at: z.string().datetime(),
       updated_at: z.string().datetime(),
     }),
     tokenOut: z.object({
       id: z.number().nonnegative(),
-      address: z.string().nonempty(),
+      address: z.string().min(1),
       chain_id: z.number(),
       decimals: z.number().nonnegative(),
-      symbol: z.string().nonempty(),
+      symbol: z.string().min(1),
       name: z.string(),
-      coingecko_id: z.string().nonempty(),
+      coingecko_id: z.string().min(1),
       created_at: z.string().datetime(),
       updated_at: z.string().datetime(),
     }),
-    routerAddress: z.string().nonempty(),
+    routerAddress: z.string().min(1),
     routeSummary: RouteSummarySchema,
   }),
 });

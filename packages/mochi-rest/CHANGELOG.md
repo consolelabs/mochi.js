@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 3.0.15
+
+### Patch Changes
+
+- Include "web" in platform enum
+
 ## 3.0.14
 
 ### Patch Changes
