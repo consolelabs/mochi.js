@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 10.0.35
+
+### Patch Changes
+
+- Fix txn component
+
 ## 10.0.34
 
 ### Patch Changes

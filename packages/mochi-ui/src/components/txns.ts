@@ -27,8 +27,14 @@ type Props = {
   global?: boolean;
 };
 
-function isVault(tx: VaultTransferTx | TransferTx): tx is VaultTransferTx {
-  return tx.action === "vault_transfer";
+function isVault(
+  tx: VaultTransferTx | TransferTx,
+  source: "from" | "to"
+): tx is VaultTransferTx {
+  return (
+    (source === "from" ? tx.from_profile_source : tx.other_profile_source) ===
+      "mochi-vault" && tx.action === "vault_transfer"
+  );
 }
 
 export async function formatTxn(
@@ -95,13 +101,13 @@ export async function formatTxn(
             if (global) {
               const [from, to] = await UI.resolve(
                 on,
-                isVault(tx)
+                isVault(tx, "from")
                   ? {
                       type: "vault",
                       id: tx.metadata.vault_request.vault_id.toString(),
                     }
                   : tx.from_profile_id,
-                isVault(tx)
+                isVault(tx, "to")
                   ? {
                       type: "vault",
                       id: tx.metadata.vault_request.vault_id.toString(),
@@ -114,7 +120,7 @@ export async function formatTxn(
             } else {
               const [from] = await UI.resolve(
                 on,
-                isVault(tx)
+                isVault(tx, "to")
                   ? {
                       type: "vault",
                       id: tx.metadata.vault_request.vault_id.toString(),
@@ -145,13 +151,13 @@ export async function formatTxn(
             if (global) {
               const [from, to] = await UI.resolve(
                 on,
-                isVault(tx)
+                isVault(tx, "from")
                   ? {
                       type: "vault",
                       id: tx.metadata.vault_request.vault_id.toString(),
                     }
                   : tx.from_profile_id,
-                isVault(tx)
+                isVault(tx, "to")
                   ? {
                       type: "vault",
                       id: tx.metadata.vault_request.vault_id.toString(),
@@ -164,7 +170,7 @@ export async function formatTxn(
             } else {
               const [to] = await UI.resolve(
                 on,
-                isVault(tx)
+                isVault(tx, "to")
                   ? {
                       type: "vault",
                       id: tx.metadata.vault_request.vault_id.toString(),
