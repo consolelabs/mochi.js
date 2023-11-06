@@ -67,7 +67,7 @@ export class PayModule {
 
   transactions: {
     getAll: Fetcher<
-      { page?: number; size?: number; action?: string },
+      { page?: number; size?: number; action?: string[] },
       Array<OffchainTx>
     >;
   };
@@ -210,7 +210,7 @@ export class PayModule {
       getAll: async function ({ size = 40, page = 0, action }) {
         return api
           .url(endpoints.MOCHI_PAY.GLOBAL_TRANSACTIONS)
-          .query({ page, size, action })
+          .query({ page, size, action: action?.join("|") ?? "transfer" })
           .resolve(parse(ListOffchainTxSchema))
           .get();
       },

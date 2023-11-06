@@ -125,15 +125,15 @@ export const MochiPayMeTxSchema = MochiTxSchema.extend({
 });
 export type PayMeTx = z.infer<typeof MochiPayMeTxSchema>;
 
-export const MochiVaultTransferTx = MochiTxSchema.extend({
-  action: z.literal("transfer"),
+export const MochiVaultTransferTxSchema = MochiTxSchema.extend({
+  action: z.literal("vault_transfer"),
   metadata: z.object({
     vault_request: z.object({
       vault_id: z.number().nonnegative(),
     }),
   }),
 });
-export type VaultTransferTx = z.infer<typeof MochiVaultTransferTx>;
+export type VaultTransferTx = z.infer<typeof MochiVaultTransferTxSchema>;
 
 export const OnchainTxSchema = z.object({
   signed_at: z.string().min(1),
@@ -159,7 +159,7 @@ export const OffchainTxSchema = z.union([
   MochiSwapTxSchema,
   MochiPayLinkTxSchema,
   MochiPayMeTxSchema,
-  MochiVaultTransferTx,
+  MochiVaultTransferTxSchema,
 ]);
 export type OffchainTx = z.infer<typeof OffchainTxSchema>;
 

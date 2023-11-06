@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 3.0.16
+
+### Patch Changes
+
+- Update MochiTx schema
+
 ## 3.0.15
 
 ### Patch Changes
