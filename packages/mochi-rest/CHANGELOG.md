@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 4.0.1
+
+### Patch Changes
+
+- Add unset method for token
+
 ## 4.0.0
 
 ### Major Changes

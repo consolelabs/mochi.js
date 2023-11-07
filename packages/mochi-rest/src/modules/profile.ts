@@ -65,12 +65,6 @@ export class ProfileModule extends Module {
     >;
   };
 
-  token(t: string) {
-    if (this.api) {
-      this.api = this.api.auth(`Bearer ${t}`);
-    }
-  }
-
   constructor({ addons, profileUrl, catcher, log }: Options) {
     super(base.url(profileUrl, true).options({ log }));
     const parse = getParser(catcher);

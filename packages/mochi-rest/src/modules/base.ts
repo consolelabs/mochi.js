@@ -210,12 +210,6 @@ export class BaseModule extends Module {
     getDefaultMonikers: Fetcher<void, Array<Moniker>>;
   };
 
-  token(t: string) {
-    if (this.api) {
-      this.api = this.api.auth(`Bearer ${t}`);
-    }
-  }
-
   constructor({ addons, baseUrl, catcher, log }: Options) {
     super(base.url(baseUrl, true).options({ log }));
 

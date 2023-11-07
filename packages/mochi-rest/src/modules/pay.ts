@@ -90,12 +90,6 @@ export class PayModule extends Module {
     >;
   };
 
-  token(t: string) {
-    if (this.api) {
-      this.api = this.api.auth(`Bearer ${t}`);
-    }
-  }
-
   constructor({ addons, payUrl, catcher, log }: Options) {
     super(base.url(payUrl, true).options({ log }));
     const parse = getParser(catcher);

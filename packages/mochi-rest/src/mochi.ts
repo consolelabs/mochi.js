@@ -83,12 +83,19 @@ export class Mochi {
     return isReady;
   }
 
-  token(t?: string) {
+  token(t?: string | null) {
     if (t) {
       this._token = t;
       this.base.token(t);
       this.profile.token(t);
       this.pay.token(t);
+      return;
+    }
+    if (t === null) {
+      this._token = null;
+      this.base.token(null);
+      this.profile.token(null);
+      this.pay.token(null);
       return;
     }
     return this._token;
