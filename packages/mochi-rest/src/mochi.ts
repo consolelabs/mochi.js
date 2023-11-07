@@ -12,7 +12,6 @@ export interface Options {
   payUrl: string;
 
   catcher?: (error: WretchError | ZodError) => void;
-  apiKey?: string;
   log?: boolean;
   addons?: WretchAddon<any>[];
 }
@@ -26,6 +25,7 @@ const defaultOptions: Options = {
 };
 
 export class Mochi {
+  _token: string | null = null;
   isReady: Promise<void> = new Promise(() => {});
   private opts: Options;
   url: Options = {
@@ -81,6 +81,17 @@ export class Mochi {
     });
     this.isReady = isReady;
     return isReady;
+  }
+
+  token(t?: string) {
+    if (t) {
+      this._token = t;
+      this.base.token(t);
+      this.profile.token(t);
+      this.pay.token(t);
+      return;
+    }
+    return this._token;
   }
 
   randomTip() {

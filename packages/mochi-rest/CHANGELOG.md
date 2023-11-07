@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 4.0.0
+
+### Major Changes
+
+- remove apiKey option, add token() method
+
 ## 3.1.0
 
 ### Minor Changes

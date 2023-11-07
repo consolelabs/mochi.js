@@ -59,6 +59,7 @@ import {
 } from "../schemas";
 import { Options } from "../mochi";
 import endpoints from "../endpoints";
+import { Module } from "./module";
 
 const base = wretch()
   .content("application/json")
@@ -72,7 +73,7 @@ const base = wretch()
 
 export default base;
 
-export class BaseModule {
+export class BaseModule extends Module {
   swap: {
     getRoute: Fetcher<
       { amount: string; from: string; to: string; profileId: string },
@@ -209,28 +210,30 @@ export class BaseModule {
     getDefaultMonikers: Fetcher<void, Array<Moniker>>;
   };
 
-  constructor({ addons, baseUrl, apiKey, catcher, log }: Options) {
+  token(t: string) {
+    if (this.api) {
+      this.api = this.api.auth(`Bearer ${t}`);
+    }
+  }
+
+  constructor({ addons, baseUrl, catcher, log }: Options) {
+    super(base.url(baseUrl, true).options({ log }));
+
     const parse = getParser(catcher);
-    let api = base.url(baseUrl, true);
-    api = api.options({ log });
 
     if (addons?.length) {
       for (const addon of addons) {
-        api = api.addon(addon);
+        this.api = this.api.addon(addon);
       }
     }
 
     if (catcher) {
-      api = api.catcherFallback(catcher);
-    }
-
-    if (apiKey) {
-      api = api.auth(`Bearer ${apiKey}`);
+      this.api = this.api.catcherFallback(catcher);
     }
 
     this.swap = {
-      getRoute: async function ({ to, from, amount, profileId }) {
-        return api
+      getRoute: async ({ to, from, amount, profileId }) => {
+        return this.api
           .url(endpoints.MOCHI.GET_SWAP_ROUTE)
           .options({ convertSnakeCase: false })
           .query({
@@ -245,8 +248,8 @@ export class BaseModule {
     };
 
     this.vault = {
-      getById: async function (id: number) {
-        return api
+      getById: async (id: number) => {
+        return this.api
           .url(endpoints.MOCHI.GET_VAULT_BY_ID(id))
           .resolve(parse(VaultSchema))
           .get();
@@ -254,45 +257,45 @@ export class BaseModule {
     };
 
     this.defi = {
-      getGasTrackers: async function () {
-        return api
+      getGasTrackers: async () => {
+        return this.api
           .url(endpoints.MOCHI.GAS_TRACKER)
           .resolve(parse(ListGasSchema))
           .get();
       },
-      compareCoins: async function ({ base, target, interval }) {
-        return api
+      compareCoins: async ({ base, target, interval }) => {
+        return this.api
           .url(endpoints.MOCHI.COMPARE_COINS)
           .query({ base, target, interval })
           .resolve(parse(CompareCoinSchema))
           .get();
       },
-      searchCoin: async function ({ query, chain = "" }) {
-        return api
+      searchCoin: async ({ query, chain = "" }) => {
+        return this.api
           .url(endpoints.MOCHI.COINS)
           .query({ query, chain })
           .resolve(parse(ListQueryCoinSchema))
           .get();
       },
-      getCoin: async function ({
+      getCoin: async ({
         id,
         isDominanceChart = false,
         isWithCoingeckoInfo = false,
         chains,
-      }) {
-        return api
+      }) => {
+        return this.api
           .url(endpoints.MOCHI.GET_COIN_BY_ID(id))
           .query({ isDominanceChart, isWithCoingeckoInfo, chains })
           .resolve(parse(CoinSchema))
           .get();
       },
-      getHistoricalMarketData: async function ({
+      getHistoricalMarketData: async ({
         coinId,
         currency,
         days,
         isDominanceChart,
-      }) {
-        return api
+      }) => {
+        return this.api
           .url(endpoints.MOCHI.MARKET_CHART)
           .query({
             coinId,
@@ -303,8 +306,8 @@ export class BaseModule {
           .resolve(parse(CoinChartDataSchema))
           .get();
       },
-      getSupportTokens: async function ({ page = 0, size = 10 }) {
-        return api
+      getSupportTokens: async ({ page = 0, size = 10 }) => {
+        return this.api
           .url(endpoints.MOCHI.SUPPORTED_TOKENS)
           .query({
             page,
@@ -313,8 +316,8 @@ export class BaseModule {
           .resolve(parse(SimplifiedTokensSchema)<Pagination>)
           .get();
       },
-      getTopGainerLoser: async function (duration) {
-        return api
+      getTopGainerLoser: async (duration) => {
+        return this.api
           .url(endpoints.MOCHI.GAINER_LOSER)
           .url(`/top-gainer-loser`)
           .query({ duration })
@@ -324,8 +327,8 @@ export class BaseModule {
     };
 
     this.tip = {
-      transferV2: async function (body) {
-        return api
+      transferV2: async (body) => {
+        return this.api
           .url(endpoints.MOCHI.TRANSFER_V2)
           .resolve(parse(TransferResultSchema))
           .post(body);
@@ -333,54 +336,48 @@ export class BaseModule {
     };
 
     this.users = {
-      getListTrackingWallets: async function (profileId) {
-        return api
+      getListTrackingWallets: async (profileId) => {
+        return this.api
           .url(endpoints.MOCHI.GET_TRACKING_WALLETS(profileId))
           .resolve(parse(TrackWalletListSchema))
           .get();
       },
-      untrackWallet: async function ({ profileId, address, alias }) {
-        return api
+      untrackWallet: async ({ profileId, address, alias }) => {
+        return this.api
           .url(endpoints.MOCHI.UNTRACK_WALLET(profileId))
           .resolve(parse(AnySchema))
           .post({ profileId, address, alias });
       },
-      trackWallet: async function ({
-        alias,
-        address,
-        profileId,
-        type,
-        chainType,
-      }) {
-        return api
+      trackWallet: async ({ alias, address, profileId, type, chainType }) => {
+        return this.api
           .url(endpoints.MOCHI.TRACK_WALLET(profileId))
           .resolve(parse(AnySchema))
           .post({ alias, address, profileId, type, chainType });
       },
-      getUserWatchlist: async function ({ profileId, page = 0, size = 16 }) {
-        return api
+      getUserWatchlist: async ({ profileId, page = 0, size = 16 }) => {
+        return this.api
           .url(endpoints.MOCHI.GET_TOKEN_WATCHLIST(profileId))
           .query({ page, size })
           .resolve(parse(WatchlistTokenDataListSchema)<Pagination>)
           .get();
       },
-      trackToken: async function ({ isFiat, profileId, symbol, coinGeckoId }) {
-        return api
+      trackToken: async ({ isFiat, profileId, symbol, coinGeckoId }) => {
+        return this.api
           .url(endpoints.MOCHI.TRACK_TOKEN(profileId))
           .resolve(parse(AnySchema))
           .post({ isFiat, profileId, symbol, coinGeckoId });
       },
-      untrackToken: async function ({ symbol, profileId }) {
-        return api
+      untrackToken: async ({ symbol, profileId }) => {
+        return this.api
           .url(endpoints.MOCHI.UNTRACK_TOKEN(profileId))
           .resolve(parse(QueryCoinResponseSchema))
           .post({ symbol, profileId });
       },
       cex: {
         binance: {
-          futurePositions: async function (profileId) {
+          futurePositions: async (profileId) => {
             return (
-              api
+              this.api
                 .url(endpoints.MOCHI.GET_BINANCE_FUTURE_POSITIONS(profileId))
                 // TODO
                 .resolve(parse(AnySchema))
@@ -389,8 +386,8 @@ export class BaseModule {
           },
         },
       },
-      getWalletAssets: async function ({ profileId, chainType, address }) {
-        return api
+      getWalletAssets: async ({ profileId, chainType, address }) => {
+        return this.api
           .url(
             endpoints.MOCHI.GET_WALLET_ASSET(
               profileId,
@@ -401,12 +398,8 @@ export class BaseModule {
           .resolve(parse(OnchainWalletBalanceSchema))
           .get();
       },
-      getWalletTransactions: async function ({
-        address,
-        chainType,
-        profileId,
-      }) {
-        return api
+      getWalletTransactions: async ({ address, chainType, profileId }) => {
+        return this.api
           .url(
             endpoints.MOCHI.GET_WALLET_TXN(
               profileId,
@@ -417,8 +410,8 @@ export class BaseModule {
           .resolve(parse(OnchainWalletTxnListSchema))
           .get();
       },
-      getDetailTrackingWallet: async function ({ profileId, query }) {
-        return api
+      getDetailTrackingWallet: async ({ profileId, query }) => {
+        return this.api
           .url(endpoints.MOCHI.GET_DETAIL_TRACKING_WALLET(profileId, query))
           .resolve(parse(UserTrackingWalletSchema))
           .get();
@@ -426,18 +419,18 @@ export class BaseModule {
     };
 
     this.community = {
-      sendFeedback: async function (body) {
+      sendFeedback: async (body) => {
         return (
-          api
+          this.api
             .url(endpoints.MOCHI.FEEDBACK)
             // TODO
             .resolve(parse(AnySchema))
             .post({ ...body })
         );
       },
-      listFeedback: async function ({ profileId, page = 0, size = 5 }) {
+      listFeedback: async ({ profileId, page = 0, size = 5 }) => {
         return (
-          api
+          this.api
             .url(endpoints.MOCHI.FEEDBACK)
             .query({
               profileId,
@@ -452,33 +445,33 @@ export class BaseModule {
     };
 
     this.metadata = {
-      getCopy: async function (type: string = "") {
-        return api
+      getCopy: async (type: string = "") => {
+        return this.api
           .url(endpoints.MOCHI.METADATA_COPY(type))
           .resolve(parse(CopySchema))
           .get();
       },
-      getCommands: async function () {
-        return api
+      getCommands: async () => {
+        return this.api
           .url(endpoints.MOCHI.METADATA_COMMANDS)
           .resolve(parse(ListCommandSchema))
           .get();
       },
-      getChangelogs: async function () {
-        return api
+      getChangelogs: async () => {
+        return this.api
           .url(endpoints.MOCHI.METADATA_GET_CHANGELOGS)
           .resolve(parse(ListChangelogSchema))
           .get();
       },
-      getEmojis: async function (param) {
-        return api
+      getEmojis: async (param) => {
+        return this.api
           .url(endpoints.MOCHI.METADATA_GET_EMOJIS)
           .query({ codes: param?.codes.join(",") ?? "" })
           .resolve(parse(EmojiListSchema)<Pagination>)
           .get();
       },
-      getThemes: async function () {
-        return api
+      getThemes: async () => {
+        return this.api
           .url(endpoints.MOCHI.METADATA_GET_THEMES)
           .resolve(parse(ListThemeSchema))
           .get();
@@ -486,8 +479,8 @@ export class BaseModule {
     };
 
     this.configDefi = {
-      getDefaultMonikers: async function () {
-        return api
+      getDefaultMonikers: async () => {
+        return this.api
           .url(endpoints.MOCHI.GET_DEFAULT_MONIKERS)
           .resolve(parse(MonikersSchema))
           .get();

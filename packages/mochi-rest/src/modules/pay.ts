@@ -32,8 +32,9 @@ import {
 } from "../schemas";
 import { Options } from "../mochi";
 import endpoints from "../endpoints";
+import { Module } from "./module";
 
-export class PayModule {
+export class PayModule extends Module {
   profile: {
     stats: Fetcher<string, Stats>;
     getTransactions: Fetcher<
@@ -89,47 +90,48 @@ export class PayModule {
     >;
   };
 
-  constructor({ addons, payUrl, apiKey, catcher, log }: Options) {
+  token(t: string) {
+    if (this.api) {
+      this.api = this.api.auth(`Bearer ${t}`);
+    }
+  }
+
+  constructor({ addons, payUrl, catcher, log }: Options) {
+    super(base.url(payUrl, true).options({ log }));
     const parse = getParser(catcher);
-    let api = base.url(payUrl, true);
-    api = api.options({ log });
 
     if (addons?.length) {
       for (const addon of addons) {
-        api = api.addon(addon);
+        this.api = this.api.addon(addon);
       }
     }
 
     if (catcher) {
-      api = api.catcherFallback(catcher);
-    }
-
-    if (apiKey) {
-      api = api.auth(`Bearer ${apiKey}`);
+      this.api = this.api.catcherFallback(catcher);
     }
 
     this.profile = {
-      stats: async function (id) {
-        return api
+      stats: async (id) => {
+        return this.api
           .url(endpoints.MOCHI_PAY.MONTHLY_STATS(id))
           .resolve(parse(StatsSchema))
           .get();
       },
-      getTransactions: async function ({ page = 0, ...rest }) {
-        return api
+      getTransactions: async ({ page = 0, ...rest }) => {
+        return this.api
           .url(endpoints.MOCHI_PAY.PROFILE_TRANSACTIONS)
           .resolve(parse(ListOffchainTxSchema))
           .query({ ...rest, page })
           .get();
       },
-      getPaylinks: async function (profileId: string) {
-        return api
+      getPaylinks: async (profileId: string) => {
+        return this.api
           .url(endpoints.MOCHI_PAY.GET_PAYLINKS(profileId))
           .resolve(parse(ListPayLinkSchema)<Pagination>)
           .get();
       },
-      getPaymes: async function (profileId: string) {
-        return api
+      getPaymes: async (profileId: string) => {
+        return this.api
           .url(endpoints.MOCHI_PAY.GET_PAYMES(profileId))
           .resolve(parse(ListPayMeSchema)<Pagination>)
           .get();
@@ -137,8 +139,8 @@ export class PayModule {
     };
 
     this.payRequest = {
-      generateCode: async function (payload) {
-        return api
+      generateCode: async (payload) => {
+        return this.api
           .url(endpoints.MOCHI_PAY.PAY_REQUESTS)
           .resolve(parse(CodeSchema))
           .post(payload);
@@ -146,26 +148,26 @@ export class PayModule {
     };
 
     this.mochiWallet = {
-      withdraw: async function (payload) {
-        return api
+      withdraw: async (payload) => {
+        return this.api
           .url(endpoints.MOCHI_PAY.WITHDRAW)
           .resolve(parse(AnySchema))
           .post(payload);
       },
-      deposit: async function ({ profileId, token }) {
-        return api
+      deposit: async ({ profileId, token }) => {
+        return this.api
           .url(endpoints.MOCHI_PAY.DEPOSIT)
           .resolve(parse(DepositInfoSchema))
           .post({ profileId, token });
       },
-      getBalance: async function ({ profileId, token }) {
-        return api
+      getBalance: async ({ profileId, token }) => {
+        return this.api
           .url(endpoints.MOCHI_PAY.GET_BALANCE(profileId, token))
           .resolve(parse(BalancesSchema))
           .get();
       },
-      getWallets: async function (profileId) {
-        let result = await api
+      getWallets: async (profileId) => {
+        let result = await this.api
           .url(endpoints.MOCHI_PAY.GET_WALLETS(profileId))
           .resolve(parse(InAppWalletsSchema))
           .post();
@@ -207,8 +209,8 @@ export class PayModule {
     };
 
     this.transactions = {
-      getAll: async function ({ size = 40, page = 0, action }) {
-        return api
+      getAll: async ({ size = 40, page = 0, action }) => {
+        return this.api
           .url(endpoints.MOCHI_PAY.GLOBAL_TRANSACTIONS)
           .query({ page, size, action: action?.join("|") ?? "transfer" })
           .resolve(parse(ListOffchainTxSchema))
@@ -217,8 +219,8 @@ export class PayModule {
     };
 
     this.tokens = {
-      getSupported: async function (symbol?: string) {
-        return api
+      getSupported: async (symbol?: string) => {
+        return this.api
           .url(endpoints.MOCHI_PAY.SUPPORTED_TOKENS)
           .query(symbol ? { symbol } : {})
           .resolve(parse(TokensSchema))
@@ -226,8 +228,8 @@ export class PayModule {
       },
     };
 
-    this.getWhiteListToken = async function (symbol?: string) {
-      return api
+    this.getWhiteListToken = async (symbol?: string) => {
+      return this.api
         .url(endpoints.MOCHI_PAY.CONSOLE_TOKENS)
         .query(symbol ? { symbol } : {})
         .resolve(parse(SimplifiedTokensSchema))
@@ -235,8 +237,8 @@ export class PayModule {
     };
 
     this.chains = {
-      getSupported: async function () {
-        return api
+      getSupported: async () => {
+        return this.api
           .url(endpoints.MOCHI_PAY.SUPPORTED_CHAINS)
           .resolve(parse(ChainsSchema))
           .get();
@@ -244,8 +246,8 @@ export class PayModule {
     };
 
     this.users = {
-      getLeaderboard: async function (interval = "alltime") {
-        return api
+      getLeaderboard: async (interval = "alltime") => {
+        return this.api
           .url(endpoints.MOCHI_PAY.LEADERBOARD)
           .query({ interval, size: 10 })
           .resolve(parse(LeaderboardSchema))

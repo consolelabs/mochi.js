@@ -15,8 +15,9 @@ import {
 } from "../schemas";
 import type { Fetcher } from "../utils";
 import base from "./base";
+import { Module } from "./module";
 
-export class ProfileModule {
+export class ProfileModule extends Module {
   mochi: {
     getById: Fetcher<string, Profile>;
   };
@@ -64,28 +65,29 @@ export class ProfileModule {
     >;
   };
 
-  constructor({ addons, profileUrl, apiKey, catcher, log }: Options) {
+  token(t: string) {
+    if (this.api) {
+      this.api = this.api.auth(`Bearer ${t}`);
+    }
+  }
+
+  constructor({ addons, profileUrl, catcher, log }: Options) {
+    super(base.url(profileUrl, true).options({ log }));
     const parse = getParser(catcher);
-    let api = base.url(profileUrl, true);
-    api = api.options({ log });
 
     if (addons?.length) {
       for (const addon of addons) {
-        api = api.addon(addon);
+        this.api = this.api.addon(addon);
       }
     }
 
     if (catcher) {
-      api = api.catcherFallback(catcher);
-    }
-
-    if (apiKey) {
-      api = api.auth(`Bearer ${apiKey}`);
+      this.api = this.api.catcherFallback(catcher);
     }
 
     this.mochi = {
-      getById: async function (profileId) {
-        return await api
+      getById: async (profileId) => {
+        return await this.api
           .url(endpoints.MOCHI_PROFILE.GET_BY_ID(profileId))
           .resolve(parse(ProfileSchema))
           .get();
@@ -93,15 +95,15 @@ export class ProfileModule {
     };
 
     this.telegram = {
-      getById: async function ({ telegramId, noFetchAmount }) {
-        return api
+      getById: async ({ telegramId, noFetchAmount }) => {
+        return this.api
           .url(endpoints.MOCHI_PROFILE.GET_BY_TELEGRAM_ID(telegramId))
           .query(noFetchAmount ? { noFetchAmount } : {})
           .resolve(parse(ProfileSchema))
           .get();
       },
-      getByUsernames: async function (usernames) {
-        return api
+      getByUsernames: async (usernames) => {
+        return this.api
           .url(endpoints.MOCHI_PROFILE.GET_BY_TELEGRAM_USERNAMES)
           .query({ usernames: usernames.join("|") })
           .resolve(parse(AnySchema))
@@ -110,8 +112,8 @@ export class ProfileModule {
     };
 
     this.discord = {
-      getById: async function ({ discordId, noFetchAmount }) {
-        return api
+      getById: async ({ discordId, noFetchAmount }) => {
+        return this.api
           .url(endpoints.MOCHI_PROFILE.GET_BY_DISCORD_ID(discordId))
           .query(noFetchAmount ? { noFetchAmount } : {})
           .resolve(parse(ProfileSchema))
@@ -120,8 +122,8 @@ export class ProfileModule {
     };
 
     this.email = {
-      getByEmail: async function ({ email, noFetchAmount }) {
-        return api
+      getByEmail: async ({ email, noFetchAmount }) => {
+        return this.api
           .url(endpoints.MOCHI_PROFILE.GET_BY_EMAIL(email))
           .query(noFetchAmount ? { noFetchAmount } : {})
           .resolve(parse(ProfileSchema))
@@ -130,21 +132,21 @@ export class ProfileModule {
     };
 
     this.activities = {
-      getByUser: async function ({
+      getByUser: async ({
         profileId,
         page = 0,
         size = 10,
         actions,
         status,
-      }) {
-        return api
+      }) => {
+        return this.api
           .url(endpoints.MOCHI_PROFILE.USER_ACTIVITIES(profileId))
           .query({ actions: actions.join("|"), page, size, status })
           .resolve(parse(ListActivity)<Pagination>)
           .get();
       },
-      markRead: async function ({ profileId, ids }) {
-        return api
+      markRead: async ({ profileId, ids }) => {
+        return this.api
           .url(endpoints.MOCHI_PROFILE.USER_ACTIVITIES(profileId))
           .resolve(parse(AnySchema))
           .put({ ids });
@@ -153,8 +155,8 @@ export class ProfileModule {
 
     // this is used for login
     this.auth = {
-      byDiscord: async function ({ urlLocation, platform }) {
-        return await api
+      byDiscord: async ({ urlLocation, platform }) => {
+        return await this.api
           .url(endpoints.MOCHI_PROFILE.AUTH_BY_DISCORD)
           .query({ urlLocation, platform })
           .resolve(parse(AuthRequestSchema))
@@ -164,14 +166,14 @@ export class ProfileModule {
 
     // this is used for connecting social accounts
     this.connect = {
-      requestCode: async function (profileId) {
-        return api
+      requestCode: async (profileId) => {
+        return this.api
           .url(endpoints.MOCHI_PROFILE.REQUEST_CODE(profileId))
           .resolve(parse(CodeSchema))
           .post();
       },
-      byDiscord: async function ({ platform, code }) {
-        return await api
+      byDiscord: async ({ platform, code }) => {
+        return await this.api
           .url(endpoints.MOCHI_PROFILE.CONNECT_DISCORD)
           .query({ code, platform })
           .resolve(parse(AuthRequestSchema))
