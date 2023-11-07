@@ -54,6 +54,8 @@ import {
   CompareCoinSchema,
   Emoji,
   EmojiListSchema,
+  Theme,
+  ListThemeSchema,
 } from "../schemas";
 import { Options } from "../mochi";
 import endpoints from "../endpoints";
@@ -87,6 +89,7 @@ export class BaseModule {
     getCommands: Fetcher<void, Array<Command>>;
     getChangelogs: Fetcher<void, Array<Changelog>>;
     getEmojis: Fetcher<{ codes: string[] } | void, Array<Emoji>, Pagination>;
+    getThemes: Fetcher<void, Array<Theme>>;
   };
 
   tip: {
@@ -472,6 +475,12 @@ export class BaseModule {
           .url(endpoints.MOCHI.METADATA_GET_EMOJIS)
           .query({ codes: param?.codes.join(",") ?? "" })
           .resolve(parse(EmojiListSchema)<Pagination>)
+          .get();
+      },
+      getThemes: async function () {
+        return api
+          .url(endpoints.MOCHI.METADATA_GET_THEMES)
+          .resolve(parse(ListThemeSchema))
           .get();
       },
     };

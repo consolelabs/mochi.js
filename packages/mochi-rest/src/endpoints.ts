@@ -75,6 +75,7 @@ export default {
     METADATA_COMMANDS: "/product-metadata/commands",
     METADATA_GET_CHANGELOGS: "/product-metadata/changelogs",
     METADATA_GET_EMOJIS: "/product-metadata/emoji",
+    METADATA_GET_THEMES: "/product-metadata/themes",
 
     GET_DEFAULT_MONIKERS: "/config-defi/monikers/default",
 

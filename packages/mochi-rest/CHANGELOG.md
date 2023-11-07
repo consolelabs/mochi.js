@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 3.1.0
+
+### Minor Changes
+
+- Add new get themes endpoint
+
 ## 3.0.16
 
 ### Patch Changes
