@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 4.2.0
+
+### Minor Changes
+
+- ca3559c: Add support for platform facebook
+
 ## 4.1.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @consolelabs/mochi-ui
 
+## 14.0.0
+
+### Minor Changes
+
+- ca3559c: Add support for platform facebook
+
+### Patch Changes
+
+- Updated dependencies [ca3559c]
+  - @consolelabs/mochi-rest@4.2.0
+
 ## 13.0.0
 
 ### Patch Changes
