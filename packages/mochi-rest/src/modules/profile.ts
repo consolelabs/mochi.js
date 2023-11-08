@@ -55,6 +55,18 @@ export class ProfileModule extends Module {
       { platform: "web" | "telegram" | "discord"; urlLocation: string },
       AuthRequest
     >;
+    byFacebook: Fetcher<
+      { platform: "web" | "telegram" | "discord"; urlLocation: string },
+      AuthRequest
+    >;
+    byTwitter: Fetcher<
+      { platform: "web" | "telegram" | "discord"; urlLocation: string },
+      AuthRequest
+    >;
+    byGmail: Fetcher<
+      { platform: "web" | "telegram" | "discord"; urlLocation: string },
+      AuthRequest
+    >;
   };
 
   connect: {
@@ -152,6 +164,27 @@ export class ProfileModule extends Module {
       byDiscord: async ({ urlLocation, platform }) => {
         return await this.api
           .url(endpoints.MOCHI_PROFILE.AUTH_BY_DISCORD)
+          .query({ urlLocation, platform })
+          .resolve(parse(AuthRequestSchema))
+          .get();
+      },
+      byFacebook: async ({ urlLocation, platform }) => {
+        return await this.api
+          .url(endpoints.MOCHI_PROFILE.AUTH_BY_FACEBOOK)
+          .query({ urlLocation, platform })
+          .resolve(parse(AuthRequestSchema))
+          .get();
+      },
+      byTwitter: async ({ urlLocation, platform }) => {
+        return await this.api
+          .url(endpoints.MOCHI_PROFILE.AUTH_BY_TWITTER)
+          .query({ urlLocation, platform })
+          .resolve(parse(AuthRequestSchema))
+          .get();
+      },
+      byGmail: async ({ urlLocation, platform }) => {
+        return await this.api
+          .url(endpoints.MOCHI_PROFILE.AUTH_BY_GMAIL)
           .query({ urlLocation, platform })
           .resolve(parse(AuthRequestSchema))
           .get();

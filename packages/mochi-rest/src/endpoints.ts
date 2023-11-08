@@ -83,6 +83,9 @@ export default {
   },
   MOCHI_PROFILE: {
     AUTH_BY_DISCORD: "/profiles/auth/discord",
+    AUTH_BY_FACEBOOK: "/profiles/auth/facebook",
+    AUTH_BY_TWITTER: "/profiles/auth/twitter",
+    AUTH_BY_GMAIL: "/profiles/auth/mail",
     AUTH_BY_TELEGRAM: "/profiles/auth/telegram",
     GET_BY_ID: (profileId: Serializable) =>
       new Path("/profiles/:profileId").build({ profileId }),

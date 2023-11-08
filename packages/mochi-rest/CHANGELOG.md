@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 4.1.0
+
+### Minor Changes
+
+- Add auth api for facebook/twitter/gmail
+
 ## 4.0.1
 
 ### Patch Changes
