@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 4.2.1
+
+### Patch Changes
+
+- Add status field for mochi tx
+
 ## 4.2.0
 
 ### Minor Changes

@@ -59,6 +59,7 @@ const MochiTxSchema = z.object({
   external_id: z.string().min(1),
   from_profile_id: z.string().min(1),
   other_profile_id: z.string().min(1),
+  status: z.string().min(1),
   from_profile_source: z
     .enum(["mochi-balance", "mochi-vault"])
     .or(z.string().min(1)),
