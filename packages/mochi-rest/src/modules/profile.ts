@@ -2,17 +2,16 @@ import endpoints from "../endpoints";
 import { Options } from "../mochi";
 import {
   Activity,
-  AnySchema,
   Code,
   CodeSchema,
   ListActivity,
   Profile,
   ProfileSchema,
-  getParser,
   Pagination,
   AuthRequest,
   AuthRequestSchema,
 } from "../schemas";
+import { AnySchema, getParser } from "../schemas/utils";
 import type { Fetcher } from "../utils";
 import base from "./base";
 import { Module } from "./module";

@@ -8,14 +8,12 @@ import {
 } from "./middlewares";
 import type { Fetcher } from "../utils";
 import {
-  AnySchema,
   Command,
   Copy,
   CopySchema,
   ListCommandSchema,
   Vault,
   VaultSchema,
-  getParser,
   Coin,
   CoinChartData,
   CoinChartDataSchema,
@@ -57,6 +55,7 @@ import {
   Theme,
   ListThemeSchema,
 } from "../schemas";
+import { AnySchema, getParser } from "../schemas/utils";
 import { Options } from "../mochi";
 import endpoints from "../endpoints";
 import { Module } from "./module";

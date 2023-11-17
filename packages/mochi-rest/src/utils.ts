@@ -1,4 +1,5 @@
-import { Any, Pagination } from "./schemas";
+import { Pagination } from "./schemas";
+import { Any } from "./schemas/utils";
 
 export type Ok<O> = {
   ok: true;

@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 4.2.2
+
+### Patch Changes
+
+- 47fafea: Expose type
+
 ## 4.2.1
 
 ### Patch Changes

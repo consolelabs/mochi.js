@@ -1,14 +1,12 @@
 import base from "./base";
 import type { Fetcher } from "../utils";
 import {
-  AnySchema,
   Code,
   CodeSchema,
   Leaderboard,
   LeaderboardSchema,
   Stats,
   StatsSchema,
-  getParser,
   Balance,
   BalancesSchema,
   Chain,
@@ -30,6 +28,7 @@ import {
   ListPayLinkSchema,
   ListPayMeSchema,
 } from "../schemas";
+import { AnySchema, getParser } from "../schemas/utils";
 import { Options } from "../mochi";
 import endpoints from "../endpoints";
 import { Module } from "./module";
