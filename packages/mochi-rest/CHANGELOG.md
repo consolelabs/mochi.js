@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.0.0
+
+### Major Changes
+
+- BREAKING CHANGE: change the return type of api.pay.mochiWallet.getBalance method
+
 ## 4.2.2
 
 ### Patch Changes

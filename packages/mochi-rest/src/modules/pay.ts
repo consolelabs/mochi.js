@@ -60,7 +60,10 @@ export class PayModule extends Module {
   mochiWallet: {
     withdraw: Fetcher<WithdrawRequest>;
     deposit: Fetcher<{ profileId: string; token: string }, DepositInfo>;
-    getBalance: Fetcher<{ profileId: string; token?: string }, Array<Balance>>;
+    getBalance: Fetcher<
+      { profileId: string; token?: string },
+      { usd_total: number; balances: Array<Balance & { usd_amount: number }> }
+    >;
     // in-app-wallets
     getWallets: Fetcher<string, Array<InAppWallet>>;
   };
@@ -154,10 +157,40 @@ export class PayModule extends Module {
           .post({ profileId, token });
       },
       getBalance: async ({ profileId, token }) => {
-        return this.api
+        const result = await this.api
           .url(endpoints.MOCHI_PAY.GET_BALANCE(profileId, token))
           .resolve(parse(BalancesSchema))
           .get();
+        if (!result.ok || result.error)
+          return {
+            ok: true,
+            data: { usd_total: 0, balances: [] },
+            error: null,
+          };
+
+        let usd_total = 0;
+
+        const balances = result.data
+          .map<Balance & { usd_amount: number }>((d) => {
+            const tokenAmount = parseInt(d.amount, 10) / 10 ** d.token.decimal;
+            const usd_amount = tokenAmount * d.token.price;
+
+            usd_total += usd_amount;
+
+            return {
+              ...d,
+              usd_amount,
+            };
+          })
+          .sort((a, b) => {
+            return b.usd_amount - a.usd_amount;
+          });
+
+        return {
+          ok: true,
+          error: null,
+          data: { usd_total, balances },
+        };
       },
       getWallets: async (profileId) => {
         let result = await this.api
