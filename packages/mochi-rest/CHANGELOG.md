@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.0.3
+
+### Patch Changes
+
+- Add missing prefix mochi-wallet to get balance url
+
 ## 5.0.2
 
 ### Patch Changes

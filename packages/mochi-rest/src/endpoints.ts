@@ -108,11 +108,11 @@ export default {
     DEPOSIT: "/mochi-wallet/deposit",
     GET_BALANCE: (profileId: Serializable, token?: Serializable) =>
       token
-        ? new Path("/:profileId/balances/:token").build({
+        ? new Path("/mochi-wallet/:profileId/balances/:token").build({
             profileId,
             token,
           })
-        : new Path("/:profileId/balances").build({ profileId }),
+        : new Path("/mochi-wallet/:profileId/balances").build({ profileId }),
     GET_WALLETS: (profileId: Serializable) =>
       new Path("/in-app-wallets/get-by-profile/:profileId").build({
         profileId,
