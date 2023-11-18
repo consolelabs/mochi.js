@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.0.1
+
+### Patch Changes
+
+- Ignore error from path param builder
+
 ## 5.0.0
 
 ### Major Changes
