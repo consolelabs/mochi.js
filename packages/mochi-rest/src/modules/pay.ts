@@ -193,7 +193,7 @@ export class PayModule extends Module {
         };
       },
       getWallets: async (profileId) => {
-        let result = await this.api
+        const result = await this.api
           .url(endpoints.MOCHI_PAY.GET_WALLETS(profileId))
           .resolve(parse(InAppWalletsSchema))
           .post();

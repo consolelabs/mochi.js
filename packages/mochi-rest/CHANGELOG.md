@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.0.2
+
+### Patch Changes
+
+- Fix get balance url
+
 ## 5.0.1
 
 ### Patch Changes
