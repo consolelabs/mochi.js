@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.0.5
+
+### Patch Changes
+
+- Add missing icon field optional string
+
 ## 5.0.4
 
 ### Patch Changes

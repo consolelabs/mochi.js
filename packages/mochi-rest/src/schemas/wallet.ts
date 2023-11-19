@@ -65,6 +65,7 @@ export const OnchainWalletBalanceSchema = z.object({
       token: TokenSchema.merge(
         z.object({
           id: z.string().optional(),
+          icon: z.string().optional(),
           chain_id: z.string().optional(),
           address: z.string().optional(),
           token: z.string().optional(),
