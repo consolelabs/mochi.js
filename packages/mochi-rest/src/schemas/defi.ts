@@ -18,12 +18,12 @@ export const ChainsSchema = z.array(ChainSchema);
 
 export const TokenSchema = z.object({
   id: z.string().uuid(),
-  name: z.string().min(1),
-  symbol: z.string().min(1),
+  name: z.string(),
+  symbol: z.string(),
   decimal: z.number().nonnegative(),
-  chain_id: z.string().min(1),
+  chain_id: z.string(),
   native: z.boolean(),
-  address: z.string().min(1),
+  address: z.string(),
   icon: z.string(),
   coin_gecko_id: z.string(),
   price: z.number(),

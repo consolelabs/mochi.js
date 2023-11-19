@@ -161,12 +161,13 @@ export class PayModule extends Module {
           .url(endpoints.MOCHI_PAY.GET_BALANCE(profileId, token))
           .resolve(parse(BalancesSchema))
           .get();
-        if (!result.ok || result.error)
+        if (!result.ok || result.error) {
           return {
             ok: true,
             data: { usd_total: 0, balances: [] },
             error: null,
           };
+        }
 
         let usd_total = 0;
 

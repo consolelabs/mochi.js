@@ -1,3 +1,4 @@
+import { ZodError } from "zod";
 import { Pagination } from "./schemas";
 import { Any } from "./schemas/utils";
 
@@ -10,7 +11,7 @@ export type Ok<O> = {
 export type Err = {
   ok: false;
   data: null;
-  error: any;
+  error: ZodError;
 };
 
 export type Meta<P> = Extract<P, void> extends never

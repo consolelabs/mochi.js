@@ -2,10 +2,10 @@ import { z } from "zod";
 import { ChainSchema, TokenSchema } from "./defi";
 
 const InAppWalletSchema = z.object({
-  profile_id: z.string().nonempty(),
-  chain_id: z.string().nonempty(),
-  wallet_address: z.string().nonempty(),
-  created_at: z.string().datetime().nonempty(),
+  profile_id: z.string(),
+  chain_id: z.string(),
+  wallet_address: z.string(),
+  created_at: z.string().datetime(),
   chain: ChainSchema,
   total_amount: z.string(),
 });
@@ -15,12 +15,12 @@ export const InAppWalletsSchema = z.array(InAppWalletSchema);
 export type InAppWallet = z.infer<typeof InAppWalletSchema>;
 
 const BaseTrackWalletSchema = z.object({
-  profile_id: z.string().nonempty(),
-  address: z.string().nonempty(),
+  profile_id: z.string(),
+  address: z.string(),
   alias: z.string(),
   chain_type: z.string(),
   is_owner: z.boolean(),
-  created_at: z.string().datetime().nonempty(),
+  created_at: z.string().datetime(),
   net_worth: z.number(),
   fetched_data: z.boolean(),
 });
@@ -58,25 +58,34 @@ export const OnchainWalletBalanceSchema = z.object({
   balance: z.array(
     z.object({
       chain_id: z.number(),
-      contract_name: z.string().nonempty(),
-      contract_symbol: z.string().nonempty(),
+      contract_name: z.string(),
+      contract_symbol: z.string(),
       asset_balance: z.number().nonnegative(),
       usd_balance: z.number().nonnegative(),
-      token: TokenSchema,
+      token: TokenSchema.merge(
+        z.object({
+          id: z.string().optional(),
+          chain_id: z.string().optional(),
+          address: z.string().optional(),
+          token: z.string().optional(),
+          coin_gecko_id: z.string().optional(),
+          chain: ChainSchema.or(z.any()),
+        })
+      ),
       amount: z.string(),
       detail_staking: z.null(),
       detail_lending: z.null(),
     })
   ),
-  farming: z.null(),
-  staking: z.null(),
-  nfts: z.null(),
+  farming: z.null().or(z.array(z.any())),
+  staking: z.null().or(z.array(z.any())),
+  nfts: z.null().or(z.array(z.any())),
 });
 export type OnchainWalletBalance = z.infer<typeof OnchainWalletBalanceSchema>;
 
 const OnchainWalletTxnSchema = z.object({
   chain_id: z.number(),
-  tx_hash: z.string().nonempty(),
+  tx_hash: z.string(),
   scan_base_url: z.string(),
   signed_at: z.string().datetime(),
   actions: z.array(z.object({})),
