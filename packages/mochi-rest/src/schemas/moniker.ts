@@ -2,16 +2,18 @@ import { z } from "zod";
 
 const MonikerSchema = z.object({
   moniker: z.object({
-    id: z.string().nonempty(),
-    moniker: z.string().nonempty(),
+    id: z.string(),
+    moniker: z.string(),
     guild_id: z.string(),
-    token_id: z.string().nonempty(),
+    token_id: z.string(),
     token: z.object({
-      id: z.string().nonempty(),
-      token_id: z.string().nonempty(),
-      token_name: z.string().nonempty(),
-      token_symbol: z.string().nonempty(),
+      id: z.string(),
+      token_id: z.string(),
+      token_name: z.string(),
+      token_symbol: z.string(),
+      token_price: z.number().nonnegative(),
       icon: z.string(),
+      chain_id: z.string(),
     }),
     amount: z.number(),
   }),

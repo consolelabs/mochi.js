@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.0.6
+
+### Patch Changes
+
+- Update typing for Moniker schema
+
 ## 5.0.5
 
 ### Patch Changes
