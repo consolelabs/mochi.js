@@ -10,6 +10,7 @@ import {
   Pagination,
   AuthRequest,
   AuthRequestSchema,
+  ListProfileSchema,
 } from "../schemas";
 import { AnySchema, getParser } from "../schemas/utils";
 import type { Fetcher } from "../utils";
@@ -74,6 +75,10 @@ export class ProfileModule extends Module {
       { platform: "web" | "telegram" | "discord"; code: string },
       AuthRequest
     >;
+  };
+
+  users: {
+    search: Fetcher<{ username: string; platform?: string }, Array<Profile>>;
   };
 
   constructor({ addons, profileUrl, catcher, log }: Options) {
@@ -204,6 +209,16 @@ export class ProfileModule extends Module {
           .query({ code, platform })
           .resolve(parse(AuthRequestSchema))
           .post();
+      },
+    };
+
+    this.users = {
+      search: async ({ username, platform = "" }) => {
+        return this.api
+          .url(endpoints.MOCHI_PROFILE.PROFILE_SEARCH)
+          .query({ username, platform })
+          .resolve(parse(ListProfileSchema))
+          .get();
       },
     };
   }

@@ -1,6 +1,6 @@
 {
   "name": "@consolelabs/mochi-rest",
-  "version": "5.0.6",
+  "version": "5.1.0",
   "description": "mochi api rest client",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.1.0
+
+### Minor Changes
+
+- Add new profiles/search api
+
 ## 5.0.6
 
 ### Patch Changes

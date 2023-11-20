@@ -102,6 +102,8 @@ export default {
       new Path("/profiles/:profileId/codes").build({ profileId }),
     CONNECT_DISCORD: "/profiles/me/accounts/connect-discord",
     CONNECT_TELEGRAM: "/profiles/me/accounts/connect-telegram",
+
+    PROFILE_SEARCH: "/profiles/search",
   },
   MOCHI_PAY: {
     WITHDRAW: "/mochi-wallet/withdraw",

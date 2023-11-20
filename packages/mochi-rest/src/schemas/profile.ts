@@ -68,6 +68,7 @@ export const ProfileSchema = z.discriminatedUnion("type", [
   AppProfileSchema,
   VaultProfileSchema,
 ]);
+export const ListProfileSchema = z.array(ProfileSchema);
 
 export type Profile = z.infer<typeof ProfileSchema>;
 
