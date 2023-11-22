@@ -5,14 +5,15 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "release": "pnpm publish -r --access public"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
     "@turbo/gen": "^1.9.7",
     "eslint": "^7.32.0",
     "lefthook": "^1.4.8",
-    "prettier": "^2.5.1",
+    "prettier": "2.8.8",
     "turbo": "latest"
   },
   "packageManager": "pnpm@8.6.10",
