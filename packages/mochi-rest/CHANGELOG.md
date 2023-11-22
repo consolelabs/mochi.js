@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.1.2
+
+### Patch Changes
+
+- Fix typing
+
 ## 5.1.1
 
 ### Patch Changes
