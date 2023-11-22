@@ -1,6 +1,6 @@
 {
   "name": "@consolelabs/mochi-id",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A profile resolver for Mochi users",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

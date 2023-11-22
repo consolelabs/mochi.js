@@ -189,7 +189,7 @@ export function render(
 
 export async function resolve(
   on: Platform.Web | Platform.Discord | Platform.Telegram,
-  A: Profile,
+  A: string | { id: string; type: "vault" },
   B = A
 ) {
   let pA: Profile, pB: Profile;
@@ -197,7 +197,7 @@ export async function resolve(
     const data = await fetchProfile(A);
     pA = data;
   } else {
-    const data = await fetchVault(A?.id);
+    const data = await fetchVault(A.id);
     pA = data;
   }
 
@@ -205,7 +205,7 @@ export async function resolve(
     const data = await fetchProfile(B);
     pB = data;
   } else {
-    const data = await fetchVault(B?.id);
+    const data = await fetchVault(B.id);
     pB = data;
   }
 
