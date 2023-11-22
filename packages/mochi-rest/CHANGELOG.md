@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.1.1
+
+### Patch Changes
+
+- Add method get by username for discord/telegram
+
 ## 5.1.0
 
 ### Minor Changes

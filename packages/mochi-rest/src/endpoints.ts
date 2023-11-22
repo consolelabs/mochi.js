@@ -87,17 +87,23 @@ export default {
     AUTH_BY_TWITTER: "/profiles/auth/twitter",
     AUTH_BY_GMAIL: "/profiles/auth/mail",
     AUTH_BY_TELEGRAM: "/profiles/auth/telegram",
+
     GET_BY_ID: (profileId: Serializable) =>
       new Path("/profiles/:profileId").build({ profileId }),
     GET_BY_TELEGRAM_ID: (telegramId: Serializable) =>
       new Path("/profiles/get-by-telegram/:telegramId").build({ telegramId }),
-    GET_BY_TELEGRAM_USERNAMES: "/telegram",
+    GET_BY_TELEGRAM_USERNAME: (username: Serializable) =>
+      new Path("/telegram/get-by-username/:username").build({ username }),
+    GET_BY_DISCORD_USERNAME: (username: Serializable) =>
+      new Path("/discord/get-by-username/:username").build({ username }),
     GET_BY_DISCORD_ID: (discordId: Serializable) =>
       new Path("/profiles/get-by-discord/:discordId").build({ discordId }),
     GET_BY_EMAIL: (email: Serializable) =>
       new Path("/profiles/get-by-email/:email").build({ email }),
+
     USER_ACTIVITIES: (profileId: Serializable) =>
       new Path("/profiles/:profileId/activities").build({ profileId }),
+
     REQUEST_CODE: (profileId: Serializable) =>
       new Path("/profiles/:profileId/codes").build({ profileId }),
     CONNECT_DISCORD: "/profiles/me/accounts/connect-discord",

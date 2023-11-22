@@ -24,11 +24,12 @@ export class ProfileModule extends Module {
 
   telegram: {
     getById: Fetcher<{ telegramId: string; noFetchAmount?: boolean }, Profile>;
-    getByUsernames: Fetcher<string[], Record<string, string | undefined>>;
+    getByUsername: Fetcher<string, Profile>;
   };
 
   discord: {
     getById: Fetcher<{ discordId: string; noFetchAmount?: boolean }, Profile>;
+    getByUsername: Fetcher<string, Profile>;
   };
 
   email: {
@@ -112,11 +113,10 @@ export class ProfileModule extends Module {
           .resolve(parse(ProfileSchema))
           .get();
       },
-      getByUsernames: async (usernames) => {
+      getByUsername: async (username) => {
         return this.api
-          .url(endpoints.MOCHI_PROFILE.GET_BY_TELEGRAM_USERNAMES)
-          .query({ usernames: usernames.join("|") })
-          .resolve(parse(AnySchema))
+          .url(endpoints.MOCHI_PROFILE.GET_BY_TELEGRAM_USERNAME(username))
+          .resolve(parse(ProfileSchema))
           .get();
       },
     };
@@ -126,6 +126,12 @@ export class ProfileModule extends Module {
         return this.api
           .url(endpoints.MOCHI_PROFILE.GET_BY_DISCORD_ID(discordId))
           .query(noFetchAmount ? { noFetchAmount } : {})
+          .resolve(parse(ProfileSchema))
+          .get();
+      },
+      getByUsername: async (username) => {
+        return this.api
+          .url(endpoints.MOCHI_PROFILE.GET_BY_DISCORD_USERNAME(username))
           .resolve(parse(ProfileSchema))
           .get();
       },
