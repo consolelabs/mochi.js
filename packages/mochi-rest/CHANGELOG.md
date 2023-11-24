@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.1.4
+
+### Patch Changes
+
+- Export actual values, not just types
+
 ## 5.1.3
 
 ### Patch Changes
