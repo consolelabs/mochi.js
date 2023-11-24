@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.1.3
+
+### Patch Changes
+
+- Add back the getByUsernames method
+
 ## 5.1.2
 
 ### Patch Changes

@@ -101,6 +101,8 @@ export default {
     GET_BY_EMAIL: (email: Serializable) =>
       new Path("/profiles/get-by-email/:email").build({ email }),
 
+    GET_BY_TELEGRAM_USERNAMES: "/telegram",
+
     USER_ACTIVITIES: (profileId: Serializable) =>
       new Path("/profiles/:profileId/activities").build({ profileId }),
 
