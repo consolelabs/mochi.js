@@ -40,7 +40,7 @@ const UserProfileSchema = z.object({
   avatar: z.string(),
   pnl: z.string(),
   type: z.literal("user"),
-  application: z.null(),
+  application: z.null().or(z.undefined()),
 });
 
 const AppProfileSchema = z.object({
@@ -60,7 +60,7 @@ const VaultProfileSchema = z.object({
   avatar: z.string(),
   pnl: z.string(),
   type: z.literal("vault"),
-  application: z.null(),
+  application: z.null().or(z.undefined()),
 });
 
 export const ProfileSchema = z.discriminatedUnion("type", [
