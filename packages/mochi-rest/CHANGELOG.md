@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.1.6
+
+### Patch Changes
+
+- 838a3cc: Update typing for leaderboard schema
+
 ## 5.1.5
 
 ### Patch Changes
