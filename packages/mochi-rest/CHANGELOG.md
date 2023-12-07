@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.1.5
+
+### Patch Changes
+
+- 8763d7b: Update typing for OffchainTxSchema
+
 ## 5.1.4
 
 ### Patch Changes
