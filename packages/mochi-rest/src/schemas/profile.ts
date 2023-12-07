@@ -77,16 +77,18 @@ export const LeaderboardSchema = z.object({
     z.object({
       profile: UserProfileSchema.merge(
         z.object({
-          associated_accounts: z.array(
-            AssociatedAccountSchema.merge(
-              z.object({
-                pnl: z.undefined(),
-                total_amount: z.undefined(),
-              })
+          associated_accounts: z
+            .array(
+              AssociatedAccountSchema.merge(
+                z.object({
+                  pnl: z.undefined(),
+                  total_amount: z.undefined(),
+                })
+              )
             )
-          ),
+            .or(z.null()),
           pnl: z.undefined(),
-          type: z.undefined(),
+          type: z.string(),
         })
       ),
       usd_amount: z.number().nonnegative(),
@@ -96,16 +98,18 @@ export const LeaderboardSchema = z.object({
     z.object({
       profile: UserProfileSchema.merge(
         z.object({
-          associated_accounts: z.array(
-            AssociatedAccountSchema.merge(
-              z.object({
-                pnl: z.undefined(),
-                total_amount: z.undefined(),
-              })
+          associated_accounts: z
+            .array(
+              AssociatedAccountSchema.merge(
+                z.object({
+                  pnl: z.undefined(),
+                  total_amount: z.undefined(),
+                })
+              )
             )
-          ),
+            .or(z.null()),
           pnl: z.undefined(),
-          type: z.undefined(),
+          type: z.string(),
         })
       ),
       usd_amount: z.number().nonnegative(),
