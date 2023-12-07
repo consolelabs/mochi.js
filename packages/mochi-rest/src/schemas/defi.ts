@@ -66,7 +66,7 @@ const MochiTxSchema = z.object({
   other_profile_source: z
     .enum(["mochi-balance", "mochi-vault"])
     .or(z.string().min(1)),
-  source_platform: z.enum(["discord", "telegram", "web"]),
+  source_platform: z.enum(["discord", "telegram", "web", ""]),
   amount: z.string().min(1),
   token: TokenSchema,
 });
