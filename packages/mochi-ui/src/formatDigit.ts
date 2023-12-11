@@ -1,9 +1,26 @@
 export function formatPercentDigit(params: FormatParam) {
-  const num = call(params, formatDigit, {
-    fractionDigits: toNum(params) >= 10 ? 0 : 2,
-    shorten: toNum(params) >= 10,
-  });
-  return `${num}%`;
+  let num;
+  if (typeof params === "object") {
+    num = params.value;
+  } else {
+    num = params;
+  }
+
+  const shorten = +num >= 10;
+  const [left, right = ""] = String(num).split(".");
+  let result;
+
+  if (!shorten) {
+    result = `${(+left).toLocaleString(undefined)}.${right.slice(0, 2)}%`;
+  } else {
+    result = `${Intl.NumberFormat("en-US", {
+      maximumFractionDigits: 0,
+      notation: "compact",
+    }).format(+left)}.${right.slice(0, 2)}%`;
+  }
+
+  if (result.endsWith(".%")) return result.replaceAll(".%", "%");
+  return result;
 }
 
 export function formatUsdDigit(params: FormatParam) {

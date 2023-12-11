@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 17.0.0
+
+### Major Changes
+
+- BREAKING CHANGE: percent format
+
 ## 16.0.6
 
 ### Patch Changes
