@@ -285,20 +285,6 @@ export async function formatTxn(
       }
     }
     return result;
-
-    // swap
-    // if ("from_token" in tx) {
-    //   const fromToken = tx.from_token.symbol.toUpperCase();
-    //   const toToken = tx.to_token.symbol.toUpperCase();
-    //   if (tx.amount_in && tx.amount_out) {
-    //     result.text = `-${formatTokenDigit(
-    //       formatUnits(tx.amount_in, tx.from_token.decimal)
-    //     )} ${fromToken} 🔁 +${formatTokenDigit(
-    //       formatUnits(tx.amount_out, tx.to_token.decimal)
-    //     )} ${toToken}`;
-    //   }
-    //   return result;
-    // }
   }
 
   return result;
