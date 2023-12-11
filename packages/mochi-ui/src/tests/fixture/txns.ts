@@ -1,6 +1,6 @@
 import { Tx } from "@consolelabs/mochi-rest";
 
-export const TransferOutTx: Tx = {
+export const TransferTx: Tx = {
   from_profile_id: "48438",
   other_profile_id: "40409",
   from_profile_source: "mochi-balance",
