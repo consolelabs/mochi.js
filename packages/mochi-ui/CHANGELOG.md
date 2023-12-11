@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 17.0.1
+
+### Patch Changes
+
+- Fix add low/high bound for formatDigit
+
 ## 17.0.0
 
 ### Major Changes
