@@ -1,74 +1,74 @@
-import { Tx } from "@consolelabs/mochi-rest";
-import API from "@consolelabs/mochi-rest";
-import { TransactionSupportedPlatform, formatTxn } from "../../components/txns";
+import { formatTxn } from "../../components/txns";
 import { Platform } from "../../ui";
-import { DepositTx, PaylinkTx } from "../fixture/txns";
+import { PaylinkTx } from "../fixture/txns";
 
-type Input = {
-  tx: Tx;
-  platform: TransactionSupportedPlatform;
-  global: boolean;
-  groupDate: boolean;
-  api?: API;
-};
+describe("formatTxn.PaylinkTx", () => {
+  beforeAll(() => {
+    jest
+      .useFakeTimers({ advanceTimers: true })
+      .setSystemTime(new Date("2023-12-13"));
+  });
+  afterAll(() => {
+    jest.useRealTimers();
+  });
 
-type Output = {
-  time: string;
-  emoji: string;
-  amount: string;
-  text: string;
-  external_id: string;
-};
+  it("should render corrected format on discord", async () => {
+    // arrange
+    const tx = PaylinkTx;
+    const platform = Platform.Discord;
+    const global = true;
+    const groupDate = true;
 
-// test cases
-test.each<[Input, Output]>([
-  [
-    {
-      tx: PaylinkTx,
-      platform: Platform.Discord,
-      global: true,
-      groupDate: true,
-    },
-    {
-      time: "",
-      emoji: "",
+    // act
+    const actual = await formatTxn(tx, platform, global, groupDate);
+
+    // assert
+    expect(actual).toEqual({
       amount: "",
-      text: "",
-      external_id: "",
-    },
-  ],
-  [
-    {
-      tx: PaylinkTx,
-      platform: Platform.Telegram,
-      global: true,
-      groupDate: true,
-    },
-    {
-      time: "",
       emoji: "",
+      time: "5d ago",
+      text: "-1 SPELL [Pay Link](https://mochi.gg/pay/0ddac19357ecbab724a9)",
+      external_id: "[`45ce7`](https://mochi.gg/tx/45ce7563380d)",
+    });
+  });
+
+  it("should render corrected format on tele", async () => {
+    // arrange
+    const tx = PaylinkTx;
+    const platform = Platform.Telegram;
+    const global = true;
+    const groupDate = true;
+
+    // act
+    const actual = await formatTxn(tx, platform, global, groupDate);
+
+    // assert
+    expect(actual).toEqual({
       amount: "",
-      text: "",
-      external_id: "",
-    },
-  ],
-  [
-    {
-      tx: PaylinkTx,
-      platform: Platform.Web,
-      global: true,
-      groupDate: true,
-    },
-    {
-      time: "",
       emoji: "",
+      time: "5d ago",
+      text: "-1 SPELL [Pay Link](https://mochi.gg/pay/0ddac19357ecbab724a9)",
+      external_id: "[`45ce7`](https://mochi.gg/tx/45ce7563380d)",
+    });
+  });
+
+  it("should render corrected format on web", async () => {
+    // arrange
+    const tx = PaylinkTx;
+    const platform = Platform.Web;
+    const global = true;
+    const groupDate = true;
+
+    // act
+    const actual = await formatTxn(tx, platform, global, groupDate);
+
+    // assert
+    expect(actual).toEqual({
       amount: "",
-      text: "",
-      external_id: "",
-    },
-  ],
-])("components.formatTxn.paylink", (input, expected) => {
-  const { tx, platform, global, groupDate, api } = input;
-  const res = formatTxn(tx, platform, global, groupDate, api);
-  expect(res).toBe(expected);
+      emoji: "",
+      time: "5d ago",
+      text: "-1 SPELL [Pay Link](https://mochi.gg/pay/0ddac19357ecbab724a9)",
+      external_id: "[`45ce7`](https://mochi.gg/tx/45ce7563380d)",
+    });
+  });
 });

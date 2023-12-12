@@ -1,74 +1,74 @@
-import { Tx } from "@consolelabs/mochi-rest";
-import API from "@consolelabs/mochi-rest";
-import { TransactionSupportedPlatform, formatTxn } from "../../components/txns";
+import { formatTxn } from "../../components/txns";
 import { Platform } from "../../ui";
-import { DepositTx, WithdrawTx } from "../fixture/txns";
+import { WithdrawTx } from "../fixture/txns";
 
-type Input = {
-  tx: Tx;
-  platform: TransactionSupportedPlatform;
-  global: boolean;
-  groupDate: boolean;
-  api?: API;
-};
+describe("formatTxn.WithdrawTx", () => {
+  beforeAll(() => {
+    jest
+      .useFakeTimers({ advanceTimers: true })
+      .setSystemTime(new Date("2023-12-13"));
+  });
+  afterAll(() => {
+    jest.useRealTimers();
+  });
 
-type Output = {
-  time: string;
-  emoji: string;
-  amount: string;
-  text: string;
-  external_id: string;
-};
+  it("should render corrected format on discord", async () => {
+    // arrange
+    const tx = WithdrawTx;
+    const platform = Platform.Discord;
+    const global = true;
+    const groupDate = true;
 
-// test cases
-test.each<[Input, Output]>([
-  [
-    {
-      tx: WithdrawTx,
-      platform: Platform.Discord,
-      global: true,
-      groupDate: true,
-    },
-    {
-      time: "",
-      emoji: "",
+    // act
+    const actual = await formatTxn(tx, platform, global, groupDate);
+
+    // assert
+    expect(actual).toEqual({
       amount: "",
-      text: "",
-      external_id: "",
-    },
-  ],
-  [
-    {
-      tx: WithdrawTx,
-      platform: Platform.Telegram,
-      global: true,
-      groupDate: true,
-    },
-    {
-      time: "",
       emoji: "",
+      time: "5d ago",
+      text: "-60 ICY withdrawn to `0x053..13249`",
+      external_id: "[`68b47`](https://mochi.gg/tx/68b47c5d102c)",
+    });
+  });
+
+  it("should render corrected format on tele", async () => {
+    // arrange
+    const tx = WithdrawTx;
+    const platform = Platform.Telegram;
+    const global = true;
+    const groupDate = true;
+
+    // act
+    const actual = await formatTxn(tx, platform, global, groupDate);
+
+    // assert
+    expect(actual).toEqual({
       amount: "",
-      text: "",
-      external_id: "",
-    },
-  ],
-  [
-    {
-      tx: WithdrawTx,
-      platform: Platform.Web,
-      global: true,
-      groupDate: true,
-    },
-    {
-      time: "",
       emoji: "",
+      time: "5d ago",
+      text: "-60 ICY withdrawn to `0x053..13249`",
+      external_id: "[`68b47`](https://mochi.gg/tx/68b47c5d102c)",
+    });
+  });
+
+  it("should render corrected format on web", async () => {
+    // arrange
+    const tx = WithdrawTx;
+    const platform = Platform.Web;
+    const global = true;
+    const groupDate = true;
+
+    // act
+    const actual = await formatTxn(tx, platform, global, groupDate);
+
+    // assert
+    expect(actual).toEqual({
       amount: "",
-      text: "",
-      external_id: "",
-    },
-  ],
-])("components.formatTxn.WithdrawTx", (input, expected) => {
-  const { tx, platform, global, groupDate, api } = input;
-  const res = formatTxn(tx, platform, global, groupDate, api);
-  expect(res).toBe(expected);
+      emoji: "",
+      time: "5d ago",
+      text: "-60 ICY withdrawn to `0x053..13249`",
+      external_id: "[`68b47`](https://mochi.gg/tx/68b47c5d102c)",
+    });
+  });
 });

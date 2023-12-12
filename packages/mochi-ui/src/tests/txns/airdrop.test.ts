@@ -1,74 +1,74 @@
-import { Tx } from "@consolelabs/mochi-rest";
-import API from "@consolelabs/mochi-rest";
-import { TransactionSupportedPlatform, formatTxn } from "../../components/txns";
+import { formatTxn } from "../../components/txns";
 import { Platform } from "../../ui";
-import { AirdropTx, DepositTx } from "../fixture/txns";
+import { AirdropTx } from "../fixture/txns";
 
-type Input = {
-  tx: Tx;
-  platform: TransactionSupportedPlatform;
-  global: boolean;
-  groupDate: boolean;
-  api?: API;
-};
+describe("formatTxn.AirdropTx", () => {
+  beforeAll(() => {
+    jest
+      .useFakeTimers({ advanceTimers: true })
+      .setSystemTime(new Date("2023-12-13"));
+  });
+  afterAll(() => {
+    jest.useRealTimers();
+  });
 
-type Output = {
-  time: string;
-  emoji: string;
-  amount: string;
-  text: string;
-  external_id: string;
-};
+  it("should render corrected format on discord", async () => {
+    // arrange
+    const tx = AirdropTx;
+    const platform = Platform.Discord;
+    const global = true;
+    const groupDate = true;
 
-// test cases
-test.each<[Input, Output]>([
-  [
-    {
-      tx: AirdropTx,
-      platform: Platform.Discord,
-      global: true,
-      groupDate: true,
-    },
-    {
-      time: "",
-      emoji: "",
+    // act
+    const actual = await formatTxn(tx, platform, global, groupDate);
+
+    // assert
+    expect(actual).toEqual({
       amount: "",
-      text: "",
-      external_id: "",
-    },
-  ],
-  [
-    {
-      tx: AirdropTx,
-      platform: Platform.Telegram,
-      global: true,
-      groupDate: true,
-    },
-    {
-      time: "",
       emoji: "",
+      time: "35d ago",
+      text: "-10 MINU airdropped but no one joined",
+      external_id: "[`52425`](https://mochi.gg/tx/5242596071ea)",
+    });
+  });
+
+  it("should render corrected format on tele", async () => {
+    // arrange
+    const tx = AirdropTx;
+    const platform = Platform.Telegram;
+    const global = true;
+    const groupDate = true;
+
+    // act
+    const actual = await formatTxn(tx, platform, global, groupDate);
+
+    // assert
+    expect(actual).toEqual({
       amount: "",
-      text: "",
-      external_id: "",
-    },
-  ],
-  [
-    {
-      tx: AirdropTx,
-      platform: Platform.Web,
-      global: true,
-      groupDate: true,
-    },
-    {
-      time: "",
       emoji: "",
+      time: "35d ago",
+      text: "-10 MINU airdropped but no one joined",
+      external_id: "[`52425`](https://mochi.gg/tx/5242596071ea)",
+    });
+  });
+
+  it("should render corrected format on web", async () => {
+    // arrange
+    const tx = AirdropTx;
+    const platform = Platform.Web;
+    const global = true;
+    const groupDate = true;
+
+    // act
+    const actual = await formatTxn(tx, platform, global, groupDate);
+
+    // assert
+    expect(actual).toEqual({
       amount: "",
-      text: "",
-      external_id: "",
-    },
-  ],
-])("components.formatTxn.airdrop", (input, expected) => {
-  const { tx, platform, global, groupDate, api } = input;
-  const res = formatTxn(tx, platform, global, groupDate, api);
-  expect(res).toBe(expected);
+      emoji: "",
+      time: "35d ago",
+      text: "-10 MINU airdropped but no one joined",
+      external_id: "[`52425`](https://mochi.gg/tx/5242596071ea)",
+    });
+  });
 });

@@ -1,3 +1,4 @@
+import util from "util";
 import time from "../time";
 import UI, { Platform } from "..";
 import { mdTable } from "../markdownTable";
@@ -22,6 +23,7 @@ import type {
 import API from "@consolelabs/mochi-rest";
 import string from "../string";
 import amountComp from "./amount";
+import template from "../templates";
 
 type Props = {
   txns: Array<Tx>;
@@ -213,7 +215,6 @@ async function renderTransferTx(
     emoji: "",
     amount: "",
     text: "",
-    external_id: "",
   };
 
   // 1. Check if tx type is in or out
@@ -237,9 +238,10 @@ async function renderTransferTx(
   // 3. Format the transaction description
   const [actor] = await UI.resolve(onPlatform, tx.other_profile_id);
   const actorLbl = actor?.value ?? "";
-  result.text = isTransferIn
-    ? `${fullAmount} from ${actorLbl}`
-    : `${fullAmount} to ${actorLbl}`;
+  const tmpl = isTransferIn
+    ? template.transaction.transferIn
+    : template.transaction.transferOut;
+  result.text = util.format(tmpl, fullAmount, actorLbl);
 
   // if global we will should both sender and receiver
   // otherwise just show the actor (the one who trigger the function)
@@ -250,9 +252,10 @@ async function renderTransferTx(
       tx.other_profile_id
     );
     if (from?.value && to?.value) {
+      const tmpl = template.transaction.transferGlobal;
       result.text = isTransferIn
-        ? `${to.value} to ${from.value}`
-        : `${from.value} to ${to.value}`;
+        ? util.format(tmpl, to.value, from.value)
+        : util.format(tmpl, from.value, to.value);
     }
   }
 
@@ -271,7 +274,6 @@ async function renderVaultTransferTx(
     emoji: "",
     amount: "",
     text: "",
-    external_id: "",
   };
 
   // 1. check if tx type if in or out
@@ -303,9 +305,10 @@ async function renderVaultTransferTx(
       : (tx as VaultTransferTx).other_profile_id
   );
   const actorLbl = actor?.value ?? "";
-  result.text = isTransferIn
-    ? `${fullAmount} from ${actorLbl}`
-    : `${fullAmount} to ${actorLbl}`;
+  const templ = isTransferIn
+    ? template.transaction.transferIn
+    : template.transaction.transferOut;
+  result.text = util.format(templ, fullAmount, actorLbl);
 
   // if global we will should show both sender and receiver
   // otherwise just show the actor (the one who trigger the function)
@@ -327,9 +330,13 @@ async function renderVaultTransferTx(
         : (tx as VaultTransferTx).other_profile_id
     );
     if (from?.value && to?.value) {
+      const templ = template.transaction.transferGlobal;
       result.text = isTransferIn
         ? `${to.value} to ${from.value}`
         : `${from.value} to ${to.value}`;
+      result.text = isTransferIn
+        ? util.format(templ, to.value, from.value)
+        : util.format(templ, from.value, to.value);
     }
   }
 
@@ -353,7 +360,11 @@ async function renderDepositTx(
 
   // 1. Prepare the deposit transaction description
   const normalized = await address.normalizeAddress(tx.other_profile_source);
-  const text = `${amount} deposited to \`${address.shorten(normalized)}\``;
+  const text = util.format(
+    template.transaction.deposit,
+    amount,
+    address.shorten(normalized)
+  );
 
   // 2. Return the result
   return {
@@ -378,7 +389,7 @@ async function renderWithdrawTx(
 
   // 1. Prepare the withdraw transaction description
   const resolved = await address.lookup(tx.other_profile_source);
-  const text = `${amount} withdrawn to \`${resolved}\``;
+  const text = util.format(template.transaction.withdraw, amount, resolved);
 
   // 2. return the result
   return {
@@ -403,11 +414,19 @@ async function renderAirdropTx(
 
   // 1. Prepare the withdraw transaction description
   const numOfWinners = tx.other_profile_ids.length;
-  const text = `${amount} airdropped${
-    numOfWinners > 0
-      ? ` to ${numOfWinners} ${numOfWinners > 1 ? "people" : "person"}`
-      : " but no one joined"
-  }`;
+  let text = util.format(
+    template.transaction.airdropWithoutParticipant,
+    amount
+  );
+  if (numOfWinners > 0) {
+    const subject = numOfWinners > 1 ? "people" : "person";
+    text = util.format(
+      template.transaction.airdropWithParticipant,
+      amount,
+      numOfWinners,
+      subject
+    );
+  }
 
   // 2. Return the result
   return {
@@ -436,16 +455,25 @@ async function renderPaylinkTx(
     const [sender] = await UI.resolve(onPlatform, tx.other_profile_id);
     by = sender?.value;
   }
-  if (tx.other_profile_source) {
+  if (!by && tx.other_profile_source) {
     by = await address.lookup(tx.other_profile_source);
   }
 
   // 2. prepare the paylink tx description
-  let text = `${amount} [Pay Link](${HOMEPAGE}/pay/${tx.metadata.code})`;
-  if (by) {
-    text = `${amount} [Pay Link](${HOMEPAGE}/pay/${tx.metadata.code}) ${
-      tx.status === "success" ? `to ${by}` : ""
-    }`;
+  let text = util.format(
+    template.transaction.paylinkWithoutSender,
+    amount,
+    HOMEPAGE,
+    tx.metadata.code
+  );
+  if (by && tx.status === "success") {
+    text = util.format(
+      template.transaction.paylinkWithSender,
+      amount,
+      HOMEPAGE,
+      tx.metadata.code,
+      by
+    );
   }
 
   // 3. Return result
@@ -475,16 +503,22 @@ async function renderPaymeTx(
     const [sender] = await UI.resolve(onPlatform, tx.other_profile_id);
     by = sender?.value;
   }
-  if (tx.other_profile_source) {
+  if (!by && tx.other_profile_source) {
     by = await address.lookup(tx.other_profile_source);
   }
 
   // 2. Prepare the payme tx description
-  let text = `${amount} [Pay Me](${HOMEPAGE}/pay)`;
+  let text = util.format(
+    template.transaction.paymeWithoutSender,
+    amount,
+    HOMEPAGE
+  );
   if (by) {
-    text = `${amount} [Pay Me](${HOMEPAGE}/pay) ${
-      tx.status === "success" ? "from" : "request sent to"
-    } ${by}`;
+    const tmpl =
+      tx.status === "success"
+        ? template.transaction.paymeWithSenderSuccess
+        : template.transaction.paymeWithSender;
+    text = util.format(tmpl, amount, HOMEPAGE, by);
   }
 
   // 3. Return result
@@ -656,4 +690,271 @@ export default async function (
     totalPage: total,
     length: data.length,
   };
+}
+
+export async function bkformatTxn(
+  tx: Tx,
+  on: Platform.Web | Platform.Telegram | Platform.Discord,
+  global: boolean,
+  groupDate: boolean,
+  api?: API
+) {
+  const date = new Date("created_at" in tx ? tx.created_at : tx.signed_at);
+  const t = groupDate
+    ? time.relative(date.getTime())
+    : time.relativeShort(date.getTime());
+  const result = {
+    time: t,
+    emoji: "",
+    amount: "",
+    text: "",
+    external_id: "",
+  };
+
+  if ("has_transfer" in tx) {
+    const transferTx = tx.actions.find((a) => {
+      if (a.native_transfer) return true;
+      if (a.from && a.to && a.amount !== 0 && a.unit) return true;
+      return false;
+    });
+    if (!transferTx) return result;
+    const amount = transferTx.amount ?? 0;
+    if (amount === 0) return result;
+    const isDebit = Math.sign(amount) < 0;
+    let target = isDebit ? transferTx.to : transferTx.from;
+    if (!target) return result;
+    target = await address.normalizeAddress(target);
+    target = address.shorten(target);
+
+    result.text = `${!isDebit ? "+" : ""}${transferTx.amount ?? 0} ${
+      transferTx.unit ?? ""
+    } ${isDebit ? "to" : "from"} \`${target}\``;
+    return result;
+  }
+
+  result.external_id = string.receiptLink(tx.external_id, true);
+
+  if ("action" in tx) {
+    switch (tx.action) {
+      case "vault_transfer":
+      case "transfer": {
+        switch (tx.type) {
+          case "in": {
+            let amount = "";
+            if (!Number.isNaN(Number(tx.token.decimal))) {
+              const { text, full, emoji } = await amountComp({
+                on,
+                amount: formatUnits(tx.amount || 0, tx.token.decimal),
+                symbol: tx.token.symbol.toUpperCase(),
+                api,
+                prefix: "+",
+              });
+              result.amount = text;
+              result.emoji = emoji;
+              amount = full;
+            }
+            if (global) {
+              const [from, to] = await UI.resolve(
+                on,
+                isVault(tx, "from")
+                  ? {
+                      type: "vault",
+                      id: tx.metadata.vault_request.vault_id.toString(),
+                    }
+                  : tx.from_profile_id,
+                isVault(tx, "to")
+                  ? {
+                      type: "vault",
+                      id: tx.metadata.vault_request.vault_id.toString(),
+                    }
+                  : tx.other_profile_id
+              );
+              if (from?.value && to?.value) {
+                result.text = `${to.value} to ${from.value}`;
+              }
+            } else {
+              const [from] = await UI.resolve(
+                on,
+                isVault(tx, "to")
+                  ? {
+                      type: "vault",
+                      id: tx.metadata.vault_request.vault_id.toString(),
+                    }
+                  : tx.other_profile_id
+              );
+
+              result.text = `${amount}${
+                from?.value ? ` from ${from.value}` : ""
+              }`;
+            }
+            break;
+          }
+          case "out": {
+            let amount = "";
+            if (!Number.isNaN(Number(tx.token.decimal))) {
+              const { text, full, emoji } = await amountComp({
+                on,
+                amount: formatUnits(tx.amount || 0, tx.token.decimal),
+                symbol: tx.token.symbol.toUpperCase(),
+                api,
+                prefix: "-",
+              });
+              result.amount = text;
+              result.emoji = emoji;
+              amount = full;
+            }
+            if (global) {
+              const [from, to] = await UI.resolve(
+                on,
+                isVault(tx, "from")
+                  ? {
+                      type: "vault",
+                      id: tx.metadata.vault_request.vault_id.toString(),
+                    }
+                  : tx.from_profile_id,
+                isVault(tx, "to")
+                  ? {
+                      type: "vault",
+                      id: tx.metadata.vault_request.vault_id.toString(),
+                    }
+                  : tx.other_profile_id
+              );
+              if (from?.value && to?.value) {
+                result.text = `${from.value} to ${to.value}`;
+              }
+            } else {
+              const [to] = await UI.resolve(
+                on,
+                isVault(tx, "to")
+                  ? {
+                      type: "vault",
+                      id: tx.metadata.vault_request.vault_id.toString(),
+                    }
+                  : tx.other_profile_id
+              );
+              result.text = `${amount}${to?.value ? ` to ${to.value}` : ""}`;
+            }
+            break;
+          }
+        }
+        break;
+      }
+      case "deposit": {
+        const { full: amount, emoji } = await amountComp({
+          on,
+          api,
+          symbol: tx.token.symbol.toUpperCase(),
+          amount: formatUnits(tx.amount, tx.token.decimal),
+          prefix: "+",
+        });
+        const normalized = await address.normalizeAddress(
+          tx.other_profile_source
+        );
+        result.emoji = emoji;
+        result.text = `${amount} deposited to \`${address.shorten(
+          normalized
+        )}\``;
+        break;
+      }
+      case "withdraw": {
+        const { full: amount, emoji } = await amountComp({
+          on,
+          api,
+          symbol: tx.token.symbol.toUpperCase(),
+          amount: formatUnits(tx.amount, tx.token.decimal),
+          prefix: "-",
+        });
+        const resolved = await address.lookup(tx.other_profile_source);
+        result.emoji = emoji;
+        result.text = `${amount} withdrawn to \`${resolved}\``;
+        break;
+      }
+      case "airdrop": {
+        const { full: amount, emoji } = await amountComp({
+          on,
+          api,
+          symbol: tx.token.symbol.toUpperCase(),
+          amount: formatUnits(tx.amount, tx.token.decimal),
+          prefix: "-",
+        });
+        const numOfWinners = tx.other_profile_ids.length;
+        result.emoji = emoji;
+        result.text = `${amount} airdropped${
+          numOfWinners > 0
+            ? ` to ${numOfWinners} ${numOfWinners > 1 ? "people" : "person"}`
+            : " but no one joined"
+        }`;
+        break;
+      }
+      case "paylink": {
+        const { full: amount, emoji } = await amountComp({
+          on,
+          api,
+          symbol: tx.token.symbol.toUpperCase(),
+          amount: formatUnits(tx.amount, tx.token.decimal),
+          prefix: "-",
+        });
+        let by;
+        if (tx.other_profile_id) {
+          const [sender] = await UI.resolve(on, tx.other_profile_id);
+          by = sender?.value;
+          result.text = `${amount} [Pay Link](${HOMEPAGE}/pay/${
+            tx.metadata.code
+          }) ${tx.status === "success" ? `to ${by}` : ""}`;
+        } else if (tx.other_profile_source) {
+          by = await address.lookup(tx.other_profile_source);
+          result.text = `${amount} [Pay Link](${HOMEPAGE}/pay/${
+            tx.metadata.code
+          }) ${tx.status === "success" ? `to ${by}` : ""}`;
+        } else {
+          result.text = `${amount} [Pay Link](${HOMEPAGE}/pay/${tx.metadata.code})`;
+        }
+        result.emoji = emoji;
+        break;
+      }
+      case "payme": {
+        const { full: amount, emoji } = await amountComp({
+          on,
+          api,
+          symbol: tx.token.symbol.toUpperCase(),
+          amount: formatUnits(tx.amount, tx.token.decimal),
+          prefix: "+",
+        });
+        let by;
+        if (tx.other_profile_id) {
+          const [sender] = await UI.resolve(on, tx.other_profile_id);
+          by = sender?.value;
+          result.text = `${amount} [Pay Me](${HOMEPAGE}/pay) ${
+            tx.status === "success" ? "from" : "request sent to"
+          } ${by}`;
+        } else if (tx.other_profile_source) {
+          by = await address.lookup(tx.other_profile_source);
+          result.text = `${amount} [Pay Me](${HOMEPAGE}/pay) ${
+            tx.status === "success" ? "from" : "request sent to"
+          } ${by}`;
+        } else {
+          result.text = `${amount} [Pay Me](${HOMEPAGE}/pay)`;
+        }
+        result.emoji = emoji;
+        break;
+      }
+    }
+    return result;
+
+    // swap
+    // if ("from_token" in tx) {
+    //   const fromToken = tx.from_token.symbol.toUpperCase();
+    //   const toToken = tx.to_token.symbol.toUpperCase();
+    //   if (tx.amount_in && tx.amount_out) {
+    //     result.text = `-${formatTokenDigit(
+    //       formatUnits(tx.amount_in, tx.from_token.decimal)
+    //     )} ${fromToken} 🔁 +${formatTokenDigit(
+    //       formatUnits(tx.amount_out, tx.to_token.decimal)
+    //     )} ${toToken}`;
+    //   }
+    //   return result;
+    // }
+  }
+
+  return result;
 }

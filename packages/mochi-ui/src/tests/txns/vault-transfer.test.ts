@@ -1,9 +1,9 @@
-import { formatTxn } from "../../components/txns";
+import { bkformatTxn as formatTxn } from "../../components/txns";
 import { Platform, UI } from "../../ui";
-import { TransferTx } from "../fixture/txns";
+import { VaultTransferTx } from "../fixture/txns";
 import API from "@consolelabs/mochi-rest";
 
-describe("formatTxn.TransferTx", () => {
+describe("formatTxn.VaultTransferTx", () => {
   const api = new API({
     baseUrl: "https://mochi.com",
     profileUrl: "https://mochi-profile.com",
@@ -63,7 +63,7 @@ describe("formatTxn.TransferTx", () => {
 
   it("should render corrected format on discord", async () => {
     // arrange
-    const tx = TransferTx;
+    const tx = VaultTransferTx;
     const platform = Platform.Discord;
     const global = true;
     const groupDate = true;
@@ -73,17 +73,17 @@ describe("formatTxn.TransferTx", () => {
 
     // assert
     expect(actual).toEqual({
-      amount: "-149.6 BUTT",
+      amount: "+5 ICY",
       emoji: "",
-      time: "5d ago",
-      text: "A to B",
-      external_id: "[`27a82`](https://mochi.gg/tx/27a823e486fa)",
+      time: "4d ago",
+      text: "B to A",
+      external_id: "[`cf2d7`](https://mochi.gg/tx/cf2d71433f14)",
     });
   });
 
   it("should render corrected format on tele", async () => {
     // arrange
-    const tx = TransferTx;
+    const tx = VaultTransferTx;
     const platform = Platform.Telegram;
     const global = true;
     const groupDate = true;
@@ -93,17 +93,17 @@ describe("formatTxn.TransferTx", () => {
 
     // assert
     expect(actual).toEqual({
-      amount: "-149.6 BUTT",
+      amount: "+5 ICY",
       emoji: "",
-      time: "5d ago",
-      text: "A to B",
-      external_id: "[`27a82`](https://mochi.gg/tx/27a823e486fa)",
+      time: "4d ago",
+      text: "B to A",
+      external_id: "[`cf2d7`](https://mochi.gg/tx/cf2d71433f14)",
     });
   });
 
   it("should render corrected format on web", async () => {
     // arrange
-    const tx = TransferTx;
+    const tx = VaultTransferTx;
     const platform = Platform.Web;
     const global = true;
     const groupDate = true;
@@ -113,11 +113,11 @@ describe("formatTxn.TransferTx", () => {
 
     // assert
     expect(actual).toEqual({
-      amount: "-149.6 BUTT",
+      amount: "+5 ICY",
       emoji: "",
-      time: "5d ago",
-      text: "A to B",
-      external_id: "[`27a82`](https://mochi.gg/tx/27a823e486fa)",
+      time: "4d ago",
+      text: "B to A",
+      external_id: "[`cf2d7`](https://mochi.gg/tx/cf2d71433f14)",
     });
   });
 });
