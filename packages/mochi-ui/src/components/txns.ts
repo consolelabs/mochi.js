@@ -264,13 +264,13 @@ async function renderVaultTransferTx(
             type: "vault",
             id: tx.metadata.vault_request.vault_id.toString(),
           }
-        : tx.from_profile_id,
+        : (tx as VaultTransferTx).from_profile_id,
       isVault(tx, "to")
         ? {
             type: "vault",
             id: tx.metadata.vault_request.vault_id.toString(),
           }
-        : tx.other_profile_id
+        : (tx as VaultTransferTx).other_profile_id
     );
     if (from?.value && to?.value) {
       result.text = isTransferIn
@@ -285,7 +285,7 @@ async function renderVaultTransferTx(
             type: "vault",
             id: tx.metadata.vault_request.vault_id.toString(),
           }
-        : tx.other_profile_id
+        : (tx as VaultTransferTx).other_profile_id
     );
     const actorLbl = actor?.value ?? "";
     result.text = isTransferIn
@@ -429,7 +429,7 @@ async function renderPaymeTx(
     prefix: "+",
   });
 
-  // 1. Get the sender
+  // 1. Get the payme sender
   let by: string | undefined;
   if (tx.other_profile_id) {
     const [sender] = await UI.resolve(on, tx.other_profile_id);
