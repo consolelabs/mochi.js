@@ -62,7 +62,7 @@ const MINUS_SIGN = "-";
  * @param tx - The transation payload
  * @param onPlatform - The platform (discord, tele, web) would show the formatted transaction
  * @param global - if global: show both sender and receiver of transaction, otherwise just the actor who transaction belongs to
- * @param groupDate - The platform (discord, tele, web) would show the formatted transaction
+ * @param groupDate - The date of tx should be in long or short form
  * @param api - api service to get the token emoji, and amount
  * @returns The formatted transaction
  */
