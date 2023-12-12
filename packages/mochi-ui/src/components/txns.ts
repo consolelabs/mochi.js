@@ -25,7 +25,7 @@ import amountComp from "./amount";
 
 type Props = {
   txns: Array<Tx>;
-  on?: Platform.Discord | Platform.Telegram | Platform.Web;
+  on?: TransactionSupportedPlatform;
   api?: API;
   top?: number;
   groupDate?: boolean;
@@ -38,6 +38,11 @@ type Props = {
   global?: boolean;
 };
 
+export type TransactionSupportedPlatform =
+  | Platform.Web
+  | Platform.Telegram
+  | Platform.Discord;
+
 function isVault(
   tx: VaultTransferTx | TransferTx,
   source: "from" | "to"
@@ -48,26 +53,42 @@ function isVault(
   );
 }
 
-export type TransactionSupportedPlatform =
-  | Platform.Web
-  | Platform.Telegram
-  | Platform.Discord;
+const PLUS_SIGN = "+";
+const MINUS_SIGN = "-";
 
+/**
+ * Get formatted transaction to show on different platforms.
+ *
+ * @param tx - The transation payload
+ * @param onPlatform - The platform (discord, tele, web) would show the formatted transaction
+ * @param global - if global: show both sender and receiver of transaction, otherwise just the actor who transaction belongs to
+ * @param groupDate - The platform (discord, tele, web) would show the formatted transaction
+ * @param api - api service to get the token emoji, and amount
+ * @returns The formatted transaction
+ */
 export async function formatTxn(
   tx: Tx,
-  on: TransactionSupportedPlatform,
+  onPlatform: TransactionSupportedPlatform,
   global: boolean,
   groupDate: boolean,
   api?: API
 ) {
+  // the onchain tx will have `has_transfer` field in payload
   const isOnchainTx = "has_transfer" in tx;
   if (isOnchainTx) {
     return await formatOnchainTxns(tx, groupDate);
   }
 
-  return await formatOffchainTxns(tx, on, global, groupDate, api);
+  return await formatOffchainTxns(tx, onPlatform, global, groupDate, api);
 }
 
+/**
+ * Get formatted onchain transaction.
+ *
+ * @param tx - The onchain transation payload
+ * @param groupDate - The date of tx should be in long or short form
+ * @returns The formatted transaction
+ */
 async function formatOnchainTxns(tx: OnchainTx, groupDate: boolean) {
   // 0. get transaction time
   const date = new Date(tx.signed_at);
@@ -102,17 +123,28 @@ async function formatOnchainTxns(tx: OnchainTx, groupDate: boolean) {
   target = address.shorten(target);
 
   // 5. format transaction
-  result.text = `${!isDebit ? "+" : ""}${transferTx.amount ?? 0} ${
-    transferTx.unit ?? ""
-  } ${isDebit ? "to" : "from"} \`${target}\``;
+  const prefix = isDebit ? "" : PLUS_SIGN;
+  const unit = transferTx.unit ?? "";
+  const preposition = isDebit ? "to" : "from";
+  result.text = `${prefix}${amount} ${unit} ${preposition} \`${target}\``;
 
   // 6. return result
   return result;
 }
 
+/**
+ * Get formatted offchain transaction to show on different platforms.
+ *
+ * @param tx - The offchain transation payload
+ * @param onPlatform - The platform (discord, tele, web) would show the formatted transaction
+ * @param global - If global: show both sender and receiver of transaction, otherwise just the actor who transaction belongs to
+ * @param groupDate - The date of tx should be in long or short form
+ * @param api - The api service to get the token emoji, and amount
+ * @returns The formatted transaction
+ */
 async function formatOffchainTxns(
   tx: OffchainTx,
-  on: TransactionSupportedPlatform,
+  onPlatform: TransactionSupportedPlatform,
   global: boolean,
   groupDate: boolean,
   api?: API
@@ -138,28 +170,31 @@ async function formatOffchainTxns(
   // 3. format transaction by transaction action
   switch (tx.action) {
     case "transfer":
-      result = { ...result, ...(await renderTransferTx(tx, on, global, api)) };
+      result = {
+        ...result,
+        ...(await renderTransferTx(tx, onPlatform, global, api)),
+      };
       break;
     case "vault_transfer":
       result = {
         ...result,
-        ...(await renderVaultTransferTx(tx, on, global, api)),
+        ...(await renderVaultTransferTx(tx, onPlatform, global, api)),
       };
       break;
     case "deposit":
-      result = { ...result, ...(await renderDepositTx(tx, on, api)) };
+      result = { ...result, ...(await renderDepositTx(tx, onPlatform, api)) };
       break;
     case "withdraw":
-      result = { ...result, ...(await renderWithdrawTx(tx, on, api)) };
+      result = { ...result, ...(await renderWithdrawTx(tx, onPlatform, api)) };
       break;
     case "airdrop":
-      result = { ...result, ...(await renderAirdropTx(tx, on, api)) };
+      result = { ...result, ...(await renderAirdropTx(tx, onPlatform, api)) };
       break;
     case "paylink":
-      result = { ...result, ...(await renderPaylinkTx(tx, on, api)) };
+      result = { ...result, ...(await renderPaylinkTx(tx, onPlatform, api)) };
       break;
     case "payme":
-      result = { ...result, ...(await renderPaymeTx(tx, on, api)) };
+      result = { ...result, ...(await renderPaymeTx(tx, onPlatform, api)) };
       break;
   }
 
@@ -169,7 +204,7 @@ async function formatOffchainTxns(
 
 async function renderTransferTx(
   tx: TransferTx,
-  on: TransactionSupportedPlatform,
+  onPlatform: TransactionSupportedPlatform,
   global: boolean,
   api?: API
 ) {
@@ -185,24 +220,32 @@ async function renderTransferTx(
   const isTransferIn = tx.type === "in";
 
   // 2. Get token emoji and token amount of the transaction
-  let amount = "";
-  const { text, full, emoji } = await amountComp({
-    on,
+  const {
+    text,
+    emoji,
+    full: fullAmount,
+  } = await amountComp({
+    on: onPlatform,
     amount: formatUnits(tx.amount || 0, tx.token.decimal),
     symbol: tx.token.symbol.toUpperCase(),
     api,
-    prefix: isTransferIn ? "+" : "-",
+    prefix: isTransferIn ? PLUS_SIGN : MINUS_SIGN,
   });
   result.amount = text;
   result.emoji = emoji;
-  amount = full;
 
   // 3. Format the transaction description
+  const [actor] = await UI.resolve(onPlatform, tx.other_profile_id);
+  const actorLbl = actor?.value ?? "";
+  result.text = isTransferIn
+    ? `${fullAmount} from ${actorLbl}`
+    : `${fullAmount} to ${actorLbl}`;
+
   // if global we will should both sender and receiver
   // otherwise just show the actor (the one who trigger the function)
   if (global) {
     const [from, to] = await UI.resolve(
-      on,
+      onPlatform,
       tx.from_profile_id,
       tx.other_profile_id
     );
@@ -211,12 +254,6 @@ async function renderTransferTx(
         ? `${to.value} to ${from.value}`
         : `${from.value} to ${to.value}`;
     }
-  } else {
-    const [actor] = await UI.resolve(on, tx.other_profile_id);
-    const actorLbl = actor?.value ?? "";
-    result.text = isTransferIn
-      ? `${amount} from ${actorLbl}`
-      : `${amount} to ${actorLbl}`;
   }
 
   // 4. Return the result
@@ -225,7 +262,7 @@ async function renderTransferTx(
 
 async function renderVaultTransferTx(
   tx: VaultTransferTx,
-  on: TransactionSupportedPlatform,
+  onPlatform: TransactionSupportedPlatform,
   global: boolean,
   api?: API
 ) {
@@ -237,28 +274,45 @@ async function renderVaultTransferTx(
     external_id: "",
   };
 
-  // 1.0 check if tx type if in or out
+  // 1. check if tx type if in or out
   const isTransferIn = tx.type === "in";
 
-  // 2.0 get the token amount, and token emoji of the transaction
-  let amount = "";
-  const { text, full, emoji } = await amountComp({
-    on,
+  // 2. get the token amount, and token emoji of the transaction
+  const {
+    text,
+    emoji,
+    full: fullAmount,
+  } = await amountComp({
+    on: onPlatform,
     amount: formatUnits(tx.amount || 0, tx.token.decimal),
     symbol: tx.token.symbol.toUpperCase(),
     api,
-    prefix: isTransferIn ? "+" : "-",
+    prefix: isTransferIn ? PLUS_SIGN : MINUS_SIGN,
   });
   result.amount = text;
   result.emoji = emoji;
-  amount = full;
 
   // 3. Format the vault transaction description
-  // if global we will should both sender and receiver, and render the vault type specially
+  const [actor] = await UI.resolve(
+    onPlatform,
+    isVault(tx, "to")
+      ? {
+          type: "vault",
+          id: tx.metadata.vault_request.vault_id.toString(),
+        }
+      : (tx as VaultTransferTx).other_profile_id
+  );
+  const actorLbl = actor?.value ?? "";
+  result.text = isTransferIn
+    ? `${fullAmount} from ${actorLbl}`
+    : `${fullAmount} to ${actorLbl}`;
+
+  // if global we will should show both sender and receiver
   // otherwise just show the actor (the one who trigger the function)
+  // if sender or receiver is vault, we would render it specially
   if (global) {
     const [from, to] = await UI.resolve(
-      on,
+      onPlatform,
       isVault(tx, "from")
         ? {
             type: "vault",
@@ -277,20 +331,6 @@ async function renderVaultTransferTx(
         ? `${to.value} to ${from.value}`
         : `${from.value} to ${to.value}`;
     }
-  } else {
-    const [actor] = await UI.resolve(
-      on,
-      isVault(tx, "to")
-        ? {
-            type: "vault",
-            id: tx.metadata.vault_request.vault_id.toString(),
-          }
-        : (tx as VaultTransferTx).other_profile_id
-    );
-    const actorLbl = actor?.value ?? "";
-    result.text = isTransferIn
-      ? `${amount} from ${actorLbl}`
-      : `${amount} to ${actorLbl}`;
   }
 
   // 4. Return the result
@@ -299,16 +339,16 @@ async function renderVaultTransferTx(
 
 async function renderDepositTx(
   tx: DepositTx,
-  on: TransactionSupportedPlatform,
+  onPlatform: TransactionSupportedPlatform,
   api?: API
 ) {
   // 0. Get the token amount and token emoji of the transaction
   const { full: amount, emoji } = await amountComp({
-    on,
+    on: onPlatform,
     api,
     symbol: tx.token.symbol.toUpperCase(),
     amount: formatUnits(tx.amount, tx.token.decimal),
-    prefix: "+",
+    prefix: PLUS_SIGN,
   });
 
   // 1. Prepare the deposit transaction description
@@ -324,16 +364,16 @@ async function renderDepositTx(
 
 async function renderWithdrawTx(
   tx: WithdrawTx,
-  on: TransactionSupportedPlatform,
+  onPlatform: TransactionSupportedPlatform,
   api?: API
 ) {
   // 0. Get the token amount and token emoji of the transaction
   const { full: amount, emoji } = await amountComp({
-    on,
+    on: onPlatform,
     api,
     symbol: tx.token.symbol.toUpperCase(),
     amount: formatUnits(tx.amount, tx.token.decimal),
-    prefix: "-",
+    prefix: MINUS_SIGN,
   });
 
   // 1. Prepare the withdraw transaction description
@@ -349,16 +389,16 @@ async function renderWithdrawTx(
 
 async function renderAirdropTx(
   tx: AirdropTx,
-  on: TransactionSupportedPlatform,
+  onPlatform: TransactionSupportedPlatform,
   api?: API
 ) {
   // 0. Get the token amount and token emoji of the transaction
   const { full: amount, emoji } = await amountComp({
-    on,
+    on: onPlatform,
     api,
     symbol: tx.token.symbol.toUpperCase(),
     amount: formatUnits(tx.amount, tx.token.decimal),
-    prefix: "-",
+    prefix: MINUS_SIGN,
   });
 
   // 1. Prepare the withdraw transaction description
@@ -378,22 +418,22 @@ async function renderAirdropTx(
 
 async function renderPaylinkTx(
   tx: PayLinkTx,
-  on: TransactionSupportedPlatform,
+  onPlatform: TransactionSupportedPlatform,
   api?: API
 ) {
   // 0. Get the token amount, token emoji of the tx
   const { full: amount, emoji } = await amountComp({
-    on,
+    on: onPlatform,
     api,
     symbol: tx.token.symbol.toUpperCase(),
     amount: formatUnits(tx.amount, tx.token.decimal),
-    prefix: "-",
+    prefix: MINUS_SIGN,
   });
 
   // 1. get the paylink receiver
   let by: string | undefined;
   if (tx.other_profile_id) {
-    const [sender] = await UI.resolve(on, tx.other_profile_id);
+    const [sender] = await UI.resolve(onPlatform, tx.other_profile_id);
     by = sender?.value;
   }
   if (tx.other_profile_source) {
@@ -417,22 +457,22 @@ async function renderPaylinkTx(
 
 async function renderPaymeTx(
   tx: PayMeTx,
-  on: TransactionSupportedPlatform,
+  onPlatform: TransactionSupportedPlatform,
   api?: API
 ) {
   // 0. Get the token amount and token emoji of the tx
   const { full: amount, emoji } = await amountComp({
-    on,
+    on: onPlatform,
     api,
     symbol: tx.token.symbol.toUpperCase(),
     amount: formatUnits(tx.amount, tx.token.decimal),
-    prefix: "+",
+    prefix: PLUS_SIGN,
   });
 
   // 1. Get the payme sender
   let by: string | undefined;
   if (tx.other_profile_id) {
-    const [sender] = await UI.resolve(on, tx.other_profile_id);
+    const [sender] = await UI.resolve(onPlatform, tx.other_profile_id);
     by = sender?.value;
   }
   if (tx.other_profile_source) {
