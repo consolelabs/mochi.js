@@ -1,0 +1,24 @@
+name: Trigger rebuild
+on:
+  push:
+    branches:
+      - main
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      - uses: convictional/trigger-workflow-and-wait@v1.6.1
+        with:
+          owner: consolelabs
+          repo: mochi-discord
+          github_token: ${{ secrets.GH_PAT }}
+          github_user: lmquang
+          workflow_file_name: gke-preview.yml
+          ref: preview
+          wait_interval: 10
+          trigger_workflow: true
+          wait_workflow: false
