@@ -1,7 +1,7 @@
 import { Platform } from "..";
 import remarkGfm from "remark-gfm";
 import API from "@consolelabs/mochi-rest";
-import { remark } from "remark";
+// import { remark } from "remark";
 
 type Props = {
   title: string;
@@ -17,13 +17,13 @@ type Context = {
   firstHeading: boolean;
 };
 
-const markdownConverter: Record<
-  Platform.Discord | Platform.Telegram,
-  (content: any, ctx: any) => string
-> = {
-  [Platform.Telegram]: telegram,
-  [Platform.Discord]: discord,
-};
+// const markdownConverter: Record<
+//   Platform.Discord | Platform.Telegram,
+//   (content: any, ctx: any) => string
+// > = {
+//   [Platform.Telegram]: telegram,
+//   [Platform.Discord]: discord,
+// };
 
 function discord(content: any, ctx: Context) {
   let text = "";
@@ -144,27 +144,25 @@ async function emojiByPlatform(
 }
 
 export default async function ({ api, title, content, on }: Props) {
-  const ast = remark().use(remarkGfm).parse(content);
-  const convert = markdownConverter[on];
-
-  const ctx: Context = {
-    images: [],
-    firstHeading: false,
-    firstParagraph: false,
-  };
-  const text = convert(ast.children, ctx);
-
-  return {
-    images: ctx.images.filter((i) => i.includes("imgur.com")),
-    text: [
-      `*${emojiByPlatform(on, api)} Product Update ${emojiByPlatform(
-        on,
-        api
-      )}\n\n${title}*`,
-      text,
-    ]
-      .join("\n")
-      .replaceAll("#", "\\#")
-      .replaceAll(".", "\\."),
-  };
+  // const ast = remark().use(remarkGfm).parse(content);
+  // const convert = markdownConverter[on];
+  // const ctx: Context = {
+  //   images: [],
+  //   firstHeading: false,
+  //   firstParagraph: false,
+  // };
+  // const text = convert(ast.children, ctx);
+  // return {
+  //   images: ctx.images.filter((i) => i.includes("imgur.com")),
+  //   text: [
+  //     `*${emojiByPlatform(on, api)} Product Update ${emojiByPlatform(
+  //       on,
+  //       api
+  //     )}\n\n${title}*`,
+  //     text,
+  //   ]
+  //     .join("\n")
+  //     .replaceAll("#", "\\#")
+  //     .replaceAll(".", "\\."),
+  // };
 }

@@ -6,7 +6,8 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "test": "turbo run test",
-    "release": "pnpm publish -r --access public"
+    "release": "pnpm publish -r --access public",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@changesets/cli": "^2.26.2",
@@ -14,7 +15,8 @@
     "eslint": "^7.32.0",
     "lefthook": "^1.4.8",
     "prettier": "2.8.8",
-    "turbo": "latest"
+    "turbo": "latest",
+    "husky": "^8.0.0"
   },
   "packageManager": "pnpm@8.6.10",
   "name": "mochi.js"

@@ -1,4 +1,4 @@
-import { bkformatTxn as formatTxn } from "../../components/txns";
+import { formatTxn } from "../../components/txns";
 import { Platform, UI } from "../../ui";
 import { VaultTransferTx } from "../fixture/txns";
 import API from "@consolelabs/mochi-rest";
