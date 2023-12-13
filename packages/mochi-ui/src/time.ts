@@ -8,8 +8,8 @@ const customRelativeFormatMap = new Map([
   ["tomorrow", "tmr"],
 ]);
 
-function relative(ms: string | number) {
-  let num = Number(ms) - Date.now();
+function relative(ms: string | number, since: () => number = Date.now) {
+  let num = Number(ms) - since();
   // convert to number of days
   // to seconds
   num = num / 1000;
@@ -26,8 +26,8 @@ function relative(ms: string | number) {
   return output;
 }
 
-function relativeShort(ms: string | number) {
-  const output = relative(ms);
+function relativeShort(ms: string | number, since: () => number = Date.now) {
+  const output = relative(ms, since);
 
   return customRelativeFormatMap.get(output.toLowerCase()) || output;
 }

@@ -1,4 +1,4 @@
-import { render, Platform, Profile } from "../..";
+import { render, Platform, Profile } from "..";
 import { A, B } from "./fixture/ui";
 
 test.each<

@@ -128,6 +128,7 @@ export default function mock() {
     // can't run in browser env because this mock executes cli commands
     return;
   } else {
+    // @ts-ignore
     globalThis.fetch = monkeyPatchFunc(globalThis.fetch);
   }
 }
