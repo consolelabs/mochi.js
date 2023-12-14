@@ -79,12 +79,12 @@ async function formatPayLink(
     case "success": {
       if (!pl.to_profile_id) break;
       if (pl.type !== "in") {
-        const [claimer] = await UI.resolve(on, pl.to_profile_id);
+        const [claimer] = await UI.formatProfile(on, pl.to_profile_id);
         text = `claimed by ${claimer?.value} ${time.relative(
           settledDate.getTime()
         )}`;
       } else {
-        const [author] = await UI.resolve(on, pl.to_profile_id);
+        const [author] = await UI.formatProfile(on, pl.to_profile_id);
         text = `claimed from ${author?.value} ${time.relative(
           settledDate.getTime()
         )}`;

@@ -25,7 +25,7 @@ api.init().then(() => {
   UI.api = api;
 });
 
-const [account, otherAccount] = await UI.resolve(
+const [account, otherAccount] = await UI.formatProfile(
   Platform.Web,
   profile_id,
   other_profile_id
@@ -44,14 +44,14 @@ console.log(formattedUsd); // "$23.12"
 ### `resolve(on: Platform.Web | Platform.Discord | Platform.Telegram, profile_id_A: string, profile_id_B?: string)`
 
 ```typescript
-const [account, otherAccount] = await UI.resolve(
+const [account, otherAccount] = await UI.formatProfile(
   Platform.Web, // if you're using UI library on web
   profile_id,
   other_profile_id
 );
 
 // or using it on self
-const [account] = await UI.resolve(Platform.Web, profile_id);
+const [account] = await UI.formatProfile(Platform.Web, profile_id);
 ```
 
 Takes in a platform that you're rendering on, a pair of profile ids to resolve, `profile_id_B` defaults to `profile_id_A` if not passed in. The return value is an object with the following properties

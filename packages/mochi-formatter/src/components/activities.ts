@@ -80,7 +80,7 @@ function formatActivity(
         )?.value;
         const token = activity.changes.find((c) => c.key === "token")?.value;
         const otherPid = activity.target_profile_id;
-        const [username] = await UI.resolve(on, otherPid);
+        const [username] = await UI.formatProfile(on, otherPid);
 
         if (!username)
           throw new Error("MochiFormatter: activity platform not supported");
@@ -105,7 +105,7 @@ function formatActivity(
         )?.value;
         const token = activity.changes.find((c) => c.key === "token")?.value;
         const otherPid = activity.target_profile_id;
-        const [username] = await UI.resolve(on, otherPid);
+        const [username] = await UI.formatProfile(on, otherPid);
 
         if (!username)
           throw new Error("MochiFormatter: activity platform not supported");
