@@ -38,7 +38,7 @@ describe("formatTxn.VaultTransferTx", () => {
       });
     });
     UI.api = api;
-    UI.profileFormat = jest.fn((on, A, B) => {
+    UI.formatProfile = jest.fn((on, A, B) => {
       return Promise.resolve([
         {
           value: "A",

@@ -81,10 +81,10 @@ async function formatPayMe(
         break;
       }
       if (pm.type === "out") {
-        const [author] = await UI.profileFormat(on, pm.to_profile_id);
+        const [author] = await UI.formatProfile(on, pm.to_profile_id);
         text = `${author?.value} requested you`;
       } else {
-        const [claimer] = await UI.profileFormat(on, pm.to_profile_id);
+        const [claimer] = await UI.formatProfile(on, pm.to_profile_id);
         text = `You requested ${claimer?.value}`;
       }
       break;
@@ -92,10 +92,10 @@ async function formatPayMe(
     case "success": {
       if (!pm.to_profile_id) break;
       if (pm.type === "out") {
-        const [author] = await UI.profileFormat(on, pm.to_profile_id);
+        const [author] = await UI.formatProfile(on, pm.to_profile_id);
         text = `You paid ${author?.value}`;
       } else {
-        const [claimer] = await UI.profileFormat(on, pm.to_profile_id);
+        const [claimer] = await UI.formatProfile(on, pm.to_profile_id);
         text = `${claimer?.value} paid you`;
       }
       break;
