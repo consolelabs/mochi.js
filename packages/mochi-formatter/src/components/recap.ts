@@ -44,7 +44,7 @@ async function mostSpend(
     ),
   ];
 
-  const [to] = await UI.resolve(on, stats.most_send?.other_profile_id);
+  const [to] = await UI.profileFormat(on, stats.most_send?.other_profile_id);
 
   const empty = !stats.spending.length && !to?.value;
 
@@ -100,7 +100,10 @@ async function mostReceive(
     ),
   ];
 
-  const [from] = await UI.resolve(on, stats.most_receive?.other_profile_id);
+  const [from] = await UI.profileFormat(
+    on,
+    stats.most_receive?.other_profile_id
+  );
 
   const empty = !stats.receive.length && !from?.value;
 

@@ -13,7 +13,7 @@ const ui: {
     A: Profile,
     B?: Profile
   ) => [UsernameFmt, UsernameFmt] | [];
-  resolve: (
+  profileFormat: (
     on: Platform.Web | Platform.Telegram | Platform.Discord,
     A: string | { id: string; type: "vault" },
     B?: string | { id: string; type: "vault" }
@@ -23,7 +23,7 @@ const ui: {
   redis: null,
   api: null,
   render,
-  resolve: async function (on, A, B = A) {
+  profileFormat: async function (on, A, B = A) {
     if (!this.api) throw new Error("MochiUI: api property must be set");
     let pA: Profile, pB: Profile;
     if (typeof A === "string") {

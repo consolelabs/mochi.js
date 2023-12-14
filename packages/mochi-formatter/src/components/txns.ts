@@ -236,7 +236,7 @@ async function renderTransferTx(
   result.emoji = emoji;
 
   // 3. Format the transaction description
-  const [actor] = await UI.resolve(onPlatform, tx.other_profile_id);
+  const [actor] = await UI.profileFormat(onPlatform, tx.other_profile_id);
   const actorLbl = actor?.value ?? "";
   const tmpl = isTransferIn
     ? template.transaction.transferIn
@@ -246,7 +246,7 @@ async function renderTransferTx(
   // if global we will should both sender and receiver
   // otherwise just show the actor (the one who trigger the function)
   if (global) {
-    const [from, to] = await UI.resolve(
+    const [from, to] = await UI.profileFormat(
       onPlatform,
       tx.from_profile_id,
       tx.other_profile_id
@@ -295,7 +295,7 @@ async function renderVaultTransferTx(
   result.emoji = emoji;
 
   // 3. Format the vault transaction description
-  const [actor] = await UI.resolve(
+  const [actor] = await UI.profileFormat(
     onPlatform,
     isVault(tx, "to")
       ? {
@@ -314,7 +314,7 @@ async function renderVaultTransferTx(
   // otherwise just show the actor (the one who trigger the function)
   // if sender or receiver is vault, we would render it specially
   if (global) {
-    const [from, to] = await UI.resolve(
+    const [from, to] = await UI.profileFormat(
       onPlatform,
       isVault(tx, "from")
         ? {
@@ -452,7 +452,7 @@ async function renderPaylinkTx(
   // 1. get the paylink receiver
   let by: string | undefined;
   if (tx.other_profile_id) {
-    const [sender] = await UI.resolve(onPlatform, tx.other_profile_id);
+    const [sender] = await UI.profileFormat(onPlatform, tx.other_profile_id);
     by = sender?.value;
   }
   if (!by && tx.other_profile_source) {
@@ -500,7 +500,7 @@ async function renderPaymeTx(
   // 1. Get the payme sender
   let by: string | undefined;
   if (tx.other_profile_id) {
-    const [sender] = await UI.resolve(onPlatform, tx.other_profile_id);
+    const [sender] = await UI.profileFormat(onPlatform, tx.other_profile_id);
     by = sender?.value;
   }
   if (!by && tx.other_profile_source) {
