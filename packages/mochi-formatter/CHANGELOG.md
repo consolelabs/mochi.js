@@ -1,5 +1,15 @@
 # @consolelabs/mochi-ui
 
+## 18.0.0
+
+### Major Changes
+
+- 0a26390: rename UI.resolve to UI.formatProfile
+
+### Patch Changes
+
+- 7cbc4d6: fix build for mochi formatter
+
 ## 17.0.1
 
 ### Patch Changes
