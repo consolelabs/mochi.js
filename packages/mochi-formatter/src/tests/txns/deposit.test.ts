@@ -27,7 +27,7 @@ describe("formatTxn.DepositTx", () => {
       amount: "",
       emoji: "",
       time: "8d ago",
-      text: "+1 FTM deposited to `0x70c..77af9`",
+      text: "+1 FTM deposited from `0x70c..77af9`",
       external_id: "[`a9950`](https://mochi.gg/tx/a9950d3cebc1)",
     });
   });
@@ -47,7 +47,7 @@ describe("formatTxn.DepositTx", () => {
       amount: "",
       emoji: "",
       time: "8d ago",
-      text: "+1 FTM deposited to `0x70c..77af9`",
+      text: "+1 FTM deposited from `0x70c..77af9`",
       external_id: "[`a9950`](https://mochi.gg/tx/a9950d3cebc1)",
     });
   });
@@ -67,7 +67,7 @@ describe("formatTxn.DepositTx", () => {
       amount: "",
       emoji: "",
       time: "8d ago",
-      text: "+1 FTM deposited to `0x70c..77af9`",
+      text: "+1 FTM deposited from `0x70c..77af9`",
       external_id: "[`a9950`](https://mochi.gg/tx/a9950d3cebc1)",
     });
   });

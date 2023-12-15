@@ -1,33 +1,55 @@
+// https://stackoverflow.com/questions/6108819/javascript-timestamp-to-relative-time
+
+export const units: { unit: Intl.RelativeTimeFormatUnit; ms: number }[] = [
+  { unit: "year", ms: 31536000000 },
+  { unit: "month", ms: 2628000000 },
+  { unit: "day", ms: 86400000 },
+  { unit: "hour", ms: 3600000 },
+  { unit: "minute", ms: 60000 },
+  { unit: "second", ms: 1000 },
+];
 const rtf = new Intl.RelativeTimeFormat("en-US", {
   style: "narrow",
   numeric: "auto",
 });
-
 const customRelativeFormatMap = new Map([
   ["yesterday", "ystd"],
   ["tomorrow", "tmr"],
 ]);
 
-function relative(ms: string | number, since: () => number = Date.now) {
-  let num = Number(ms) - since();
-  // convert to number of days
-  // to seconds
-  num = num / 1000;
-  // to minutes
-  num = num / 60;
-  // to hours
-  num = num / 60;
-  // to days
-  num = num / 24;
-  // round
-  num = Math.floor(num);
-  const output = rtf.format(num, "day");
-
-  return output;
+/**
+ * Get language-sensitive relative time message from Dates.
+ * @param relative  - the relative dateTime, generally is in the past or future
+ * @param pivot     - the dateTime of reference, generally is the current time
+ */
+export function relativeTimeFromDates(
+  relative: Date | null,
+  pivot: Date = new Date(),
+  smallestUnit: Intl.RelativeTimeFormatUnit = "second"
+): string {
+  if (!relative) return "";
+  const elapsed = relative.getTime() - pivot.getTime();
+  return relativeTimeFromElapsed(elapsed, smallestUnit);
 }
 
-function relativeShort(ms: string | number, since: () => number = Date.now) {
-  const output = relative(ms, since);
+/**
+ * Get language-sensitive relative time message from elapsed time.
+ * @param elapsed   - the elapsed time in milliseconds
+ */
+export function relativeTimeFromElapsed(
+  elapsed: number,
+  smallestUnit: Intl.RelativeTimeFormatUnit = "second"
+): string {
+  for (const { unit, ms } of units) {
+    if (Math.abs(elapsed) >= ms || unit === smallestUnit) {
+      return rtf.format(Math.round(elapsed / ms), unit);
+    }
+  }
+  return "";
+}
+
+function relativeShort(relative: Date | null, pivot: Date = new Date()) {
+  const output = relativeTimeFromDates(relative, pivot);
 
   return customRelativeFormatMap.get(output.toLowerCase()) || output;
 }
@@ -45,7 +67,7 @@ async function wait(ms: number) {
 }
 
 export default {
-  relative,
+  relative: relativeTimeFromDates,
   relativeShort,
   convertSecondToMinute,
   wait,

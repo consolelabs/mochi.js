@@ -26,7 +26,7 @@ describe("formatTxn.AirdropTx", () => {
     expect(actual).toEqual({
       amount: "",
       emoji: "",
-      time: "35d ago",
+      time: "last mo.",
       text: "-10 MINU airdropped but no one joined",
       external_id: "[`52425`](https://mochi.gg/tx/5242596071ea)",
     });
@@ -46,7 +46,7 @@ describe("formatTxn.AirdropTx", () => {
     expect(actual).toEqual({
       amount: "",
       emoji: "",
-      time: "35d ago",
+      time: "last mo.",
       text: "-10 MINU airdropped but no one joined",
       external_id: "[`52425`](https://mochi.gg/tx/5242596071ea)",
     });
@@ -66,7 +66,7 @@ describe("formatTxn.AirdropTx", () => {
     expect(actual).toEqual({
       amount: "",
       emoji: "",
-      time: "35d ago",
+      time: "last mo.",
       text: "-10 MINU airdropped but no one joined",
       external_id: "[`52425`](https://mochi.gg/tx/5242596071ea)",
     });

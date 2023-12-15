@@ -50,7 +50,7 @@ async function formatPayLink(
   const settledDate = pl.settled_at ? new Date(pl.settled_at) : new Date();
   const expiredDate = new Date(pl.expired_at);
   const createdDate = new Date(pl.created_at);
-  const t = time.relative(createdDate.getTime());
+  const t = time.relative(createdDate);
   const code = pl.code;
   const status = updateStatus(pl.status, expiredDate);
   const statusIcon = STATUS_MAP[status] || "🔵";
@@ -80,19 +80,15 @@ async function formatPayLink(
       if (!pl.to_profile_id) break;
       if (pl.type !== "in") {
         const [claimer] = await UI.formatProfile(on, pl.to_profile_id);
-        text = `claimed by ${claimer?.value} ${time.relative(
-          settledDate.getTime()
-        )}`;
+        text = `claimed by ${claimer?.value} ${time.relative(settledDate)}`;
       } else {
         const [author] = await UI.formatProfile(on, pl.to_profile_id);
-        text = `claimed from ${author?.value} ${time.relative(
-          settledDate.getTime()
-        )}`;
+        text = `claimed from ${author?.value} ${time.relative(settledDate)}`;
       }
       break;
     }
     case "expired": {
-      text = `expired ${time.relative(expiredDate.getTime())}`;
+      text = `expired ${time.relative(expiredDate)}`;
       break;
     }
     case "expire_soon":

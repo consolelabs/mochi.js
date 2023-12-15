@@ -50,7 +50,7 @@ async function formatPayMe(
 ) {
   const expiredDate = new Date(pm.expired_at);
   const createdDate = new Date(pm.created_at);
-  const t = time.relative(createdDate.getTime());
+  const t = time.relative(createdDate);
   const status = updateStatus(pm.status, expiredDate);
   const code = pm.code;
   const statusIcon = STATUS_MAP[status] || "🔵";
