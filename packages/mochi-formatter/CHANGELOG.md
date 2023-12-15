@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 18.0.1
+
+### Patch Changes
+
+- c6e331c: update relative time for transaction component and fix typo
+
 ## 18.0.0
 
 ### Major Changes
