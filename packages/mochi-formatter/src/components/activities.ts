@@ -36,7 +36,7 @@ function formatActivity(
 ) {
   return async function (activity: Activity) {
     const date = new Date(activity.created_at);
-    const t = time.relative(date.getTime());
+    const t = time.relative(date);
     const result = {
       time: t,
       text: "",

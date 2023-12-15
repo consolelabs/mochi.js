@@ -17,7 +17,7 @@ const transactionTemplate: Record<TransactionTemplate, string> = {
   transferOut: "%s to %s",
   transferGlobal: "%s to %s",
 
-  deposit: "%s deposited to `%s`",
+  deposit: "%s deposited from `%s`",
   withdraw: "%s withdrawn to `%s`",
 
   airdropWithParticipant: "%s airdropped to %d %s",

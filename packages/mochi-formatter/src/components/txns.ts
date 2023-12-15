@@ -94,9 +94,7 @@ export async function formatTxn(
 async function formatOnchainTxns(tx: OnchainTx, groupDate: boolean) {
   // 0. get transaction time
   const date = new Date(tx.signed_at);
-  const t = groupDate
-    ? time.relative(date.getTime())
-    : time.relativeShort(date.getTime());
+  const t = groupDate ? time.relative(date) : time.relativeShort(date);
 
   // 1. prepare result shape
   const result = {
@@ -153,9 +151,7 @@ async function formatOffchainTxns(
 ) {
   // 0. get transaction time
   const date = new Date(tx.created_at);
-  const t = groupDate
-    ? time.relative(date.getTime())
-    : time.relativeShort(date.getTime());
+  const t = groupDate ? time.relative(date) : time.relativeShort(date);
 
   // 1. get transaction link by external_id
   const external_id = string.receiptLink(tx.external_id, true);
