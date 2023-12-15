@@ -24,20 +24,24 @@ const customRelativeFormatMap = new Map([
  */
 export function relativeTimeFromDates(
   relative: Date | null,
-  pivot: Date = new Date()
+  pivot: Date = new Date(),
+  smallestUnit: Intl.RelativeTimeFormatUnit = "second"
 ): string {
   if (!relative) return "";
   const elapsed = relative.getTime() - pivot.getTime();
-  return relativeTimeFromElapsed(elapsed);
+  return relativeTimeFromElapsed(elapsed, smallestUnit);
 }
 
 /**
  * Get language-sensitive relative time message from elapsed time.
  * @param elapsed   - the elapsed time in milliseconds
  */
-export function relativeTimeFromElapsed(elapsed: number): string {
+export function relativeTimeFromElapsed(
+  elapsed: number,
+  smallestUnit: Intl.RelativeTimeFormatUnit = "second"
+): string {
   for (const { unit, ms } of units) {
-    if (Math.abs(elapsed) >= ms || unit === "second") {
+    if (Math.abs(elapsed) >= ms || unit === smallestUnit) {
       return rtf.format(Math.round(elapsed / ms), unit);
     }
   }
