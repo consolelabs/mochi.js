@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { string, z } from "zod";
 
 export const ChainSchema = z.object({
   id: z.string().uuid(),
@@ -9,7 +9,9 @@ export const ChainSchema = z.object({
   rpc: z.string(),
   explorer: z.string(),
   icon: z.string(),
-  type: z.enum(["evm", "solana", "ton", "bitcoin", "ronin"]),
+  type: z
+    .enum(["evm", "solana", "ton", "bitcoin", "ronin"])
+    .or(z.string().min(1)),
 });
 
 export type Chain = z.infer<typeof ChainSchema>;
@@ -66,7 +68,7 @@ const MochiTxSchema = z.object({
   other_profile_source: z
     .enum(["mochi-balance", "mochi-vault"])
     .or(z.string().min(1)),
-  source_platform: z.enum(["discord", "telegram", "web", ""]),
+  source_platform: z.enum(["discord", "telegram", "web"]).or(z.string()),
   amount: z.string().min(1),
   token: TokenSchema,
 });

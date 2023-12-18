@@ -11,7 +11,9 @@ const BaseSchema = z.object({
   created_at: z.string().datetime().nonempty(),
   expired_at: z.string().datetime().nonempty(),
   from_profile_id: z.string().nonempty(),
-  chainType: z.enum(["evm", "solana", "ton", "bitcoin", "ronin"]),
+  chainType: z
+    .enum(["evm", "solana", "ton", "bitcoin", "ronin"])
+    .or(z.string().min(1)),
   note: z.string(),
   status: PaylinkStatusSchema,
   to_profile_id: z.string(),

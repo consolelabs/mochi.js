@@ -37,7 +37,7 @@ export const CopySchema = z.object({
 export type Copy = z.infer<typeof CopySchema>;
 
 export const ChangelogSchema = z.object({
-  product: z.enum(["Mochi", "Mochi Discord", "Mochi Telegram", ""]),
+  product: z.enum(["Mochi", "Mochi Discord", "Mochi Telegram"]).or(z.string()),
   title: z.string().min(1),
   content: z.string().min(1),
   github_url: z.string().url().or(z.string()),
