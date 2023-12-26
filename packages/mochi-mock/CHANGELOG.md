@@ -1,5 +1,11 @@
 # @consolelabs/mochi-mock
 
+## 0.1.1
+
+### Patch Changes
+
+- Remove pino, use console for logging
+
 ## 0.1.0
 
 ### Minor Changes

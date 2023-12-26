@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.1.9
+
+### Patch Changes
+
+- Remove pino, use console for logging
+
 ## 5.1.7
 
 ### Patch Changes

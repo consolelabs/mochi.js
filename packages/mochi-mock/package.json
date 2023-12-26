@@ -1,6 +1,6 @@
 {
   "name": "@consolelabs/mochi-mock",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -36,8 +36,6 @@
     "listr": "^0.14.3",
     "meow": "^9.0.0",
     "minimatch": "^9.0.3",
-    "pino": "^8.15.0",
-    "pino-pretty": "^10.2.0",
     "prompts": "^2.4.2",
     "recursive-readdir": "^2.2.3"
   }

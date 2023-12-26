@@ -1,7 +1,6 @@
 import { readFile } from "fs/promises";
 import path from "path";
 import recursiveRead from "recursive-readdir";
-import { logger } from "./logger";
 import qs from "querystring";
 import type { WretchAddon } from "wretch";
 import { CUSTOM_HEADER } from "./constant";
@@ -73,7 +72,7 @@ const monkeyPatchFunc = function (func: any) {
 
     // if not list then return as it
     if (!Array.isArray(content)) {
-      logger.info(`[Mock ok - ${opts?.method || ""}]: returning ${file}`);
+      console.info(`[Mock ok - ${opts?.method || ""}]: returning ${file}`);
       return new Response(JSON.stringify({ data: content }), {
         status: 200,
         headers,
@@ -101,7 +100,7 @@ const monkeyPatchFunc = function (func: any) {
 
     content = content.slice(page * size, page * size + size);
 
-    logger.info(`[Mock ok - ${opts?.method || ""}]: returning ${file}`);
+    console.info(`[Mock ok - ${opts?.method || ""}]: returning ${file}`);
     return new Response(
       JSON.stringify({
         data: content,

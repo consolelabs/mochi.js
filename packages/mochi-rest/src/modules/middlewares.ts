@@ -1,28 +1,28 @@
-import { logger } from "../logger";
 import { WretchOptions } from "wretch/types";
 import { nanoid } from "nanoid";
 import snakeCase from "lodash.snakecase";
 import snakeCaseKeys from "snakecase-keys";
+import { PACKAGE_ID } from "../constant";
 
 export const log = (next: any) => (url: string, opts: WretchOptions) => {
   if (!opts.log) {
     return next(url, opts);
   }
-  logger.info(
-    `[API going - ${opts.method}]: ${url}${
+  console.info(
+    `[${PACKAGE_ID}][API going - ${opts.method}]: ${url}${
       opts.body ? ` with body ${opts.body}` : ""
     }`
   );
   return next(url, opts).then((r: any) => {
     if (r.ok) {
-      logger.info(
-        `[API ok - ${opts.method}/${r.status}]: ${url}${
+      console.info(
+        `[${PACKAGE_ID}][API ok - ${opts.method}/${r.status}]: ${url}${
           opts.body ? ` with body ${opts.body}` : ""
         }`
       );
     } else {
-      logger.error(
-        `[API failed - ${opts.method}/${r.status}]: ${url}${
+      console.error(
+        `[${PACKAGE_ID}][API failed - ${opts.method}/${r.status}]: ${url}${
           opts.body ? ` with body ${opts.body}` : ""
         }`
       );

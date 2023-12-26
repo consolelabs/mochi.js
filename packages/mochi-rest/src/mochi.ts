@@ -1,10 +1,10 @@
 import deepmerge from "deepmerge";
 import baseWretch, { BaseModule, PayModule, ProfileModule } from "./modules";
 import { Changelog, Command, Emoji } from "./schemas";
-import { logger } from "./logger";
 import { WretchError } from "wretch/resolver";
 import { ZodError } from "zod";
 import { WretchAddon } from "wretch/types";
+import { PACKAGE_ID } from "./constant";
 
 export interface Options {
   baseUrl: string;
@@ -73,7 +73,7 @@ export class Mochi {
       ]);
       for (const res of results) {
         if (res.status === "rejected") {
-          logger.error(res.reason);
+          console.error(`[${PACKAGE_ID}] ${res.reason}`);
           rej(res.reason);
         }
       }
@@ -164,7 +164,7 @@ export class Mochi {
         this.discordAlias.set(alias, cmd);
       }
     }
-    logger.info("Command config fetch OK");
+    console.info(`[${PACKAGE_ID}] Command config fetch OK`);
   }
 
   private async fetchProductCopy() {
@@ -172,7 +172,7 @@ export class Mochi {
     if (!result.ok)
       throw new Error(`Cannot fetch product copy ${result.error}`);
     this.copy = result.data.description;
-    logger.info("Product copy fetch OK");
+    console.info(`[${PACKAGE_ID}] Product copy fetch OK`);
   }
 
   private async fetchChangelogs() {
@@ -185,7 +185,7 @@ export class Mochi {
 
       return timeB - timeA;
     });
-    logger.info("Product changelogs fetch OK");
+    console.info(`[${PACKAGE_ID}] Product changelogs fetch OK`);
   }
 
   private async fetchWhitelistTokens() {
@@ -195,7 +195,7 @@ export class Mochi {
     this.whitelistTokens = new Map(
       result.data.map((t) => [t.symbol, t.address])
     );
-    logger.info("Whitelist tokens fetch OK");
+    console.info(`[${PACKAGE_ID}] Whitelist tokens fetch OK`);
   }
 
   private async fetchFallbackCoinEmoji() {
@@ -204,6 +204,6 @@ export class Mochi {
     if (!result.ok || !emoji)
       throw new Error(`Cannot fetch fallback coin emoji ${result.error}`);
     this.fallbackCoinEmoji = emoji;
-    logger.info("Fallback coin emoji fetch OK");
+    console.info(`[${PACKAGE_ID}] Fallback coin emoji fetch OK`);
   }
 }
