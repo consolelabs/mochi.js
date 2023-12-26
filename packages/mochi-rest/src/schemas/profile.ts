@@ -35,7 +35,7 @@ const ApplicationSchema = z.object({
 
 const UserProfileSchema = z.object({
   id: z.string().min(1),
-  associated_accounts: z.array(AssociatedAccountSchema),
+  associated_accounts: z.null().or(z.array(AssociatedAccountSchema)),
   profile_name: z.string(),
   avatar: z.string(),
   pnl: z.string(),

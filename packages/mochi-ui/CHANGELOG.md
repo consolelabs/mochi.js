@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 17.0.2
+
+### Patch Changes
+
+- Set associated_accounts to nullable
+- Updated dependencies
+  - @consolelabs/mochi-rest@5.1.7
+
 ## 17.0.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.1.7
+
+### Patch Changes
+
+- Set associated_accounts to nullable
+
 ## 5.1.6
 
 ### Patch Changes

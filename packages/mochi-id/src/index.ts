@@ -244,7 +244,7 @@ function email(p?: Profile, on = Platform.Email): UsernameFmt {
     if (!p || !isMochiProfile(p) || isApplication(p) || isVault(p))
       return { plain: "", value: "", id: "", url: "" };
 
-    const email = p.associated_accounts.find(
+    const email = p.associated_accounts?.find(
       (aa) => aa.platform === Platform.Email
     );
 
@@ -354,7 +354,7 @@ function discord(p?: Profile, on = Platform.Discord): UsernameFmt {
     if (!p || !isMochiProfile(p) || isApplication(p) || isVault(p))
       return { plain: "", value: "", id: "", url: "" };
 
-    const discord = p.associated_accounts.find(
+    const discord = p.associated_accounts?.find(
       (aa) => aa.platform === Platform.Discord
     );
 
@@ -394,7 +394,7 @@ function telegram(p?: Profile, on = Platform.Telegram): UsernameFmt {
     if (!p || !isMochiProfile(p) || isApplication(p) || isVault(p))
       return { plain: "", value: "", id: "", url: "" };
 
-    const telegram = p.associated_accounts.find(
+    const telegram = p.associated_accounts?.find(
       (aa) => aa.platform === Platform.Telegram
     );
 
