@@ -91,8 +91,9 @@ const PLATFORM_PREFIX = new Proxy(
 export default function render(
   on: Platform.Web | Platform.Discord | Platform.Telegram,
   pA: Profile,
-  pB = pA
+  _pB?: Profile
 ): [UsernameFmt, UsernameFmt] | [] {
+  const pB = _pB ?? pA;
   const accountA = {
     [Platform.Telegram]: telegram(pA, on),
     [Platform.Discord]: discord(pA, on),

@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 18.0.4
+
+### Patch Changes
+
+- Default profile B of render func
+
 ## 18.0.3
 
 ### Patch Changes

@@ -18,6 +18,13 @@ test.each<
     "👾 [baddeed](https://mochi.gg/profile/40409)",
   ],
   [
+    Platform.Web,
+    A,
+    null,
+    "👾 [0xlight](https://mochi.gg/profile/43000)",
+    "👾 [0xlight](https://mochi.gg/profile/43000)",
+  ],
+  [
     Platform.Telegram,
     A,
     B,
