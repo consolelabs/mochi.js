@@ -6,11 +6,11 @@ export function formatPercentDigit(params: FormatParam) {
     num = params;
   }
 
-  const inRange = isInRange(toNum(params), -10, 10);
+  const notInRange = isNotInRange(toNum(params), -10, 10);
   const [left, right = ""] = String(num).split(".");
   let result;
 
-  if (!inRange) {
+  if (!notInRange) {
     result = `${(+left).toLocaleString(undefined)}.${right.slice(0, 2)}%`;
   } else {
     result = `${Intl.NumberFormat("en-US", {
@@ -27,34 +27,66 @@ export function formatUsdDigit(params: FormatParam) {
   const tooSmall = Math.abs(toNum(params)) <= 0.01;
   if (tooSmall) return "< $0.01";
   const isNeg = Math.sign(toNum(params)) < 0;
-  const inRange = isInRange(toNum(params), -100, 100);
+  const notInRange = isNotInRange(toNum(params), -100, 100);
   const num = call(params, formatDigit, {
-    fractionDigits: inRange ? 0 : 2,
+    fractionDigits: notInRange ? 0 : 2,
     scientificFormat: true,
-    shorten: inRange,
+    shorten: notInRange,
   });
   return `${isNeg ? "-" : ""}$${num.slice(isNeg ? 1 : 0)}`;
 }
 
 export function formatUsdPriceDigit(params: FormatParam) {
   const isNeg = Math.sign(toNum(params)) < 0;
-  const inRange = isInRange(toNum(params), -100, 100);
+  const notInRange = isNotInRange(toNum(params), -100, 100);
   const num = call(params, formatDigit, {
-    fractionDigits: inRange ? 0 : 2,
+    fractionDigits: notInRange ? 0 : 2,
     scientificFormat: true,
     takeExtraDecimal: 1,
-    shorten: inRange,
+    shorten: notInRange,
   });
   return `${isNeg ? "-" : ""}$${num.slice(isNeg ? 1 : 0)}`;
 }
 
 export function formatTokenDigit(params: FormatParam) {
-  const inRange = isInRange(toNum(params), -1000, 1000);
+  const notInRange = isNotInRange(toNum(params), -1000, 1000);
   return call(params, formatDigit, {
-    fractionDigits: inRange ? 0 : 2,
-    shorten: inRange,
+    fractionDigits: notInRange ? 0 : 2,
+    shorten: notInRange,
     scientificFormat: true,
   });
+}
+
+const subscript: Record<number | string, string> = {
+  0: "₀",
+  1: "₁",
+  2: "₂",
+  3: "₃",
+  4: "₄",
+  5: "₅",
+  6: "₆",
+  7: "₇",
+  8: "₈",
+  9: "₉",
+};
+
+const expNotation = /([\d.]+)e(-|\+){0,1}(\d+)/;
+
+function formatSubscript(value: string) {
+  const [_, _num, sign, sub] = Array.from(value.match(expNotation) ?? []);
+  let num = _num.replaceAll(".", "").slice(0, 4);
+  while (num.endsWith("0")) {
+    num = num.slice(0, num.length - 1);
+  }
+  const subNum = +sub - 1;
+  const subNumStrArr = String(subNum).split("");
+  if (sign === "-") {
+    return `0.0${subNumStrArr.reduce(
+      (acc, c) => (acc += subscript[c] ?? ""),
+      ""
+    )}${num}`;
+  }
+  return value;
 }
 
 export function formatDigit({
@@ -62,6 +94,8 @@ export function formatDigit({
   fractionDigits = 6,
   withoutCommas = false,
   shorten = false,
+
+  /* deprecated */
   scientificFormat = false,
   takeExtraDecimal = 0,
 }: {
@@ -78,9 +112,10 @@ export function formatDigit({
   // invalid number -> keeps value the same and returns
   if (!num) return String(value);
 
-  // return shorten scientific number if original value is in scientific format . e.g. 1.123e-5
-  if (String(num).includes("e") && scientificFormat) {
-    return shortenScientificNotation({ value: String(num) });
+  // detect exp notation and use subscript format
+  if (String(num).includes("e") && expNotation.test(String(num))) {
+    return formatSubscript(String(num));
+    // return shortenScientificNotation({ value: String(num) });
   }
 
   const s = num.toLocaleString(undefined, { maximumFractionDigits: 18 });
@@ -148,25 +183,6 @@ function call(
   });
 }
 
-function shortenScientificNotation({
-  value,
-  maximumFractionDigits = 2,
-}: {
-  value: string | number;
-  maximumFractionDigits?: number;
-}): string {
-  const str = String(value);
-  if (!Number(str)) return str;
-  if (!str.includes("e")) return str;
-
-  const delemiterIdx = str.indexOf("e");
-  const leftStr = Number(str.slice(0, delemiterIdx)).toLocaleString(undefined, {
-    maximumFractionDigits,
-  });
-  const rightStr = str.slice(delemiterIdx);
-  return leftStr + rightStr;
-}
-
 function toNum(val: FormatParam) {
   if (typeof val === "string" || typeof val === "number") {
     return Number(String(val).replaceAll(",", ""));
@@ -174,6 +190,6 @@ function toNum(val: FormatParam) {
   return Number(String(val.value).replaceAll(",", ""));
 }
 
-function isInRange(num: number, lowBound: number, highBound: number) {
+function isNotInRange(num: number, lowBound: number, highBound: number) {
   return num <= lowBound || num >= highBound;
 }

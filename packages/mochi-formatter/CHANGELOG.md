@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 18.0.5
+
+### Patch Changes
+
+- Add new super small number format
+
 ## 18.0.4
 
 ### Patch Changes
