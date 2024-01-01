@@ -1,6 +1,6 @@
 import { formatTxn } from "../../components/txns";
 import { Platform, UI } from "../../ui";
-import { TransferTx } from "../fixture/txns";
+import { TransferOutTx, TransferInTx } from "../fixture/txns";
 import API from "@consolelabs/mochi-rest";
 
 describe("formatTxn.TransferTx", () => {
@@ -41,14 +41,14 @@ describe("formatTxn.TransferTx", () => {
     UI.formatProfile = jest.fn((on, A, B) => {
       return Promise.resolve([
         {
-          value: "A",
+          value: `${A}`,
           id: "id",
           url: "url",
           plain: "plain",
           platform: Platform.Discord,
         },
         {
-          value: "B",
+          value: `${B}`,
           id: "id",
           url: "url",
           plain: "plain",
@@ -63,7 +63,7 @@ describe("formatTxn.TransferTx", () => {
 
   it("should render corrected format on discord", async () => {
     // arrange
-    const tx = TransferTx;
+    const tx = TransferOutTx;
     const platform = Platform.Discord;
     const global = true;
     const groupDate = true;
@@ -76,14 +76,14 @@ describe("formatTxn.TransferTx", () => {
       amount: "-149.6 BUTT",
       emoji: "",
       time: "5d ago",
-      text: "A to B",
+      text: "48438 to 40409",
       external_id: "[`27a82`](https://mochi.gg/tx/27a823e486fa)",
     });
   });
 
   it("should render corrected format on tele", async () => {
     // arrange
-    const tx = TransferTx;
+    const tx = TransferOutTx;
     const platform = Platform.Telegram;
     const global = true;
     const groupDate = true;
@@ -96,27 +96,61 @@ describe("formatTxn.TransferTx", () => {
       amount: "-149.6 BUTT",
       emoji: "",
       time: "5d ago",
-      text: "A to B",
+      text: "48438 to 40409",
       external_id: "[`27a82`](https://mochi.gg/tx/27a823e486fa)",
     });
   });
 
-  it("should render corrected format on web", async () => {
+  it("should render corrected one-side out transfer on discord", async () => {
     // arrange
-    const tx = TransferTx;
-    const platform = Platform.Web;
-    const global = true;
-    const groupDate = true;
-
+    const tx = TransferOutTx;
+    const platform = Platform.Discord;
+    const global = false;
+    const groupDate = false;
+    const profileId = "48438";
     // act
-    const actual = await formatTxn(tx, platform, global, groupDate, api);
+    const actual = await formatTxn(
+      tx,
+      platform,
+      global,
+      groupDate,
+      api,
+      profileId
+    );
 
     // assert
     expect(actual).toEqual({
       amount: "-149.6 BUTT",
       emoji: "",
       time: "5d ago",
-      text: "A to B",
+      text: "-149.6 BUTT to 40409",
+      external_id: "[`27a82`](https://mochi.gg/tx/27a823e486fa)",
+    });
+  });
+
+  it("should render corrected one-side in transfer on discord", async () => {
+    // arrange
+    const tx = TransferInTx;
+    const platform = Platform.Discord;
+    const global = false;
+    const groupDate = false;
+    const profileId = "48036";
+    // act
+    const actual = await formatTxn(
+      tx,
+      platform,
+      global,
+      groupDate,
+      api,
+      profileId
+    );
+
+    // assert
+    expect(actual).toEqual({
+      amount: "-3 ICY",
+      emoji: "",
+      time: "5d ago",
+      text: "-3 ICY to 55834",
       external_id: "[`27a82`](https://mochi.gg/tx/27a823e486fa)",
     });
   });
