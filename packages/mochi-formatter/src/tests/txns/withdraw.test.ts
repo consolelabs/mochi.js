@@ -27,7 +27,7 @@ describe("formatTxn.WithdrawTx", () => {
       amount: "",
       emoji: "",
       time: "5d ago",
-      text: "-60 ICY withdrawn to `0x053..13249`",
+      text: "-60 ICY withdrawn to `0x053..3249`",
       external_id: "[`68b47`](https://mochi.gg/tx/68b47c5d102c)",
     });
   });
@@ -47,7 +47,7 @@ describe("formatTxn.WithdrawTx", () => {
       amount: "",
       emoji: "",
       time: "5d ago",
-      text: "-60 ICY withdrawn to `0x053..13249`",
+      text: "-60 ICY withdrawn to `0x053..3249`",
       external_id: "[`68b47`](https://mochi.gg/tx/68b47c5d102c)",
     });
   });
@@ -67,7 +67,7 @@ describe("formatTxn.WithdrawTx", () => {
       amount: "",
       emoji: "",
       time: "5d ago",
-      text: "-60 ICY withdrawn to `0x053..13249`",
+      text: "-60 ICY withdrawn to `0x053..3249`",
       external_id: "[`68b47`](https://mochi.gg/tx/68b47c5d102c)",
     });
   });

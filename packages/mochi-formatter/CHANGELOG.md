@@ -1,10 +1,10 @@
 # @consolelabs/mochi-ui
 
-## 18.0.6
+## 18.1.0
 
-### Patch Changes
+### Minor Changes
 
-- 7e7a483: show correct actor of the transaction
+- 66a4a1e: Add function to render formatted username/address
 
 ## 18.0.5
 
