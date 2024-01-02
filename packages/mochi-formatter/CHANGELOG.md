@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 18.0.6
+
+### Patch Changes
+
+- 7e7a483: show correct actor of the transaction
+
 ## 18.0.5
 
 ### Patch Changes
