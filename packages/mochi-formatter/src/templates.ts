@@ -6,6 +6,7 @@ type TransactionTemplate =
   | "withdraw"
   | "airdropWithParticipant"
   | "airdropWithoutParticipant"
+  | "airdropReceive"
   | "paylinkWithoutSender"
   | "paylinkWithSender"
   | "paymeWithoutSender"
@@ -22,6 +23,7 @@ const transactionTemplate: Record<TransactionTemplate, string> = {
 
   airdropWithParticipant: "%s airdropped to %d %s",
   airdropWithoutParticipant: "%s airdropped but no one joined",
+  airdropReceive: "%s from %s",
 
   paylinkWithoutSender: "%s [Pay Link](%s/pay/%s)",
   paylinkWithSender: "%s [Pay Link](%s/pay/%s) to %s",

@@ -1,6 +1,6 @@
 import { Tx } from "@consolelabs/mochi-rest";
 
-export const TransferTx: Tx = {
+export const TransferOutTx: Tx = {
   from_profile_id: "48438",
   other_profile_id: "40409",
   from_profile_source: "mochi-balance",
@@ -32,6 +32,43 @@ export const TransferTx: Tx = {
       rpc: "https://rpc.ftm.tools",
       explorer: "https://ftmscan.com",
       icon: "https://cdn.discordapp.com/emojis/928216448902508564.png?size=240&quality=lossless",
+      type: "evm",
+    },
+  },
+};
+
+export const TransferInTx: Tx = {
+  from_profile_id: "55834",
+  other_profile_id: "48036",
+  from_profile_source: "mochi-balance",
+  other_profile_source: "mochi-balance",
+  source_platform: "web",
+  amount: "3000000000000000000",
+  internal_id: 7410,
+  external_id: "27a823e486fa",
+  type: "in",
+  action: "transfer",
+  status: "success",
+  created_at: "2023-12-08T09:08:51.347819Z",
+  token: {
+    id: "941f0fb1-00da-49dc-a538-5e81fc874cb4",
+    name: "Icy",
+    symbol: "ICY",
+    decimal: 18,
+    chain_id: "137",
+    native: false,
+    address: "0x8D57d71B02d71e1e449a0E459DE40473Eb8f4a90",
+    icon: "https://cdn.discordapp.com/emojis/1049620715374133288.webp?size=240&quality=lossless",
+    coin_gecko_id: "icy",
+    price: 0,
+    chain: {
+      id: "7303f2f8-b6d9-454d-aa92-880569fa5295",
+      chain_id: "137",
+      name: "Polygon Mainnet",
+      symbol: "MATIC",
+      rpc: "https://1rpc.io/matic",
+      explorer: "https://polygonscan.com",
+      icon: "https://cdn.discordapp.com/emojis/928216430535671818.png?size=240&quality=lossless",
       type: "evm",
     },
   },
