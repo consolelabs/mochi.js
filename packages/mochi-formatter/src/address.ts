@@ -111,7 +111,7 @@ async function doLookup(_address: string, shortenAddr: boolean) {
   }
 }
 
-function shorten(val: string, len = 5, lenRight = len) {
+function shorten(val: string, len = 5, lenRight = 4) {
   if (!val) return "";
   return `${val.slice(0, len)}\.\.${val.slice(val.length - lenRight)}`;
 }

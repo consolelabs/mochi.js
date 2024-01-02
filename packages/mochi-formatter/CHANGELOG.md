@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 18.1.0
+
+### Minor Changes
+
+- 66a4a1e: Add function to render formatted username/address
+
 ## 18.0.5
 
 ### Patch Changes
