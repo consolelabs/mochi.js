@@ -118,7 +118,7 @@ async function formatOnchainTxns(tx: OnchainTx, groupDate: boolean) {
   };
 
   // 2. get transfer transaction
-  const transferTx = tx.actions.find((a) => {
+  const transferTx = tx.actions.find((a: any) => {
     return a.native_transfer || (a.from && a.to && a.unit && a.amount != 0);
   });
   if (!transferTx) return result;
@@ -201,7 +201,10 @@ async function formatOffchainTxns(
       result = { ...result, ...(await renderWithdrawTx(tx, onPlatform, api)) };
       break;
     case "airdrop":
-      result = { ...result, ...(await renderAirdropTx(tx, onPlatform, api)) };
+      result = {
+        ...result,
+        ...(await renderAirdropTx(tx, onPlatform, api, profileId)),
+      };
       break;
     case "paylink":
       result = { ...result, ...(await renderPaylinkTx(tx, onPlatform, api)) };
@@ -424,18 +427,37 @@ async function renderWithdrawTx(
 async function renderAirdropTx(
   tx: AirdropTx,
   onPlatform: TransactionSupportedPlatform,
-  api?: API
+  api?: API,
+  profileId?: string
 ) {
-  // 0. Get the token amount and token emoji of the transaction
+  // 0. Check if the actor is the one who receive or send airdrop
+  const isAirdropReceiver = profileId && profileId === tx.other_profile_id;
+
+  // 1. Get the token amount and token emoji of the transaction
   const { full: amount, emoji } = await amountComp({
     on: onPlatform,
     api,
     symbol: tx.token.symbol.toUpperCase(),
     amount: formatUnits(tx.amount, tx.token.decimal),
-    prefix: MINUS_SIGN,
+    prefix: isAirdropReceiver ? PLUS_SIGN : MINUS_SIGN,
   });
 
-  // 1. Prepare the withdraw transaction description
+  // 2. Format the transaction description for airdrop receiver
+  if (isAirdropReceiver) {
+    const [actor] = await UI.formatProfile(onPlatform, tx.from_profile_id);
+    const actorLbl = actor?.value ?? "";
+    const text = util.format(
+      template.transaction.airdropReceive,
+      amount,
+      actorLbl
+    );
+    return {
+      emoji,
+      text,
+    };
+  }
+
+  // 3. Format the transaction description for airdrop sender
   const numOfWinners = tx.other_profile_ids.length;
   let text = util.format(
     template.transaction.airdropWithoutParticipant,
@@ -450,8 +472,6 @@ async function renderAirdropTx(
       subject
     );
   }
-
-  // 2. Return the result
   return {
     emoji,
     text,
@@ -558,7 +578,7 @@ function filterSpamToken(tx: Tx) {
     return symbol.length >= 3 && symbol.length <= 6;
   }
   if ("has_transfer" in tx) {
-    const transferTx = tx.actions.find((a) => {
+    const transferTx = tx.actions.find((a: any) => {
       if (a.native_transfer) return true;
       if (a.from && a.to && a.amount !== 0 && a.unit) return true;
       return false;
@@ -573,7 +593,7 @@ function filterSpamToken(tx: Tx) {
 function filterOnchainOnlyTransfer(tx: Tx) {
   if ("has_transfer" in tx) {
     // transfer tx = first tx to have "from", "to", "amount" and "unit"
-    const transferTx = tx.actions.find((a) => {
+    const transferTx = tx.actions.find((a: any) => {
       if (a.native_transfer) return true;
       if (a.from && a.to && a.amount !== 0 && a.unit) return true;
       return false;
