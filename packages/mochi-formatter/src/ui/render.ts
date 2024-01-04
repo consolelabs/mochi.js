@@ -1,4 +1,9 @@
-import { DISCORD_PROFILE, HOMEPAGE, TELEGRAM_PROFILE } from "../constant";
+import {
+  DISCORD_PROFILE,
+  FACEBOOK_PROFILE,
+  HOMEPAGE,
+  TELEGRAM_PROFILE,
+} from "../constant";
 import type { Profile as MochiProfile, Vault } from "@consolelabs/mochi-rest";
 
 export type Profile = MochiProfile | Vault | null;
@@ -101,6 +106,7 @@ export default function render(
     [Platform.App]: application(pA, on),
     [Platform.Vault]: vault(pA, on),
     [Platform.Email]: email(pA, on),
+    [Platform.Facebook]: facebook(pA, on),
   };
   const accountB = {
     [Platform.Telegram]: telegram(pB, on),
@@ -109,6 +115,7 @@ export default function render(
     [Platform.App]: application(pB, on),
     [Platform.Vault]: vault(pB, on),
     [Platform.Email]: email(pB, on),
+    [Platform.Facebook]: facebook(pB, on),
   };
 
   let fallbackOrder: Array<
@@ -116,6 +123,7 @@ export default function render(
     | Platform.Mochi
     | Platform.Telegram
     | Platform.Discord
+    | Platform.Facebook
     | Platform.Vault
     | Platform.Email
   >;
@@ -126,6 +134,7 @@ export default function render(
         Platform.App,
         Platform.Discord,
         Platform.Telegram,
+        Platform.Facebook,
         Platform.Email,
         Platform.Mochi,
       ];
@@ -136,6 +145,7 @@ export default function render(
         Platform.App,
         Platform.Discord,
         Platform.Telegram,
+        Platform.Facebook,
         Platform.Email,
         Platform.Mochi,
       ];
@@ -146,6 +156,7 @@ export default function render(
         Platform.App,
         Platform.Telegram,
         Platform.Discord,
+        Platform.Facebook,
         Platform.Email,
         Platform.Mochi,
       ];
@@ -286,6 +297,47 @@ function application(p?: Profile, on = Platform.App): UsernameFmt {
       value: "",
       id: "",
       url: "",
+    };
+  } catch (e) {
+    return { plain: "", value: "", id: "", url: "" };
+  }
+}
+
+function facebook(p?: Profile, on = Platform.Facebook): UsernameFmt {
+  try {
+    if (!p || !isMochiProfile(p) || isApplication(p) || isVault(p))
+      return { plain: "", value: "", id: "", url: "" };
+
+    const facebook = p.associated_accounts?.find(
+      (aa) => aa.platform === Platform.Facebook
+    );
+
+    const textPrefix = ![Platform.Facebook, Platform.Web].includes(on)
+      ? PLATFORM_PREFIX["facebook"]
+      : "";
+    const emojiPrefix =
+      on !== Platform.Facebook ? PLATFORM_EMOJI_PREFIX["facebook"] : "";
+
+    if (!facebook || !facebook.platform_metadata.username)
+      return {
+        plain: "",
+        value: "",
+        id: "",
+        url: "",
+      };
+
+    return {
+      id: facebook.platform_identifier,
+      url: `${FACEBOOK_PROFILE}/${facebook.platform_metadata.username}`,
+      value: `${on === Platform.Discord ? "\\" : ""}${emojiPrefix}${
+        emojiPrefix ? " " : ""
+      }[${textPrefix}${
+        facebook.platform_metadata.username
+      }](${HOMEPAGE}/profile/${p.id})`,
+      plain: `${on === Platform.Discord ? "\\" : ""}${emojiPrefix}${
+        emojiPrefix ? " " : ""
+      }${textPrefix}${facebook.platform_metadata.username}`,
+      platform: Platform.Facebook,
     };
   } catch (e) {
     return { plain: "", value: "", id: "", url: "" };

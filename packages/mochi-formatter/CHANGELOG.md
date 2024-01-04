@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 18.2.0
+
+### Minor Changes
+
+- Add format for facebook
+
 ## 18.1.3
 
 ### Patch Changes
