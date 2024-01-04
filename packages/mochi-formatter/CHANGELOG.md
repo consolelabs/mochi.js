@@ -5,6 +5,7 @@
 ### Patch Changes
 
 - update changelog component
+- Use new subscript param
 
 ## 18.2.0
 

@@ -95,7 +95,7 @@ export function formatDigit({
   withoutCommas = false,
   shorten = false,
 
-  /* deprecated */
+  subscript = false,
   scientificFormat = false,
   takeExtraDecimal = 0,
 }: {
@@ -104,6 +104,7 @@ export function formatDigit({
   withoutCommas?: boolean;
   shorten?: boolean;
   scientificFormat?: boolean;
+  subscript?: boolean;
   takeExtraDecimal?: number;
 }) {
   takeExtraDecimal = Math.max(takeExtraDecimal, 0);
@@ -114,8 +115,9 @@ export function formatDigit({
 
   // detect exp notation and use subscript format
   if (String(num).includes("e") && expNotation.test(String(num))) {
-    return formatSubscript(String(num));
-    // return shortenScientificNotation({ value: String(num) });
+    if (subscript) return formatSubscript(String(num));
+    if (scientificFormat)
+      return shortenScientificNotation({ value: String(num) });
   }
 
   const s = num.toLocaleString(undefined, { maximumFractionDigits: 18 });
@@ -165,22 +167,41 @@ type FormatParam = Parameters<typeof formatDigit>[0] | string | number;
 type Extra = Omit<Parameters<typeof formatDigit>[0], "value">;
 
 function call(
-  param: FormatParam,
+  extraParam: FormatParam,
   func: Function,
-  extraParams: Partial<Extra> = {}
+  params: Partial<Extra> = {}
 ) {
-  if (typeof param === "string" || typeof param === "number") {
+  if (typeof extraParam === "string" || typeof extraParam === "number") {
     return func.call(null, {
-      value: toNum(param),
-      ...extraParams,
+      value: toNum(extraParam),
+      ...params,
     });
   }
 
   return func.call(null, {
-    ...param,
-    ...extraParams,
-    value: toNum(param.value),
+    ...params,
+    ...extraParam,
+    value: toNum(extraParam.value),
   });
+}
+
+function shortenScientificNotation({
+  value,
+  maximumFractionDigits = 2,
+}: {
+  value: string | number;
+  maximumFractionDigits?: number;
+}): string {
+  const str = String(value);
+  if (!Number(str)) return str;
+  if (!str.includes("e")) return str;
+
+  const delemiterIdx = str.indexOf("e");
+  const leftStr = Number(str.slice(0, delemiterIdx)).toLocaleString(undefined, {
+    maximumFractionDigits,
+  });
+  const rightStr = str.slice(delemiterIdx);
+  return leftStr + rightStr;
 }
 
 function toNum(val: FormatParam) {

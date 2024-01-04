@@ -61,7 +61,7 @@ test.each([
   [0.000000123, "0.0₆123"],
   [0.0000000000000123, "0.0₁₃123"],
 ])("formatTokenDigit", (input, output) => {
-  expect(formatTokenDigit(input)).toEqual(output);
+  expect(formatTokenDigit({ value: input, subscript: true })).toEqual(output);
 });
 
 test.each([
