@@ -12,6 +12,7 @@ type Props = {
 };
 
 type Context = {
+  sections: string[];
   images: string[];
   firstParagraph: boolean;
   firstHeading: boolean;
@@ -25,6 +26,7 @@ const markdownConverter: Record<
   ["discord"]: discord,
 };
 
+// split by image sections
 function discord(content: any, ctx: Context) {
   let text = "";
   if (Array.isArray(content)) {
@@ -33,14 +35,18 @@ function discord(content: any, ctx: Context) {
     });
   } else {
     switch (content.type) {
-      case "strong":
       case "list":
       case "listItem":
+        content.children.forEach((c: any) => {
+          text += `${discord(c, ctx)}`;
+        });
+        break;
+      case "strong":
       case "link":
       case "inlineCode":
       case "code":
       case "text": {
-        text += content.value;
+        text += `\n${content.value}`;
         break;
       }
       case "heading": {
@@ -52,13 +58,13 @@ function discord(content: any, ctx: Context) {
         break;
       }
       case "paragraph": {
-        text += `\n${discord(content.children, ctx)}`;
-        ctx.firstParagraph = true;
+        content.children.forEach((c: any) => {
+          text += `${discord(c, ctx)}`;
+        });
         break;
       }
       case "image": {
-        text += `[view](${content.url})`;
-        ctx.images.push(content.url);
+        text += `[.](${content.url})<br>`;
         break;
       }
       case "delete": {
@@ -82,9 +88,12 @@ function telegram(content: any, ctx: Context) {
     });
   } else {
     switch (content.type) {
-      case "strong":
       case "list":
       case "listItem":
+        content.children.forEach((c: any) => {
+          text += telegram(c, ctx);
+        });
+      case "strong":
       case "link":
       case "inlineCode":
       case "code":
@@ -147,22 +156,22 @@ export default async function ({ api, title, content, on }: Props) {
   const ast = remark().use(remarkGfm).parse(content);
   const convert = markdownConverter[on];
   const ctx: Context = {
+    sections: [],
     images: [],
     firstHeading: false,
     firstParagraph: false,
   };
-  const text = convert(ast.children, ctx);
-  return {
-    images: ctx.images.filter((i) => i.includes("imgur.com")),
-    text: [
-      `*${await emojiByPlatform(
-        on,
-        api
-      )} Product Update ${await emojiByPlatform(on, api)}\n\n${title}*`,
-      text,
-    ]
+  let text = convert(ast.children, ctx);
+  text = [`## ${title}`, text].join("\n");
+  if (on === Platform.Telegram) {
+    text = [`${title}`, text]
       .join("\n")
       .replaceAll("#", "\\#")
-      .replaceAll(".", "\\."),
+      .replaceAll(".", "\\.");
+  }
+  return {
+    images: ctx.images.filter((i) => i.includes("imgur.com")),
+    sections: ctx.sections,
+    text,
   };
 }
