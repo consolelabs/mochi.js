@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 18.2.2
+
+### Patch Changes
+
+- Fix changelog component
+
 ## 18.2.1
 
 ### Patch Changes
