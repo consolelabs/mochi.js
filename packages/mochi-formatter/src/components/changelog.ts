@@ -1,5 +1,5 @@
 import { Platform } from "..";
-import remarkGfm from "remark-gfm";
+import remarkGfm, { Root } from "remark-gfm";
 import API from "@consolelabs/mochi-rest";
 import { remark } from "remark";
 
@@ -37,16 +37,16 @@ function discord(content: any, ctx: Context) {
     switch (content.type) {
       case "list":
       case "listItem":
-        content.children.forEach((c: any) => {
-          text += `${discord(c, ctx)}`;
-        });
+        text += `${discord(content.chilren, ctx)}`;
         break;
       case "strong":
+        text += `**${discord(content.children, ctx)}**`;
+        break;
       case "link":
       case "inlineCode":
       case "code":
       case "text": {
-        text += `\n${content.value}`;
+        text += `${content.value}`;
         break;
       }
       case "heading": {
@@ -58,9 +58,7 @@ function discord(content: any, ctx: Context) {
         break;
       }
       case "paragraph": {
-        content.children.forEach((c: any) => {
-          text += `${discord(c, ctx)}`;
-        });
+        text += `\n${discord(content.children, ctx)}`;
         break;
       }
       case "image": {
