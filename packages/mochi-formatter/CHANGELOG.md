@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 18.2.3
+
+### Patch Changes
+
+- handle bold case for changelog component
+
 ## 18.2.2
 
 ### Patch Changes
