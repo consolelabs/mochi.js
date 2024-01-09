@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 18.2.5
+
+### Patch Changes
+
+- remove amount sign for global transaction
+
 ## 18.2.4
 
 ### Patch Changes
