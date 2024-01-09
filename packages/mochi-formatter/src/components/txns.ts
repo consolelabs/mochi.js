@@ -241,6 +241,7 @@ async function renderTransferTx(
   }
 
   // 2. Get token emoji and token amount of the transaction
+  const sign = isTransferIn ? PLUS_SIGN : MINUS_SIGN;
   const {
     text,
     emoji,
@@ -250,7 +251,7 @@ async function renderTransferTx(
     amount: formatUnits(tx.amount || 0, tx.token.decimal),
     symbol: tx.token.symbol.toUpperCase(),
     api,
-    prefix: isTransferIn ? PLUS_SIGN : MINUS_SIGN,
+    prefix: global ? undefined : sign,
   });
   result.amount = text;
   result.emoji = emoji;
@@ -306,6 +307,7 @@ async function renderVaultTransferTx(
   const isTransferIn = tx.type === "in";
 
   // 2. get the token amount, and token emoji of the transaction
+  const sign = isTransferIn ? PLUS_SIGN : MINUS_SIGN;
   const {
     text,
     emoji,
@@ -315,7 +317,7 @@ async function renderVaultTransferTx(
     amount: formatUnits(tx.amount || 0, tx.token.decimal),
     symbol: tx.token.symbol.toUpperCase(),
     api,
-    prefix: isTransferIn ? PLUS_SIGN : MINUS_SIGN,
+    prefix: global ? undefined : sign,
   });
   result.amount = text;
   result.emoji = emoji;
