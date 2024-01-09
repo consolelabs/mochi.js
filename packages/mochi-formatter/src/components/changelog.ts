@@ -91,7 +91,10 @@ function telegram(content: any, ctx: Context) {
         content.children.forEach((c: any) => {
           text += telegram(c, ctx);
         });
+        break;
       case "strong":
+        text += `<b>${telegram(content.children, ctx)}</b>`;
+        break;
       case "link":
       case "inlineCode":
       case "code":
@@ -100,10 +103,10 @@ function telegram(content: any, ctx: Context) {
         break;
       }
       case "heading": {
-        text += `\n${ctx.firstHeading ? "\n" : ""}*${telegram(
+        text += `\n${ctx.firstHeading ? "\n" : ""}<b>${telegram(
           content.children,
           ctx
-        )}*`;
+        )}</b>`;
         ctx.firstHeading = true;
         break;
       }
@@ -113,8 +116,7 @@ function telegram(content: any, ctx: Context) {
         break;
       }
       case "image": {
-        text += `[view](${content.url})`;
-        ctx.images.push(content.url);
+        text += `<a href="${content.url}"> ‏</a>\<br\>`;
         break;
       }
       case "delete": {
@@ -159,13 +161,11 @@ export default async function ({ api, title, content, on }: Props) {
     firstHeading: false,
     firstParagraph: false,
   };
-  let text = convert(ast.children, ctx);
-  text = [`## ${title}`, text].join("\n");
+  const body = convert(ast.children, ctx);
+  let text = [`## ${title}`, body].join("\n");
+  // If render changelog on telegram, we must remove special character
   if (on === Platform.Telegram) {
-    text = [`${title}`, text]
-      .join("\n")
-      .replaceAll("#", "\\#")
-      .replaceAll(".", "\\.");
+    text = [`<b>${title}</b>`, body].join("\n");
   }
   return {
     images: ctx.images.filter((i) => i.includes("imgur.com")),
