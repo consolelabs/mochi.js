@@ -81,7 +81,7 @@ describe("formatTxn.VaultTransferTx", () => {
     });
   });
 
-  it("should render corrected format on tele gloablly", async () => {
+  it("should render corrected format on tele globally", async () => {
     // arrange
     const tx = VaultTransferTx;
     const platform = Platform.Telegram;
