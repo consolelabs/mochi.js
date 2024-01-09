@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 18.2.4
+
+### Patch Changes
+
+- prettify changelog component on telegram
+
 ## 18.2.3
 
 ### Patch Changes
