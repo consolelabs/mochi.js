@@ -61,7 +61,7 @@ describe("formatTxn.TransferTx", () => {
     jest.useRealTimers();
   });
 
-  it("should render corrected format on discord", async () => {
+  it("should render corrected format on discord globally", async () => {
     // arrange
     const tx = TransferOutTx;
     const platform = Platform.Discord;
@@ -73,7 +73,7 @@ describe("formatTxn.TransferTx", () => {
 
     // assert
     expect(actual).toEqual({
-      amount: "-149.6 BUTT",
+      amount: "149.6 BUTT",
       emoji: "",
       time: "5d ago",
       text: "48438 to 40409",
@@ -81,7 +81,7 @@ describe("formatTxn.TransferTx", () => {
     });
   });
 
-  it("should render corrected format on tele", async () => {
+  it("should render corrected format on tele globally", async () => {
     // arrange
     const tx = TransferOutTx;
     const platform = Platform.Telegram;
@@ -93,7 +93,7 @@ describe("formatTxn.TransferTx", () => {
 
     // assert
     expect(actual).toEqual({
-      amount: "-149.6 BUTT",
+      amount: "149.6 BUTT",
       emoji: "",
       time: "5d ago",
       text: "48438 to 40409",

@@ -61,7 +61,7 @@ describe("formatTxn.VaultTransferTx", () => {
     jest.useRealTimers();
   });
 
-  it("should render corrected format on discord", async () => {
+  it("should render corrected format on discord globally", async () => {
     // arrange
     const tx = VaultTransferTx;
     const platform = Platform.Discord;
@@ -73,7 +73,7 @@ describe("formatTxn.VaultTransferTx", () => {
 
     // assert
     expect(actual).toEqual({
-      amount: "+5 ICY",
+      amount: "5 ICY",
       emoji: "",
       time: "3d ago",
       text: "B to A",
@@ -81,7 +81,7 @@ describe("formatTxn.VaultTransferTx", () => {
     });
   });
 
-  it("should render corrected format on tele", async () => {
+  it("should render corrected format on tele gloablly", async () => {
     // arrange
     const tx = VaultTransferTx;
     const platform = Platform.Telegram;
@@ -93,7 +93,7 @@ describe("formatTxn.VaultTransferTx", () => {
 
     // assert
     expect(actual).toEqual({
-      amount: "+5 ICY",
+      amount: "5 ICY",
       emoji: "",
       time: "3d ago",
       text: "B to A",
@@ -101,7 +101,7 @@ describe("formatTxn.VaultTransferTx", () => {
     });
   });
 
-  it("should render corrected format on web", async () => {
+  it("should render corrected format on web globally", async () => {
     // arrange
     const tx = VaultTransferTx;
     const platform = Platform.Web;
@@ -113,7 +113,7 @@ describe("formatTxn.VaultTransferTx", () => {
 
     // assert
     expect(actual).toEqual({
-      amount: "+5 ICY",
+      amount: "5 ICY",
       emoji: "",
       time: "3d ago",
       text: "B to A",
