@@ -8,6 +8,5 @@ describe("changelog", () => {
   it("should render correct on discord", async () => {
     const on = Platform.Discord;
     const { text } = await changelog({ title, content, on });
-    console.log(text);
   });
 });
