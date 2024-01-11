@@ -76,7 +76,7 @@ describe("formatTxn.TransferTx", () => {
       amount: "149.6 BUTT",
       emoji: "",
       time: "5d ago",
-      text: "48438 to 40409",
+      text: "149.6 BUTT 48438 to 40409",
       external_id: "[`27a82`](https://mochi.gg/tx/27a823e486fa)",
     });
   });
@@ -96,7 +96,7 @@ describe("formatTxn.TransferTx", () => {
       amount: "149.6 BUTT",
       emoji: "",
       time: "5d ago",
-      text: "48438 to 40409",
+      text: "149.6 BUTT 48438 to 40409",
       external_id: "[`27a82`](https://mochi.gg/tx/27a823e486fa)",
     });
   });

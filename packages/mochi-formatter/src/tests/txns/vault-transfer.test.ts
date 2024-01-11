@@ -76,7 +76,7 @@ describe("formatTxn.VaultTransferTx", () => {
       amount: "5 ICY",
       emoji: "",
       time: "3d ago",
-      text: "B to A",
+      text: "5 ICY B to A",
       external_id: "[`cf2d7`](https://mochi.gg/tx/cf2d71433f14)",
     });
   });
@@ -96,7 +96,7 @@ describe("formatTxn.VaultTransferTx", () => {
       amount: "5 ICY",
       emoji: "",
       time: "3d ago",
-      text: "B to A",
+      text: "5 ICY B to A",
       external_id: "[`cf2d7`](https://mochi.gg/tx/cf2d71433f14)",
     });
   });
@@ -116,7 +116,7 @@ describe("formatTxn.VaultTransferTx", () => {
       amount: "5 ICY",
       emoji: "",
       time: "3d ago",
-      text: "B to A",
+      text: "5 ICY B to A",
       external_id: "[`cf2d7`](https://mochi.gg/tx/cf2d71433f14)",
     });
   });

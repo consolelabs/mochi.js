@@ -281,8 +281,8 @@ async function renderTransferTx(
     if (from?.value && to?.value) {
       const tmpl = template.transaction.transferGlobal;
       result.text = isTransferIn
-        ? util.format(tmpl, to.value, from.value)
-        : util.format(tmpl, from.value, to.value);
+        ? util.format(tmpl, fullAmount, to.value, from.value)
+        : util.format(tmpl, fullAmount, from.value, to.value);
     }
   }
 
@@ -360,11 +360,8 @@ async function renderVaultTransferTx(
     if (from?.value && to?.value) {
       const templ = template.transaction.transferGlobal;
       result.text = isTransferIn
-        ? `${to.value} to ${from.value}`
-        : `${from.value} to ${to.value}`;
-      result.text = isTransferIn
-        ? util.format(templ, to.value, from.value)
-        : util.format(templ, from.value, to.value);
+        ? util.format(templ, fullAmount, to.value, from.value)
+        : util.format(templ, fullAmount, from.value, to.value);
     }
   }
 
@@ -651,10 +648,6 @@ export default async function (
   }: Props & Paging,
   tableParams?: Parameters<typeof mdTable>[1]
 ) {
-  if (global) {
-    groupDate = true;
-  }
-
   let data = (
     await Promise.all(
       txns

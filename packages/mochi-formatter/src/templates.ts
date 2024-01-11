@@ -16,7 +16,7 @@ type TransactionTemplate =
 const transactionTemplate: Record<TransactionTemplate, string> = {
   transferIn: "%s from %s",
   transferOut: "%s to %s",
-  transferGlobal: "%s to %s",
+  transferGlobal: "%s %s to %s",
 
   deposit: "%s deposited from `%s`",
   withdraw: "%s withdrawn to `%s`",
