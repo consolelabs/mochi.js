@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 18.2.6
+
+### Patch Changes
+
+- d513149: global tx would not groupdate automatically
+
 ## 18.2.5
 
 ### Patch Changes
