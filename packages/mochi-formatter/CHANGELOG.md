@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 18.2.8
+
+### Patch Changes
+
+- Allow for format to accept arbitrary len
+
 ## 18.2.7
 
 ### Patch Changes
