@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 18.2.7
+
+### Patch Changes
+
+- Change text limit of format from 20 to 10
+
 ## 18.2.6
 
 ### Patch Changes

@@ -12,9 +12,9 @@ function formatAddressUsername(value: string) {
   if (isAddressResult.valid && !address.isShorten(value)) {
     return address.shorten(value);
   }
-  const hidden = value.slice(20);
+  const hidden = value.slice(10);
 
-  return `${value.slice(0, 20)}${hidden.length ? "..." : ""}`;
+  return `${value.slice(0, 10)}${hidden.length ? "..." : ""}`;
 }
 
 export default {
