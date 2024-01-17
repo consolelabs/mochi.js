@@ -1,6 +1,6 @@
 {
   "name": "@consolelabs/mochi-formatter",
-  "version": "18.2.8",
+  "version": "18.2.9",
   "description": "Mochi Formatter for profiles, numbers, texts",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

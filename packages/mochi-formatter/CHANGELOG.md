@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 18.2.9
+
+### Patch Changes
+
+- b238a9e: render sibling transactions
+- Updated dependencies [b238a9e]
+  - @consolelabs/mochi-rest@5.1.10
+
 ## 18.2.8
 
 ### Patch Changes
