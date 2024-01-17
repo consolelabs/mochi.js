@@ -78,12 +78,14 @@ export async function formatTxn(
   api?: API,
   profileId?: string
 ) {
+  // 1.0 format onchain txns
   // the onchain tx will have `has_transfer` field in payload
   const isOnchainTx = "has_transfer" in tx;
   if (isOnchainTx) {
     return await formatOnchainTxns(tx, groupDate);
   }
 
+  // 2.0 otherwise format offchain txns
   return await formatOffchainTxns(
     tx,
     onPlatform,
@@ -240,6 +242,12 @@ async function renderTransferTx(
     isTransferIn = !isTransferIn;
   }
 
+  // Render sibling transactions e.g tip for multiple people
+  if (!isTransferIn && tx.sibling_txs && tx.sibling_txs.length !== 0) {
+    return await renderSiblingsTxns([tx, ...tx.sibling_txs], onPlatform, api);
+  }
+
+  // Otherwise render 1 tx normally
   // 2. Get token emoji and token amount of the transaction
   const sign = isTransferIn ? PLUS_SIGN : MINUS_SIGN;
   const {
@@ -285,6 +293,109 @@ async function renderTransferTx(
         : util.format(tmpl, fullAmount, from.value, to.value);
     }
   }
+
+  // 4. Return the result
+  return result;
+}
+
+async function renderSiblingsTxns(
+  txns: TransferTx[],
+  onPlatform: TransactionSupportedPlatform,
+  api?: API
+) {
+  // 0. Prepare result shape
+  const result = {
+    emoji: "",
+    amount: "",
+    text: "",
+  };
+
+  const amount = txns
+    .reduce((acc, current) => +current.amount + acc, 0)
+    .toString();
+
+  const {
+    text,
+    emoji,
+    full: fullAmount,
+  } = await amountComp({
+    on: onPlatform,
+    amount: formatUnits(amount, txns[0].token.decimal),
+    symbol: txns[0].token.symbol.toUpperCase(),
+    api,
+    prefix: MINUS_SIGN,
+  });
+  result.amount = text;
+  result.emoji = emoji;
+
+  // build receivers
+  const [opponent] = await UI.formatProfile(
+    onPlatform,
+    txns[0].other_profile_id
+  );
+  let receivers = `${opponent?.value ?? "Unknown User"} & ${
+    txns.length - 1
+  } others`;
+  if (txns.length === 2) {
+    const [opponent2] = await UI.formatProfile(
+      onPlatform,
+      txns[1].other_profile_id
+    );
+    receivers = `${opponent?.value ?? "Unknown User"} & ${
+      opponent2?.value ?? "Unknown User"
+    }`;
+  }
+
+  result.text = util.format(
+    template.transaction.transferOut,
+    fullAmount,
+    receivers
+  );
+  return result;
+}
+
+async function getTransferTxData(
+  tx: TransferTx,
+  onPlatform: TransactionSupportedPlatform,
+  api?: API,
+  profileId?: string
+) {
+  // 0. Prepare result shape
+  const result = {
+    emoji: "",
+    amount: "",
+    receiver: "",
+  };
+
+  // 1. Check if tx type is in or out
+  let isTransferIn = tx.type === "in";
+  // 1.1 if the other_profile_id of tx is the one who call this function,
+  // we will need to invert the side of the transaction (in to out, and out to in)
+  if (profileId && tx.other_profile_id === profileId) {
+    isTransferIn = !isTransferIn;
+  }
+
+  // 2. Get token emoji and token amount of the transaction
+  const { text, emoji } = await amountComp({
+    on: onPlatform,
+    amount: formatUnits(tx.amount || 0, tx.token.decimal),
+    symbol: tx.token.symbol.toUpperCase(),
+    api,
+  });
+  result.amount = text;
+  result.emoji = emoji;
+
+  // 3. Format the transaction description
+
+  // 3.1 get the opponent of the transaction, and show only opponent
+  // e.g: from B, to B
+  let opponentProfileId = tx.other_profile_id;
+  if (profileId && opponentProfileId === profileId) {
+    opponentProfileId = tx.from_profile_id;
+  }
+  const [actor] = await UI.formatProfile(onPlatform, opponentProfileId);
+  const receiver = actor?.value ?? "";
+  result.receiver = receiver;
 
   // 4. Return the result
   return result;

@@ -1,6 +1,10 @@
 import { formatTxn } from "../../components/txns";
 import { Platform, UI } from "../../ui";
-import { TransferOutTx, TransferInTx } from "../fixture/txns";
+import {
+  TransferOutTx,
+  TransferInTx,
+  SiblingTransferTx,
+} from "../fixture/txns";
 import API from "@consolelabs/mochi-rest";
 
 describe("formatTxn.TransferTx", () => {
@@ -152,6 +156,33 @@ describe("formatTxn.TransferTx", () => {
       time: "5d ago",
       text: "-3 ICY to 55834",
       external_id: "[`27a82`](https://mochi.gg/tx/27a823e486fa)",
+    });
+  });
+
+  it("should render corrected siblings txs", async () => {
+    // arrange
+    const tx = SiblingTransferTx;
+    const platform = Platform.Discord;
+    const global = false;
+    const groupDate = false;
+    const profileId = "48036";
+    // act
+    const actual = await formatTxn(
+      tx,
+      platform,
+      global,
+      groupDate,
+      api,
+      profileId
+    );
+
+    // assert
+    expect(actual).toEqual({
+      amount: "-1 DOGE",
+      emoji: "",
+      time: "in 29d",
+      text: "-1 DOGE to 55834 & 1640552476807532544",
+      external_id: "[`60039`](https://mochi.gg/tx/60039b1eac36)",
     });
   });
 });

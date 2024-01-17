@@ -73,9 +73,17 @@ const MochiTxSchema = z.object({
 
 export type BaseTx = z.infer<typeof MochiTxSchema>;
 
-export const MochiTransferTxSchema = MochiTxSchema.extend({
-  action: z.literal("transfer"),
-});
+type MochiTransferTx = z.infer<typeof MochiTxSchema> & {
+  action: "transfer";
+  sibling_txs: MochiTransferTx[] | null;
+};
+
+export const MochiTransferTxSchema: z.ZodType<MochiTransferTx> =
+  MochiTxSchema.extend({
+    action: z.literal("transfer"),
+    sibling_txs: z.lazy(() => MochiTransferTxSchema.array().nullable()),
+  });
+
 export type TransferTx = z.infer<typeof MochiTransferTxSchema>;
 
 export const MochiDepositTxSchema = MochiTxSchema.extend({
