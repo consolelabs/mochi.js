@@ -20,7 +20,9 @@ const AssociatedAccountSchema = z.object({
     "email",
   ]),
   platform_identifier: z.string(),
-  platform_metadata: z.object({ username: z.string() }).partial(),
+  platform_metadata: z
+    .object({ ens: z.string(), sns: z.string(), username: z.string() })
+    .partial(),
   profile_id: z.string().min(1),
   total_amount: z.string(),
   pnl: z.string(),
@@ -71,6 +73,8 @@ export const ProfileSchema = z.discriminatedUnion("type", [
 export const ListProfileSchema = z.array(ProfileSchema);
 
 export type Profile = z.infer<typeof ProfileSchema>;
+
+export type AssociatedAccount = z.infer<typeof AssociatedAccountSchema>;
 
 export const LeaderboardSchema = z.object({
   top_sender: z.array(

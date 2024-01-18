@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.2.0
+
+### Minor Changes
+
+- Support associated account when formatting address
+
 ## 5.1.10
 
 ### Patch Changes

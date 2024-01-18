@@ -1,5 +1,16 @@
 # @consolelabs/mochi-ui
 
+## 19.0.0
+
+### Minor Changes
+
+- Support associated account when formatting address
+
+### Patch Changes
+
+- Updated dependencies
+  - @consolelabs/mochi-rest@5.2.0
+
 ## 18.2.9
 
 ### Patch Changes
