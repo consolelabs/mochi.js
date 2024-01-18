@@ -76,7 +76,7 @@ export class PayModule extends Module {
   };
 
   tokens: {
-    getSupported: Fetcher<string, Array<Token>>;
+    getSupported: Fetcher<string | void, Array<Token>>;
   };
 
   getWhiteListToken: Fetcher<string | void, Array<SimplifiedToken>>;

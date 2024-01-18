@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.2.1
+
+### Patch Changes
+
+- Fix typing of mochi pay get supported tokens
+
 ## 5.2.0
 
 ### Minor Changes
