@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 19.0.2
+
+### Patch Changes
+
+- 90fa9b5: fix changelog discord parse list item fail
+
 ## 19.0.1
 
 ### Patch Changes
