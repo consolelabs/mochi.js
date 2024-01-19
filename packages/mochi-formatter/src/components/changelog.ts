@@ -37,7 +37,10 @@ function discord(content: any, ctx: Context) {
     switch (content.type) {
       case "list":
       case "listItem":
-        text += `${discord(content.chilren, ctx)}`;
+        content.children.forEach((c: any) => {
+          text += discord(c, ctx);
+        });
+        // text += `${discord(content.chilren, ctx)}`;
         break;
       case "strong":
         text += `**${discord(content.children, ctx)}**`;
