@@ -12,10 +12,12 @@ type Props = {
 };
 
 type Context = {
-  sections: string[];
   images: string[];
   firstParagraph: boolean;
   firstHeading: boolean;
+  firstHeading3: boolean;
+  breakPreview: boolean;
+  emoji: string;
 };
 
 const markdownConverter: Record<
@@ -31,6 +33,9 @@ function discord(content: any, ctx: Context) {
   let text = "";
   if (Array.isArray(content)) {
     content.forEach((c) => {
+      if (ctx.breakPreview) {
+        return text;
+      }
       text += discord(c, ctx);
     });
   } else {
@@ -40,24 +45,28 @@ function discord(content: any, ctx: Context) {
         content.children.forEach((c: any) => {
           text += discord(c, ctx);
         });
-        // text += `${discord(content.chilren, ctx)}`;
         break;
       case "strong":
         text += `**${discord(content.children, ctx)}**`;
         break;
       case "link":
+        text += `[${discord(content.children, ctx)}](${content.url})`;
+        break;
       case "inlineCode":
-      case "code":
       case "text": {
         text += `${content.value}`;
         break;
       }
       case "heading": {
-        text += `\n${ctx.firstHeading ? "\n" : ""}**${discord(
+        if (ctx.firstHeading3 && content.depth === 3) {
+          ctx.firstHeading3 = false;
+          break;
+        }
+        text += `${ctx.firstHeading ? `${ctx.emoji} ` : ""}**${discord(
           content.children,
           ctx
-        )}**`;
-        ctx.firstHeading = true;
+        )}**${ctx.firstHeading ? ` ${ctx.emoji}\n` : ""}`;
+        ctx.firstHeading = false;
         break;
       }
       case "paragraph": {
@@ -65,7 +74,7 @@ function discord(content: any, ctx: Context) {
         break;
       }
       case "image": {
-        text += `[.](${content.url})<br>`;
+        ctx.images.push(content.url);
         break;
       }
       case "delete": {
@@ -74,6 +83,9 @@ function discord(content: any, ctx: Context) {
         }
         break;
       }
+      case "definition":
+        ctx.breakPreview = true;
+        break;
       default:
         break;
     }
@@ -85,6 +97,9 @@ function telegram(content: any, ctx: Context) {
   let text = "";
   if (Array.isArray(content)) {
     content.forEach((c) => {
+      if (ctx.breakPreview) {
+        return text;
+      }
       text += telegram(c, ctx);
     });
   } else {
@@ -99,6 +114,11 @@ function telegram(content: any, ctx: Context) {
         text += `<b>${telegram(content.children, ctx)}</b>`;
         break;
       case "link":
+        text += `<a href="${content.url}">${telegram(
+          content.children,
+          ctx
+        )}</a>`;
+        break;
       case "inlineCode":
       case "code":
       case "text": {
@@ -106,11 +126,15 @@ function telegram(content: any, ctx: Context) {
         break;
       }
       case "heading": {
-        text += `\n${ctx.firstHeading ? "\n" : ""}<b>${telegram(
+        if (ctx.firstHeading3 && content.depth === 3) {
+          ctx.firstHeading3 = false;
+          break;
+        }
+        text += `${ctx.firstHeading ? `${ctx.emoji} ` : ""}<b>${telegram(
           content.children,
           ctx
-        )}</b>`;
-        ctx.firstHeading = true;
+        )}</b>${ctx.firstHeading ? ` ${ctx.emoji}\n` : ""}`;
+        ctx.firstHeading = false;
         break;
       }
       case "paragraph": {
@@ -119,7 +143,7 @@ function telegram(content: any, ctx: Context) {
         break;
       }
       case "image": {
-        text += `<a href="${content.url}"> ‏</a>\<br\>`;
+        ctx.images.push(content.url);
         break;
       }
       case "delete": {
@@ -128,6 +152,9 @@ function telegram(content: any, ctx: Context) {
         }
         break;
       }
+      case "definition":
+        ctx.breakPreview = true;
+        break;
       default:
         break;
     }
@@ -159,20 +186,16 @@ export default async function ({ api, title, content, on }: Props) {
   const ast = remark().use(remarkGfm).parse(content);
   const convert = markdownConverter[on];
   const ctx: Context = {
-    sections: [],
     images: [],
-    firstHeading: false,
-    firstParagraph: false,
+    firstHeading: true,
+    firstHeading3: true,
+    firstParagraph: true,
+    breakPreview: false,
+    emoji: await emojiByPlatform(on, api),
   };
-  const body = convert(ast.children, ctx);
-  let text = [`## ${title}`, body].join("\n");
-  // If render changelog on telegram, we must remove special character
-  if (on === Platform.Telegram) {
-    text = [`<b>${title}</b>`, body].join("\n");
-  }
+  const text = convert(ast.children, ctx);
   return {
     images: ctx.images.filter((i) => i.includes("imgur.com")),
-    sections: ctx.sections,
     text,
   };
 }
