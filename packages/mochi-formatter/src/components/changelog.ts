@@ -195,7 +195,7 @@ async function emojiByPlatform(
 export default async function ({ api, title, content, on }: Props) {
   const ast = remark().use(remarkGfm).parse(content);
   const convert = markdownConverter[on];
-  const emoji = await emojiByPlatform(on);
+  const emoji = await emojiByPlatform(on, api);
   let fmtTitle = `### ${emoji} ${title}`;
   if (on === Platform.Telegram) {
     fmtTitle = `<b>${emoji} ${title} ${emoji}</b>`;
