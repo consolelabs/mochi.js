@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.2.2
+
+### Patch Changes
+
+- 86fa7fe: update changelog format
+
 ## 5.2.1
 
 ### Patch Changes
