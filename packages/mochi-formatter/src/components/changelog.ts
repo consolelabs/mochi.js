@@ -58,14 +58,12 @@ function discord(content: any, ctx: Context) {
         break;
       }
       case "heading": {
+        // skip first heading 3
         if (ctx.firstHeading3 && content.depth === 3) {
           ctx.firstHeading3 = false;
           break;
         }
-        text += `${ctx.firstHeading ? `${ctx.emoji} ` : ""}**${discord(
-          content.children,
-          ctx
-        )}**${ctx.firstHeading ? ` ${ctx.emoji}\n` : ""}`;
+        text += `\n\n**${discord(content.children, ctx)}**`;
         ctx.firstHeading = false;
         break;
       }
@@ -126,14 +124,12 @@ function telegram(content: any, ctx: Context) {
         break;
       }
       case "heading": {
+        // skip first heading 3
         if (ctx.firstHeading3 && content.depth === 3) {
           ctx.firstHeading3 = false;
           break;
         }
-        text += `${ctx.firstHeading ? `${ctx.emoji} ` : ""}<b>${telegram(
-          content.children,
-          ctx
-        )}</b>${ctx.firstHeading ? ` ${ctx.emoji}\n` : ""}`;
+        text += `\n\n<b>${telegram(content.children, ctx)}</b>`;
         ctx.firstHeading = false;
         break;
       }
@@ -185,15 +181,21 @@ async function emojiByPlatform(
 export default async function ({ api, title, content, on }: Props) {
   const ast = remark().use(remarkGfm).parse(content);
   const convert = markdownConverter[on];
+  const emoji = await emojiByPlatform(on, api);
+  let fmtTitle = `### ${emoji} ${title} ${emoji}`;
+  if (on === Platform.Telegram) {
+    fmtTitle = `<b>${emoji} ${title} ${emoji}</b>`;
+  }
   const ctx: Context = {
     images: [],
     firstHeading: true,
     firstHeading3: true,
     firstParagraph: true,
     breakPreview: false,
-    emoji: await emojiByPlatform(on, api),
+    emoji,
   };
-  const text = convert(ast.children, ctx);
+  const body = convert(ast.children, ctx);
+  const text = [fmtTitle, body].join("\n");
   return {
     images: ctx.images.filter((i) => i.includes("imgur.com")),
     text,
