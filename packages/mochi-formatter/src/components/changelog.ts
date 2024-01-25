@@ -178,14 +178,14 @@ async function emojiByPlatform(
 ) {
   switch (on) {
     case Platform.Telegram:
-      return "🎊";
+      return "💎";
     case Platform.Discord: {
-      if (!api) return "🎊";
+      if (!api) return "💎";
       const { ok, data } = await api.base.metadata.getEmojis({
-        codes: ["ANIMATED_PARTY_POPPER"],
+        codes: ["ANIMATED_GEM"],
       });
-      if (!ok) return "🎊";
-      return data.at(0)?.emoji ?? "🎊";
+      if (!ok) return "💎";
+      return data.at(0)?.emoji ?? "💎";
     }
     default:
       return "🎊";
@@ -196,7 +196,7 @@ export default async function ({ api, title, content, on }: Props) {
   const ast = remark().use(remarkGfm).parse(content);
   const convert = markdownConverter[on];
   const emoji = await emojiByPlatform(on, api);
-  let fmtTitle = `### ${emoji} ${title} ${emoji}`;
+  let fmtTitle = `### ${emoji} ${title}`;
   if (on === Platform.Telegram) {
     fmtTitle = `<b>${emoji} ${title} ${emoji}</b>`;
   }
