@@ -129,9 +129,7 @@ function telegram(content: any, ctx: Context) {
           ctx.firstHeading3 = false;
           break;
         }
-        text += `\n<b>${telegram(content.children, ctx)}</b>${
-          ctx.firstHeading ? "\n" : ""
-        }`;
+        text += `\n\n<b>${telegram(content.children, ctx)}</b>`;
         ctx.firstHeading = false;
         break;
       }
