@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 19.0.6
+
+### Patch Changes
+
+- 6b292b4: update changelog format
+
 ## 19.0.5
 
 ### Patch Changes
