@@ -1,5 +1,25 @@
 # @consolelabs/mochi-ui
 
+## 19.0.4
+
+### Patch Changes
+
+- 86fa7fe: update changelog format
+- Updated dependencies [86fa7fe]
+  - @consolelabs/mochi-rest@5.2.2
+
+## 19.0.3
+
+### Patch Changes
+
+- 286a2ee: just show changelog preview
+
+## 19.0.2
+
+### Patch Changes
+
+- 90fa9b5: fix changelog discord parse list item fail
+
 ## 19.0.1
 
 ### Patch Changes
