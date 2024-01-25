@@ -82,8 +82,15 @@ function discord(content: any, ctx: Context) {
         break;
       }
       case "definition":
-        ctx.breakPreview = true;
-        break;
+        if (content.url === "break") {
+          ctx.breakPreview = true;
+          break;
+        }
+
+        if (content.url === "new_line") {
+          text += "\n";
+          break;
+        }
       default:
         break;
     }
@@ -149,8 +156,15 @@ function telegram(content: any, ctx: Context) {
         break;
       }
       case "definition":
-        ctx.breakPreview = true;
-        break;
+        if (content.url === "break") {
+          ctx.breakPreview = true;
+          break;
+        }
+
+        if (content.url === "new_line") {
+          text += "\n";
+          break;
+        }
       default:
         break;
     }
