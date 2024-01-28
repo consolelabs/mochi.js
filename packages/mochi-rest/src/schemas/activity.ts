@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-enum ActivityType {
+export enum ActivityType {
   ACTIVITY_PROFILE_ADD_ONCHAIN_WALLET = 0,
   ACTIVITY_PROFILE_REMOVE_ONCHAIN_WALLET,
   ACTIVITY_PROFILE_ADD_BINANCE,

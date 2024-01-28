@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.2.3
+
+### Patch Changes
+
+- Export ActivityType
+
 ## 5.2.2
 
 ### Patch Changes
