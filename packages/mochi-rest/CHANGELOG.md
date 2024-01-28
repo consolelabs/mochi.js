@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.2.4
+
+### Patch Changes
+
+- Relax the schema validate conditions
+
 ## 5.2.3
 
 ### Patch Changes
