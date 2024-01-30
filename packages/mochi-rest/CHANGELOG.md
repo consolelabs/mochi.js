@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.2.6
+
+### Patch Changes
+
+- Remove passthrough
+
 ## 5.2.5
 
 ### Patch Changes

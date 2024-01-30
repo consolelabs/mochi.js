@@ -23,12 +23,7 @@ export function getParser(catcher?: (error: WretchError | ZodError) => void) {
         data = json.data;
       }
 
-      let result;
-      if ("passthrough" in schema && typeof schema.passthrough === "function") {
-        result = (schema.passthrough() as Schema).safeParse(data);
-      } else {
-        result = schema.safeParse(data);
-      }
+      const result = schema.safeParse(data);
 
       if (!result.success) {
         catcher?.(result.error);

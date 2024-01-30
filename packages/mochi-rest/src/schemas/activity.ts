@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { ProfileSchema } from "./profile";
+import { ChainSchema, TokenSchema } from "./defi";
 
 export enum ActivityType {
   ACTIVITY_PROFILE_ADD_ONCHAIN_WALLET = 0,
@@ -35,6 +37,13 @@ export const ActivitySchema = z.object({
   type: z.nativeEnum(ActivityType),
   user_profile_id: z.string(),
   target_profile_id: z.string(),
+  user_profile: z.undefined().or(z.null()).or(ProfileSchema),
+  target_profile: z.undefined().or(z.null()).or(ProfileSchema),
+  external_id: z.string().or(z.undefined()).or(z.null()),
+  token: z
+    .undefined()
+    .or(z.null())
+    .or(TokenSchema.partial({ chain: true })),
   content: z.string(),
   content_raw: z.string(),
   changes: z.array(z.object({ key: z.string(), value: z.string() })).nonempty(),
