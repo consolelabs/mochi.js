@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.2.7
+
+### Patch Changes
+
+- Use separate schema for token in activity
+
 ## 5.2.6
 
 ### Patch Changes

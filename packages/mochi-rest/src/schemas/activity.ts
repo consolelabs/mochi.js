@@ -40,10 +40,16 @@ export const ActivitySchema = z.object({
   user_profile: z.undefined().or(z.null()).or(ProfileSchema),
   target_profile: z.undefined().or(z.null()).or(ProfileSchema),
   external_id: z.string().or(z.undefined()).or(z.null()),
-  token: z
-    .undefined()
-    .or(z.null())
-    .or(TokenSchema.partial({ chain: true })),
+  token: z.null().or(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      symbol: z.string(),
+      decimal: z.number(),
+      chain_id: z.string(),
+      icon: z.string(),
+    })
+  ),
   content: z.string(),
   content_raw: z.string(),
   changes: z.array(z.object({ key: z.string(), value: z.string() })).nonempty(),
