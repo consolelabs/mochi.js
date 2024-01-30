@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.2.5
+
+### Patch Changes
+
+- Allow unregconized keys to passthrough
+
 ## 5.2.4
 
 ### Patch Changes
