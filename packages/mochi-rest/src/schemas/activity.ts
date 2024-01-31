@@ -48,6 +48,11 @@ export const ActivitySchema = z.object({
       decimal: z.number(),
       chain_id: z.string(),
       icon: z.string(),
+      chain: z.null().or(
+        z.object({
+          icon: z.string(),
+        })
+      ),
     })
   ),
   content: z.string(),
