@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.3.0
+
+### Minor Changes
+
+- Add new mark read all method
+
 ## 5.2.8
 
 ### Patch Changes

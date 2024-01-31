@@ -1,5 +1,12 @@
 # @consolelabs/mochi-ui
 
+## 20.0.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @consolelabs/mochi-rest@5.3.0
+
 ## 19.0.12
 
 ### Patch Changes

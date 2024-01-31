@@ -106,6 +106,9 @@ export default {
     USER_ACTIVITIES: (profileId: Serializable) =>
       new Path("/profiles/:profileId/activities").build({ profileId }),
 
+    USER_ACTIVITIES_ALL: (profileId: Serializable) =>
+      new Path("/profiles/:profileId/activities/all").build({ profileId }),
+
     REQUEST_CODE: (profileId: Serializable) =>
       new Path("/profiles/:profileId/codes").build({ profileId }),
     CONNECT_DISCORD: "/profiles/me/accounts/connect-discord",

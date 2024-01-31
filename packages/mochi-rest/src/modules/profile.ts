@@ -50,6 +50,7 @@ export class ProfileModule extends Module {
       Pagination
     >;
     markRead: Fetcher<{ profileId: string; ids: (string | number)[] }>;
+    markReadAll: Fetcher<{ profileId: string }>;
   };
 
   auth: {
@@ -174,6 +175,12 @@ export class ProfileModule extends Module {
           .url(endpoints.MOCHI_PROFILE.USER_ACTIVITIES(profileId))
           .resolve(parse(AnySchema))
           .put({ ids });
+      },
+      markReadAll: async ({ profileId }) => {
+        return this.api
+          .url(endpoints.MOCHI_PROFILE.USER_ACTIVITIES_ALL(profileId))
+          .resolve(parse(AnySchema))
+          .put();
       },
     };
 
