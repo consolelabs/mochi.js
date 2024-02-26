@@ -37,9 +37,9 @@ export class Mochi {
   profile: ProfileModule;
   pay: PayModule;
   mock: (jsonPath: string) => typeof baseWretch = (jsonPath) => {
-    if ("mock" in baseWretch) {
+    if ("mock" in this.base.api) {
       // @ts-ignore
-      return baseWretch.mock(jsonPath);
+      return this.base.api.mock(jsonPath);
     }
 
     throw new Error("You must pass MockAddon to API constructor first");

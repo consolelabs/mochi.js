@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.3.1
+
+### Patch Changes
+
+- Fix mock addon not working
+
 ## 5.3.0
 
 ### Minor Changes
