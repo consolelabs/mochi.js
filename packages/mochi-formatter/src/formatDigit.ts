@@ -6,18 +6,8 @@ export function formatPercentDigit(params: FormatParam) {
     num = params;
   }
 
-  const notInRange = isNotInRange(toNum(params), -10, 10);
   const [left, right = ""] = String(num).split(".");
-  let result;
-
-  if (!notInRange) {
-    result = `${(+left).toLocaleString(undefined)}.${right.slice(0, 2)}%`;
-  } else {
-    result = `${Intl.NumberFormat("en-US", {
-      maximumFractionDigits: 0,
-      notation: "compact",
-    }).format(+left)}.${right.slice(0, 2)}%`;
-  }
+  const result = `${(+left).toLocaleString(undefined)}.${right.slice(0, 2)}%`;
 
   if (result.endsWith(".%")) return result.replaceAll(".%", "%");
   return result;
@@ -27,32 +17,32 @@ export function formatUsdDigit(params: FormatParam) {
   const tooSmall = Math.abs(toNum(params)) <= 0.01;
   if (tooSmall) return "< $0.01";
   const isNeg = Math.sign(toNum(params)) < 0;
-  const notInRange = isNotInRange(toNum(params), -100, 100);
+  const inRange = isInRange(toNum(params), -100, 100);
   const num = call(params, formatDigit, {
-    fractionDigits: notInRange ? 0 : 2,
+    fractionDigits: !inRange ? 0 : 2,
     scientificFormat: true,
-    shorten: notInRange,
+    shorten: !inRange,
   });
   return `${isNeg ? "-" : ""}$${num.slice(isNeg ? 1 : 0)}`;
 }
 
 export function formatUsdPriceDigit(params: FormatParam) {
   const isNeg = Math.sign(toNum(params)) < 0;
-  const notInRange = isNotInRange(toNum(params), -100, 100);
+  const inRange = isInRange(toNum(params), -100, 100);
   const num = call(params, formatDigit, {
-    fractionDigits: notInRange ? 0 : 2,
+    fractionDigits: !inRange ? 0 : 2,
     scientificFormat: true,
     takeExtraDecimal: 1,
-    shorten: notInRange,
+    shorten: !inRange,
   });
   return `${isNeg ? "-" : ""}$${num.slice(isNeg ? 1 : 0)}`;
 }
 
 export function formatTokenDigit(params: FormatParam) {
-  const notInRange = isNotInRange(toNum(params), -1000, 1000);
+  const inRange = isInRange(toNum(params), -1000, 1000);
   return call(params, formatDigit, {
-    fractionDigits: notInRange ? 0 : 2,
-    shorten: notInRange,
+    fractionDigits: !inRange ? 0 : 2,
+    shorten: !inRange,
     scientificFormat: true,
   });
 }
@@ -211,6 +201,6 @@ function toNum(val: FormatParam) {
   return Number(String(val.value).replaceAll(",", ""));
 }
 
-function isNotInRange(num: number, lowBound: number, highBound: number) {
-  return num <= lowBound || num >= highBound;
+function isInRange(num: number, lowBound: number, highBound: number) {
+  return num > lowBound && num < highBound;
 }

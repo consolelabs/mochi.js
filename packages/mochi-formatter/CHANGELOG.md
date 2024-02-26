@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 20.0.1
+
+### Patch Changes
+
+- fix formatPercent
+
 ## 20.0.0
 
 ### Patch Changes
