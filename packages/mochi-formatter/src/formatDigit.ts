@@ -9,15 +9,20 @@ export function formatPercentDigit(params: FormatParam) {
   const [left, right = ""] = String(num).split(".");
   const result = `${(+left).toLocaleString(undefined)}.${right.slice(0, 2)}%`;
 
+  const bound = extractBound({ hi: 100, lo: -100 }, params);
+  if (!isInRange(+left, bound.lo, bound.hi))
+    return `${(+left).toLocaleString(undefined)}%`;
   if (result.endsWith(".%")) return result.replaceAll(".%", "%");
   return result;
 }
 
 export function formatUsdDigit(params: FormatParam) {
-  const tooSmall = Math.abs(toNum(params)) <= 0.01;
+  const tooSmall = Math.abs(toNum(params)) < 0.01;
   if (tooSmall) return "< $0.01";
   const isNeg = Math.sign(toNum(params)) < 0;
-  const inRange = isInRange(toNum(params), -100, 100);
+
+  const bound = extractBound({ hi: 10_000, lo: -10_000 }, params);
+  const inRange = isInRange(toNum(params), bound.lo, bound.hi);
   const num = call(params, formatDigit, {
     fractionDigits: !inRange ? 0 : 2,
     scientificFormat: true,
@@ -28,7 +33,9 @@ export function formatUsdDigit(params: FormatParam) {
 
 export function formatUsdPriceDigit(params: FormatParam) {
   const isNeg = Math.sign(toNum(params)) < 0;
-  const inRange = isInRange(toNum(params), -100, 100);
+
+  const bound = extractBound({ hi: 100, lo: -100 }, params);
+  const inRange = isInRange(toNum(params), bound.lo, bound.hi);
   const num = call(params, formatDigit, {
     fractionDigits: !inRange ? 0 : 2,
     scientificFormat: true,
@@ -39,7 +46,8 @@ export function formatUsdPriceDigit(params: FormatParam) {
 }
 
 export function formatTokenDigit(params: FormatParam) {
-  const inRange = isInRange(toNum(params), -1000, 1000);
+  const bound = extractBound({ hi: 10_000, lo: -10_000 }, params);
+  const inRange = isInRange(toNum(params), bound.lo, bound.hi);
   return call(params, formatDigit, {
     fractionDigits: !inRange ? 0 : 2,
     shorten: !inRange,
@@ -153,7 +161,12 @@ export function formatDigit({
   }).format(Number(result));
 }
 
-type FormatParam = Parameters<typeof formatDigit>[0] | string | number;
+type FormatParam =
+  | (Parameters<typeof formatDigit>[0] & {
+      bound?: { hi?: number; lo?: number };
+    })
+  | string
+  | number;
 type Extra = Omit<Parameters<typeof formatDigit>[0], "value">;
 
 function call(
@@ -203,4 +216,12 @@ function toNum(val: FormatParam) {
 
 function isInRange(num: number, lowBound: number, highBound: number) {
   return num > lowBound && num < highBound;
+}
+
+function extractBound(bound: { hi: number; lo: number }, params: FormatParam) {
+  if (typeof params === "number" || typeof params === "string") return bound;
+  return {
+    hi: params.bound?.hi ?? bound.hi,
+    lo: params.bound?.lo ?? bound.lo,
+  };
 }
