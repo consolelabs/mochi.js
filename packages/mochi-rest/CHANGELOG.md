@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.3.2
+
+### Patch Changes
+
+- Schema change
+
 ## 5.3.1
 
 ### Patch Changes

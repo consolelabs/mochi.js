@@ -465,5 +465,5 @@ function isApplication(
 function isVault(
   p: Exclude<Profile, null>
 ): p is Extract<MochiProfile, { type: "vault" }> {
-  return "type" in p && p.type === "vault";
+  return "type" in p && p.type === "application_vault";
 }

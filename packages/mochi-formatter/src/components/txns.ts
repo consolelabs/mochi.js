@@ -3,7 +3,7 @@ import time from "../time";
 import UI, { Platform } from "..";
 import { mdTable } from "../markdownTable";
 import type { Paging } from "../types";
-import { formatUnits } from "ethers";
+import { formatUnits, toBigInt } from "ethers";
 import address from "../address";
 import pageIndicator from "./page-indicator";
 import groupby from "lodash.groupby";
@@ -311,7 +311,7 @@ async function renderSiblingsTxns(
   };
 
   const amount = txns
-    .reduce((acc, current) => +current.amount + acc, 0)
+    .reduce((acc, current) => toBigInt(current.amount) + acc, toBigInt(0))
     .toString();
 
   const {

@@ -61,7 +61,7 @@ const VaultProfileSchema = z.object({
   profile_name: z.string(),
   avatar: z.string(),
   pnl: z.string(),
-  type: z.literal("vault"),
+  type: z.literal("application_vault"),
   application: z.null().or(z.undefined()),
 });
 
