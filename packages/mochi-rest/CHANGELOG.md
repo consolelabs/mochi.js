@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.3.3
+
+### Patch Changes
+
+- 8e673f1: fix: support github platform
+
 ## 5.3.2
 
 ### Patch Changes

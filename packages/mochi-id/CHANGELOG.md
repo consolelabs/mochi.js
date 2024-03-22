@@ -1,5 +1,11 @@
 # @consolelabs/mochi-id
 
+## 1.0.4
+
+### Patch Changes
+
+- 8e673f1: fix: support github platform
+
 ## 1.0.3
 
 ### Patch Changes

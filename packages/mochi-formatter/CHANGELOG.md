@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 20.0.5
+
+### Patch Changes
+
+- 8e673f1: fix: support github platform
+- Updated dependencies [8e673f1]
+  - @consolelabs/mochi-rest@5.3.3
+
 ## 20.0.4
 
 ### Patch Changes
