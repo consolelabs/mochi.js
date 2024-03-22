@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.3.4
+
+### Patch Changes
+
+- Release
+
 ## 5.3.3
 
 ### Patch Changes

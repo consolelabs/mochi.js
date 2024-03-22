@@ -1,5 +1,11 @@
 # @consolelabs/mochi-id
 
+## 1.0.5
+
+### Patch Changes
+
+- Release
+
 ## 1.0.4
 
 ### Patch Changes
