@@ -17,6 +17,7 @@ const AssociatedAccountSchema = z.object({
     "telegram",
     "twitter",
     "facebook",
+    "github",
     "email",
   ]),
   platform_identifier: z.string(),
