@@ -23,6 +23,7 @@ export type UsernameFmt = {
     | Platform.Vault
     | Platform.Email
     | Platform.Facebook
+    | Platform.Github
     | null;
 };
 
@@ -43,6 +44,7 @@ export enum Platform {
   Discord = "discord",
   Telegram = "telegram",
   Facebook = "facebook",
+  Github = "github",
   //
   Email = "email",
 }
@@ -53,6 +55,7 @@ const PLATFORM_EMOJI_PREFIX = new Proxy(
     [Platform.Telegram]: "🔹",
     [Platform.Twitter]: "🐦",
     [Platform.Facebook]: "👤",
+    [Platform.Github]: "🐙",
     [Platform.App]: "🔌",
     [Platform.Mochi]: "🍡",
     [Platform.Vault]: "🏦",
@@ -76,6 +79,7 @@ const PLATFORM_PREFIX = new Proxy(
     [Platform.Telegram]: "tg:",
     [Platform.Twitter]: "tw:",
     [Platform.Facebook]: "fb:",
+    [Platform.Github]: "gh:",
     [Platform.App]: "app:",
     [Platform.Mochi]: "mochi:",
     [Platform.Vault]: "vault:",
