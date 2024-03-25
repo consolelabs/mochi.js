@@ -5,6 +5,7 @@ export const HOMEPAGE = "https://mochi.gg";
 export const DISCORD_PROFILE = "https://dicordapp.com/users";
 export const FACEBOOK_PROFILE = "https://facebook.com";
 export const TELEGRAM_PROFILE = "tg://user?id=";
+export const GITHUB_PROFILE = "https://github.com";
 export enum PageSize {
   Standard = 10,
   Medium = 15,

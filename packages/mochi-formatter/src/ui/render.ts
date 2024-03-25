@@ -1,6 +1,7 @@
 import {
   DISCORD_PROFILE,
   FACEBOOK_PROFILE,
+  GITHUB_PROFILE,
   HOMEPAGE,
   TELEGRAM_PROFILE,
 } from "../constant";
@@ -111,6 +112,7 @@ export default function render(
     [Platform.Vault]: vault(pA, on),
     [Platform.Email]: email(pA, on),
     [Platform.Facebook]: facebook(pA, on),
+    [Platform.Github]: github(pA, on),
   };
   const accountB = {
     [Platform.Telegram]: telegram(pB, on),
@@ -120,6 +122,7 @@ export default function render(
     [Platform.Vault]: vault(pB, on),
     [Platform.Email]: email(pB, on),
     [Platform.Facebook]: facebook(pB, on),
+    [Platform.Github]: github(pB, on),
   };
 
   let fallbackOrder: Array<
@@ -130,6 +133,7 @@ export default function render(
     | Platform.Facebook
     | Platform.Vault
     | Platform.Email
+    | Platform.Github
   >;
   switch (on) {
     case Platform.Web:
@@ -141,6 +145,7 @@ export default function render(
         Platform.Facebook,
         Platform.Email,
         Platform.Mochi,
+        Platform.Github,
       ];
       break;
     case Platform.Discord:
@@ -152,6 +157,7 @@ export default function render(
         Platform.Facebook,
         Platform.Email,
         Platform.Mochi,
+        Platform.Github,
       ];
       break;
     case Platform.Telegram:
@@ -163,6 +169,7 @@ export default function render(
         Platform.Facebook,
         Platform.Email,
         Platform.Mochi,
+        Platform.Github,
       ];
       break;
     default:
@@ -342,6 +349,47 @@ function facebook(p?: Profile, on = Platform.Facebook): UsernameFmt {
         emojiPrefix ? " " : ""
       }${textPrefix}${facebook.platform_metadata.username}`,
       platform: Platform.Facebook,
+    };
+  } catch (e) {
+    return { plain: "", value: "", id: "", url: "" };
+  }
+}
+
+function github(p?: Profile, on = Platform.Github): UsernameFmt {
+  try {
+    if (!p || !isMochiProfile(p) || isApplication(p) || isVault(p))
+      return { plain: "", value: "", id: "", url: "" };
+
+    const github = p.associated_accounts?.find(
+      (aa) => aa.platform === Platform.Github
+    );
+
+    const textPrefix = ![Platform.Github, Platform.Web].includes(on)
+      ? PLATFORM_PREFIX["github"]
+      : "";
+    const emojiPrefix =
+      on !== Platform.Github ? PLATFORM_EMOJI_PREFIX["github"] : "";
+
+    if (!github || !github.platform_metadata.username)
+      return {
+        plain: "",
+        value: "",
+        id: "",
+        url: "",
+      };
+
+    return {
+      id: github.platform_identifier,
+      url: `${GITHUB_PROFILE}/${github.platform_metadata.username}`,
+      value: `${on === Platform.Discord ? "\\" : ""}${emojiPrefix}${
+        emojiPrefix ? " " : ""
+      }[${textPrefix}${
+        github.platform_metadata.username
+      }](${HOMEPAGE}/profile/${p.id})`,
+      plain: `${on === Platform.Discord ? "\\" : ""}${emojiPrefix}${
+        emojiPrefix ? " " : ""
+      }${textPrefix}${github.platform_metadata.username}`,
+      platform: Platform.Github,
     };
   } catch (e) {
     return { plain: "", value: "", id: "", url: "" };
