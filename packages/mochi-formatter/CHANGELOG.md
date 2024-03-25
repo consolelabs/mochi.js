@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 20.0.7
+
+### Patch Changes
+
+- cba1f48: Release
+
 ## 20.0.6
 
 ### Patch Changes
