@@ -1,5 +1,11 @@
 # @consolelabs/mochi-rest
 
+## 5.3.5
+
+### Patch Changes
+
+- Add Github + fix format for app vault
+
 ## 5.3.4
 
 ### Patch Changes

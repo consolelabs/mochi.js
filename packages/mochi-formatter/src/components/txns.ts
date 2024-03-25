@@ -268,11 +268,11 @@ async function renderTransferTx(
 
   // 3.1 get the opponent of the transaction, and show only opponent
   // e.g: from B, to B
-  let opponentProfileId = tx.other_profile_id;
-  if (profileId && opponentProfileId === profileId) {
-    opponentProfileId = tx.from_profile_id;
+  let profile = tx.other_profile;
+  if (profileId && profile.id === profileId) {
+    profile = tx.from_profile;
   }
-  const [actor] = await UI.formatProfile(onPlatform, opponentProfileId);
+  const [actor] = UI.render(onPlatform, profile);
   const actorLbl = actor?.value ?? "";
   const tmpl = isTransferIn
     ? template.transaction.transferIn
@@ -281,11 +281,7 @@ async function renderTransferTx(
 
   // 3.2 if global we will show both sender and receiver
   if (global) {
-    const [from, to] = await UI.formatProfile(
-      onPlatform,
-      tx.from_profile_id,
-      tx.other_profile_id
-    );
+    const [from, to] = UI.render(onPlatform, tx.from_profile, tx.other_profile);
     if (from?.value && to?.value) {
       const tmpl = template.transaction.transferGlobal;
       result.text = isTransferIn
@@ -329,18 +325,12 @@ async function renderSiblingsTxns(
   result.emoji = emoji;
 
   // build receivers
-  const [opponent] = await UI.formatProfile(
-    onPlatform,
-    txns[0].other_profile_id
-  );
+  const [opponent] = UI.render(onPlatform, txns[0].other_profile);
   let receivers = `${opponent?.value ?? "Unknown User"} & ${
     txns.length - 1
   } others`;
   if (txns.length === 2) {
-    const [opponent2] = await UI.formatProfile(
-      onPlatform,
-      txns[1].other_profile_id
-    );
+    const [opponent2] = UI.render(onPlatform, txns[1].other_profile);
     receivers = `${opponent?.value ?? "Unknown User"} & ${
       opponent2?.value ?? "Unknown User"
     }`;
@@ -389,11 +379,11 @@ async function getTransferTxData(
 
   // 3.1 get the opponent of the transaction, and show only opponent
   // e.g: from B, to B
-  let opponentProfileId = tx.other_profile_id;
-  if (profileId && opponentProfileId === profileId) {
-    opponentProfileId = tx.from_profile_id;
+  let profile = tx.other_profile;
+  if (profileId && profile.id === profileId) {
+    profile = tx.from_profile;
   }
-  const [actor] = await UI.formatProfile(onPlatform, opponentProfileId);
+  const [actor] = UI.render(onPlatform, profile);
   const receiver = actor?.value ?? "";
   result.receiver = receiver;
 
@@ -554,7 +544,7 @@ async function renderAirdropTx(
 
   // 2. Format the transaction description for airdrop receiver
   if (isAirdropReceiver) {
-    const [actor] = await UI.formatProfile(onPlatform, tx.from_profile_id);
+    const [actor] = UI.render(onPlatform, tx.from_profile);
     const actorLbl = actor?.value ?? "";
     const text = util.format(
       template.transaction.airdropReceive,
@@ -604,8 +594,8 @@ async function renderPaylinkTx(
 
   // 1. get the paylink receiver
   let by: string | undefined;
-  if (tx.other_profile_id) {
-    const [sender] = await UI.formatProfile(onPlatform, tx.other_profile_id);
+  if (tx.other_profile) {
+    const [sender] = UI.render(onPlatform, tx.other_profile);
     by = sender?.value;
   }
   if (!by && tx.other_profile_source) {
@@ -653,7 +643,7 @@ async function renderPaymeTx(
   // 1. Get the payme sender
   let by: string | undefined;
   if (tx.other_profile_id) {
-    const [sender] = await UI.formatProfile(onPlatform, tx.other_profile_id);
+    const [sender] = UI.render(onPlatform, tx.other_profile);
     by = sender?.value;
   }
   if (!by && tx.other_profile_source) {

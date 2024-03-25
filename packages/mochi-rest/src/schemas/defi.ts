@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ProfileSchema } from "./profile";
 
 export const ChainSchema = z.object({
   id: z.string().uuid(),
@@ -58,7 +59,9 @@ const MochiTxSchema = z.object({
   internal_id: z.number(),
   external_id: z.string().min(1),
   from_profile_id: z.string().min(1),
+  from_profile: ProfileSchema,
   other_profile_id: z.string().min(1),
+  other_profile: ProfileSchema,
   status: z.string().min(1),
   from_profile_source: z
     .enum(["mochi-balance", "mochi-vault"])
@@ -73,27 +76,24 @@ const MochiTxSchema = z.object({
 
 export type BaseTx = z.infer<typeof MochiTxSchema>;
 
-type MochiTransferTx = z.infer<typeof MochiTxSchema> & {
-  action: "transfer";
-  sibling_txs: MochiTransferTx[] | null;
-};
-
-export const MochiTransferTxSchema: z.ZodType<MochiTransferTx> =
-  MochiTxSchema.extend({
-    action: z.literal("transfer"),
-    sibling_txs: z.lazy(() => MochiTransferTxSchema.array().nullable()),
-  });
+export const MochiTransferTxSchema = MochiTxSchema.extend({
+  action: z.literal("transfer"),
+  sibling_txs: z.any(),
+});
 
 export type TransferTx = z.infer<typeof MochiTransferTxSchema>;
 
 export const MochiDepositTxSchema = MochiTxSchema.extend({
   action: z.literal("deposit"),
+  other_profile_id: z.literal(""),
+  other_profile: z.null().or(z.undefined()),
 });
 export type DepositTx = z.infer<typeof MochiDepositTxSchema>;
 
 export const MochiWithdrawTxSchema = MochiTxSchema.extend({
   action: z.literal("withdraw"),
   other_profile_id: z.literal(""),
+  other_profile: z.null().or(z.undefined()),
 });
 export type WithdrawTx = z.infer<typeof MochiWithdrawTxSchema>;
 
@@ -120,6 +120,7 @@ export const MochiPayLinkTxSchema = MochiTxSchema.extend({
     code: z.string().min(1),
   }),
   other_profile_id: z.string(),
+  other_profile: ProfileSchema.or(z.null()).or(z.undefined()),
   other_profile_source: z.enum(["mochi-balance", "mochi-vault"]).or(z.string()),
   status: z.enum(["success", "failed", "pending", "expired"]),
 });
@@ -160,7 +161,7 @@ export const OnchainTxSchema = z.object({
 });
 export type OnchainTx = z.infer<typeof OnchainTxSchema>;
 
-export const OffchainTxSchema = z.union([
+export const OffchainTxSchema = z.discriminatedUnion("action", [
   MochiTransferTxSchema,
   MochiWithdrawTxSchema,
   MochiDepositTxSchema,

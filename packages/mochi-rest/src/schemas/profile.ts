@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { ListOffchainTxSchema, TokenSchema } from "./defi";
 
 const AssociatedAccountSchema = z.object({
   created_at: z.string().datetime(),
@@ -25,8 +24,8 @@ const AssociatedAccountSchema = z.object({
     .object({ ens: z.string(), sns: z.string(), username: z.string() })
     .partial(),
   profile_id: z.string().min(1),
-  total_amount: z.string(),
-  pnl: z.string(),
+  total_amount: z.string().optional(),
+  pnl: z.string().optional(),
 });
 
 const ApplicationSchema = z.object({
@@ -41,7 +40,7 @@ const UserProfileSchema = z.object({
   associated_accounts: z.null().or(z.array(AssociatedAccountSchema)),
   profile_name: z.string(),
   avatar: z.string(),
-  pnl: z.string(),
+  pnl: z.string().optional(),
   type: z.literal("user"),
   application: z.null().or(z.undefined()),
 });
@@ -51,7 +50,7 @@ const AppProfileSchema = z.object({
   associated_accounts: z.null().or(z.tuple([])),
   profile_name: z.string(),
   avatar: z.string(),
-  pnl: z.string(),
+  pnl: z.string().optional(),
   type: z.literal("application"),
   application: ApplicationSchema,
 });
@@ -61,15 +60,30 @@ const VaultProfileSchema = z.object({
   associated_accounts: z.null(z.tuple([])),
   profile_name: z.string(),
   avatar: z.string(),
-  pnl: z.string(),
+  pnl: z.string().optional(),
+  type: z.literal("vault"),
+  application: z.null().or(z.undefined()),
+});
+
+const AppVaultProfileSchema = z.object({
+  id: z.string().min(1),
+  associated_accounts: z.null(z.tuple([])),
+  profile_name: z.string(),
+  avatar: z.string(),
+  pnl: z.string().optional(),
   type: z.literal("application_vault"),
   application: z.null().or(z.undefined()),
+  application_vault: z.object({
+    name: z.string(),
+    application: ApplicationSchema,
+  }),
 });
 
 export const ProfileSchema = z.discriminatedUnion("type", [
   UserProfileSchema,
   AppProfileSchema,
   VaultProfileSchema,
+  AppVaultProfileSchema,
 ]);
 export const ListProfileSchema = z.array(ProfileSchema);
 
@@ -128,50 +142,6 @@ export const CodeSchema = z.object({
 });
 
 export type Code = z.infer<typeof CodeSchema>;
-
-export const StatsSchema = z.object({
-  time: z.string().datetime(),
-  total_volume: z.number(),
-  total_spending: z.number(),
-  total_receive: z.number(),
-  spending: z.array(
-    z.object({
-      token: TokenSchema,
-      profile_id: z.string().min(1),
-      amount: z.string().min(1),
-      usd_amount: z.number(),
-      price: z.number(),
-    })
-  ),
-  receive: z.array(
-    z.object({
-      token: TokenSchema,
-      profile_id: z.string().min(1),
-      amount: z.string().min(1),
-      usd_amount: z.number(),
-      price: z.number(),
-    })
-  ),
-  most_send: z.object({
-    token: TokenSchema,
-    profile_id: z.string().min(1),
-    other_profile_id: z.string().min(1),
-    amount: z.string().min(1),
-    usd_amount: z.number(),
-    price: z.number(),
-  }),
-  most_receive: z.object({
-    token: TokenSchema,
-    profile_id: z.string().min(1),
-    other_profile_id: z.string().min(1),
-    amount: z.string().min(1),
-    usd_amount: z.number(),
-    price: z.number(),
-  }),
-  history: ListOffchainTxSchema,
-});
-
-export type Stats = z.infer<typeof StatsSchema>;
 
 export const AuthRequestSchema = z.object({
   url: z.string().min(1),

@@ -280,14 +280,14 @@ function application(p?: Profile, on = Platform.App): UsernameFmt {
     if (!p || !isMochiProfile(p))
       return { plain: "", value: "", id: "", url: "" };
 
-    const application = p.application;
     const textPrefix = ![Platform.App, Platform.Web].includes(on)
       ? PLATFORM_PREFIX["mochi-application"]
       : "";
     const emojiPrefix =
       on !== Platform.App ? PLATFORM_EMOJI_PREFIX["mochi-application"] : "";
 
-    if (application && p.type === "application") {
+    if (p.type === "application_vault") {
+      const application = p.application_vault.application;
       return {
         value: `${on === Platform.Discord ? "\\" : ""}${emojiPrefix}${
           emojiPrefix ? " " : ""
@@ -510,8 +510,8 @@ function isMochiProfile(p: Exclude<Profile, null>): p is MochiProfile {
 
 function isApplication(
   p: Exclude<Profile, null>
-): p is Extract<MochiProfile, { type: "application" }> {
-  return "type" in p && p.type === "application";
+): p is Extract<MochiProfile, { type: "application_vault" }> {
+  return "type" in p && p.type === "application_vault";
 }
 
 function isVault(

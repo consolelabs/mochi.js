@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { ProfileSchema } from "./profile";
-import { ChainSchema, TokenSchema } from "./defi";
 
 export enum ActivityType {
   ACTIVITY_PROFILE_ADD_ONCHAIN_WALLET = 0,

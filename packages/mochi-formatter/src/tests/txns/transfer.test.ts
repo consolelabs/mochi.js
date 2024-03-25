@@ -5,7 +5,7 @@ import {
   TransferInTx,
   SiblingTransferTx,
 } from "../fixture/txns";
-import API from "@consolelabs/mochi-rest";
+import API, { Profile } from "@consolelabs/mochi-rest";
 
 describe("formatTxn.TransferTx", () => {
   const api = new API({
@@ -42,23 +42,27 @@ describe("formatTxn.TransferTx", () => {
       });
     });
     UI.api = api;
-    UI.formatProfile = jest.fn((on, A, B) => {
-      return Promise.resolve([
+    UI.render = jest.fn((on, A: Profile, B: Profile) => {
+      return [
         {
-          value: `${A}`,
+          value: `${A.id}`,
           id: "id",
           url: "url",
           plain: "plain",
           platform: Platform.Discord,
         },
-        {
-          value: `${B}`,
-          id: "id",
-          url: "url",
-          plain: "plain",
-          platform: Platform.Discord,
-        },
-      ]);
+        ...(B?.id
+          ? [
+              {
+                value: `${B.id}`,
+                id: "id",
+                url: "url",
+                plain: "plain",
+                platform: Platform.Discord,
+              },
+            ]
+          : []),
+      ];
     });
   });
   afterAll(() => {

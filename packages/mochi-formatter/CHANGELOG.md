@@ -1,5 +1,13 @@
 # @consolelabs/mochi-ui
 
+## 20.0.8
+
+### Patch Changes
+
+- Add Github + fix format for app vault
+- Updated dependencies
+  - @consolelabs/mochi-rest@5.3.5
+
 ## 20.0.7
 
 ### Patch Changes

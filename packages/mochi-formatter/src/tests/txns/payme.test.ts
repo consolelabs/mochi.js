@@ -38,8 +38,8 @@ describe("formatTxn.PaymeTx", () => {
       });
     });
     UI.api = api;
-    UI.formatProfile = jest.fn((on, A, B) => {
-      return Promise.resolve([
+    UI.render = jest.fn((on, A, B) => {
+      return [
         {
           value: "A",
           id: "id",
@@ -54,7 +54,7 @@ describe("formatTxn.PaymeTx", () => {
           plain: "plain",
           platform: Platform.Discord,
         },
-      ]);
+      ];
     });
   });
   afterAll(() => {

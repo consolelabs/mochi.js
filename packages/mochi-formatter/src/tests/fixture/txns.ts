@@ -1,8 +1,16 @@
-import { Tx } from "@consolelabs/mochi-rest";
+import { Profile, Tx } from "@consolelabs/mochi-rest";
 
 export const TransferOutTx: Tx = {
   from_profile_id: "48438",
+  from_profile: {
+    id: "48438",
+    type: "user",
+  } as any,
   other_profile_id: "40409",
+  other_profile: {
+    id: "40409",
+    type: "user",
+  } as any,
   from_profile_source: "mochi-balance",
   other_profile_source: "mochi-balance",
   source_platform: "web",
@@ -40,7 +48,15 @@ export const TransferOutTx: Tx = {
 
 export const TransferInTx: Tx = {
   from_profile_id: "55834",
+  from_profile: {
+    id: "55834",
+    type: "user",
+  } as any,
   other_profile_id: "48036",
+  other_profile: {
+    id: "48036",
+    type: "user",
+  } as any,
   from_profile_source: "mochi-balance",
   other_profile_source: "mochi-balance",
   source_platform: "web",
@@ -79,6 +95,14 @@ export const TransferInTx: Tx = {
 export const SiblingTransferTx: Tx = {
   from_profile_id: "48036",
   other_profile_id: "55834",
+  from_profile: {
+    id: "48036",
+    type: "user",
+  } as any,
+  other_profile: {
+    id: "55834",
+    type: "user",
+  } as any,
   from_profile_source: "mochi-balance",
   other_profile_source: "mochi-balance",
   source_platform: "discord",
@@ -115,6 +139,14 @@ export const SiblingTransferTx: Tx = {
     {
       from_profile_id: "48036",
       other_profile_id: "1640552476807532544",
+      from_profile: {
+        id: "48036",
+        type: "user",
+      } as any,
+      other_profile: {
+        id: "1640552476807532544",
+        type: "application_vault",
+      } as any,
       from_profile_source: "mochi-balance",
       other_profile_source: "mochi-balance",
       source_platform: "discord",
@@ -146,6 +178,10 @@ export const SiblingTransferTx: Tx = {
 export const DepositTx: Tx = {
   from_profile_id: "55834",
   other_profile_id: "",
+  from_profile: {
+    id: "55834",
+    type: "user",
+  } as any,
   from_profile_source: "0x10522d52F09CbEd5C8718090E2fB3901Ac6FdA10",
   other_profile_source: "0x70c5d7f4ea7f7a3065fe146bf5683a8b31777af9",
   source_platform: "telegram",
@@ -183,6 +219,10 @@ export const DepositTx: Tx = {
 export const WithdrawTx: Tx = {
   from_profile_id: "34522",
   other_profile_id: "",
+  from_profile: {
+    id: "34522",
+    type: "user",
+  } as any,
   from_profile_source: "mochi-balance",
   other_profile_source: "0x053499083f0Ed66A5af06245483FaEeEfc313249",
   source_platform: "discord",
@@ -220,6 +260,14 @@ export const WithdrawTx: Tx = {
 export const AirdropTx: Tx = {
   from_profile_id: "1640552476807532544",
   other_profile_id: "48438",
+  from_profile: {
+    id: "1640552476807532544",
+    type: "application_vault",
+  } as any,
+  other_profile: {
+    id: "48438",
+    type: "user",
+  } as any,
   from_profile_source: "mochi-balance",
   other_profile_source: "mochi-balance",
   source_platform: "discord",
@@ -258,6 +306,10 @@ export const AirdropTx: Tx = {
 export const PaylinkTx: Tx = {
   from_profile_id: "55834",
   other_profile_id: "",
+  from_profile: {
+    id: "55834",
+    type: "user",
+  } as any,
   from_profile_source: "mochi-balance",
   other_profile_source: "",
   source_platform: "discord",
@@ -298,6 +350,14 @@ export const PaylinkTx: Tx = {
 export const PaymeTx: Tx = {
   from_profile_id: "55834",
   other_profile_id: "43678",
+  from_profile: {
+    id: "55834",
+    type: "user",
+  } as any,
+  other_profile: {
+    id: "43678",
+    type: "user",
+  } as any,
   from_profile_source: "mochi-balance",
   other_profile_source: "mochi-balance",
   source_platform: "discord",
@@ -343,6 +403,14 @@ export const PaymeTx: Tx = {
 export const VaultTransferTx: Tx = {
   from_profile_id: "40686",
   other_profile_id: "1711669347849605120",
+  from_profile: {
+    id: "40686",
+    type: "user",
+  } as any,
+  other_profile: {
+    id: "1711669347849605120",
+    type: "application_vault",
+  } as any,
   from_profile_source: "mochi-balance",
   other_profile_source: "mochi-vault",
   source_platform: "discord",
