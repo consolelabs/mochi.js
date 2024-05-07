@@ -70,9 +70,9 @@ const subscript: Record<number | string, string> = {
 
 const expNotation = /([\d.]+)e(-|\+){0,1}(\d+)/;
 
-function formatSubscript(value: string) {
+function formatSubscript(value: string, digits?: number) {
   const [_, _num, sign, sub] = Array.from(value.match(expNotation) ?? []);
-  let num = _num.replaceAll(".", "").slice(0, 4);
+  let num = _num.replaceAll(".", "").slice(0, digits ?? 4);
   while (num.endsWith("0")) {
     num = num.slice(0, num.length - 1);
   }
@@ -113,7 +113,7 @@ export function formatDigit({
 
   // detect exp notation and use subscript format
   if (String(num).includes("e") && expNotation.test(String(num))) {
-    if (subscript) return formatSubscript(String(num));
+    if (subscript) return formatSubscript(String(num), fractionDigits);
     if (scientificFormat)
       return shortenScientificNotation({ value: String(num) });
   }
