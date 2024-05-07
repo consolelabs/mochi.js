@@ -60,6 +60,14 @@ test.each([
 });
 
 test.each([
+  [{ value: 4.8549e-9, fractionDigits: 2 }, "$0.0₈48"],
+  [{ value: 1.23456e-12, fractionDigits: 3 }, "$0.0₁₁123"],
+  [{ value: 0.000000000000009876 }, "$0.0₁₄98"],
+])("formatUsdPriceDigit with subscript and digits", (input, output) => {
+  expect(formatUsdPriceDigit({ ...input, subscript: true })).toEqual(output);
+});
+
+test.each([
   [0.291, "0.29"],
   [0.0221, "0.02"],
   [5.2345, "5.23"],
@@ -75,11 +83,11 @@ test.each([
   // subscript notation
   // [input, output]
   [0.0000000009, "0.0₉9"],
-  [0.00000000098718254, "0.0₉9871"],
-  [0.000000000239012, "0.0₉239"],
-  [0.0000000123, "0.0₇123"],
-  [0.000000123, "0.0₆123"],
-  [0.0000000000000123, "0.0₁₃123"],
+  [0.00000000098718254, "0.0₉98"],
+  [0.000000000239012, "0.0₉23"],
+  [0.0000000123, "0.0₇12"],
+  [0.000000123, "0.0₆12"],
+  [0.0000000000000123, "0.0₁₃12"],
 ])("formatTokenDigit discord", (input, output) => {
   expect(formatTokenDigit({ value: input, subscript: true })).toEqual(output);
 });
