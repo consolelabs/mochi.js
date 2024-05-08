@@ -1,5 +1,11 @@
 # @consolelabs/mochi-ui
 
+## 20.0.9
+
+### Patch Changes
+
+- e54050c: add tests for subscript digit
+
 ## 20.0.8
 
 ### Patch Changes
