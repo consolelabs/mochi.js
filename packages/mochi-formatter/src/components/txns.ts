@@ -24,6 +24,7 @@ import API from "@consolelabs/mochi-rest";
 import string from "../string";
 import amountComp from "./amount";
 import template from "../templates";
+import { formatTokenDigit } from "../formatDigit";
 
 type Props = {
   txns: Array<Tx>;
@@ -82,7 +83,7 @@ export async function formatTxn(
   // the onchain tx will have `has_transfer` field in payload
   const isOnchainTx = "has_transfer" in tx;
   if (isOnchainTx) {
-    return await formatOnchainTxns(tx, groupDate);
+    return await formatOnchainTxns(tx, groupDate, api);
   }
 
   // 2.0 otherwise format offchain txns
@@ -103,7 +104,7 @@ export async function formatTxn(
  * @param groupDate - The date of tx should be in long or short form
  * @returns The formatted transaction
  */
-async function formatOnchainTxns(tx: OnchainTx, groupDate: boolean) {
+async function formatOnchainTxns(tx: OnchainTx, groupDate: boolean, api?: API) {
   // 0. get transaction time
   const date = new Date(tx.signed_at);
   const t = groupDate
@@ -140,7 +141,17 @@ async function formatOnchainTxns(tx: OnchainTx, groupDate: boolean) {
   const prefix = isDebit ? "" : PLUS_SIGN;
   const unit = transferTx.unit ?? "";
   const preposition = isDebit ? "to" : "from";
-  result.text = `${prefix}${amount} ${unit} ${preposition} \`${target}\``;
+  let emoji = api?.fallbackCoinEmoji.emoji ?? "";
+  if (api) {
+    const { data } = await api.base.metadata.getEmojis({ codes: [unit] });
+    let emojiObj = data?.at(0);
+    if (emojiObj) {
+      emoji = emojiObj.emoji;
+    }
+  }
+  result.text = `${emoji} ${prefix}${formatTokenDigit(
+    amount
+  )} ${unit} ${preposition} \`${target}\``;
 
   // 6. return result
   return result;
