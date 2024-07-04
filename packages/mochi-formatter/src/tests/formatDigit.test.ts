@@ -119,6 +119,10 @@ test.each([
   [-23456, "-23,456%"],
   [-23456.981, "-23,456%"],
   [123456, "123,456%"],
+  [{ value: 0.02212, fractionDigits: 4 }, "0.0221%"],
+  [{ value: 0.0221, fractionDigits: 5 }, "0.0221%"],
+  [{ value: 0.0221, fractionDigits: 0 }, "0%"],
+  [{ value: 0.0221, fractionDigits: -1 }, "0.022%"],
 ])("formatPercentDigit", (input, output) => {
   expect(formatPercentDigit(input)).toEqual(output);
 });
