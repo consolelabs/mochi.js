@@ -1,13 +1,18 @@
 export function formatPercentDigit(params: FormatParam) {
   let num;
+  let fractionDigits = 2;
   if (typeof params === "object") {
     num = params.value;
+    fractionDigits = params.fractionDigits ?? 2;
   } else {
     num = params;
   }
 
   const [left, right = ""] = String(num).split(".");
-  const result = `${(+left).toLocaleString(undefined)}.${right.slice(0, 2)}%`;
+  const result = `${(+left).toLocaleString(undefined)}.${right.slice(
+    0,
+    fractionDigits
+  )}%`;
 
   const bound = extractBound({ hi: 100, lo: -100 }, params);
   if (!isInRange(+left, bound.lo, bound.hi))
