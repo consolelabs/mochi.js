@@ -10,13 +10,13 @@
     "prepare": "husky install"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.26.2",
-    "@turbo/gen": "^1.9.7",
+    "@changesets/cli": "^2.31.0",
+    "@turbo/gen": "^2.10.0",
     "eslint": "^7.32.0",
-    "lefthook": "^1.4.8",
-    "prettier": "2.8.8",
+    "lefthook": "^2.1.9",
+    "prettier": "3.8.4",
     "turbo": "latest",
-    "husky": "^8.0.0"
+    "husky": "^9.1.7"
   },
   "packageManager": "pnpm@8.6.10",
   "name": "mochi.js"
