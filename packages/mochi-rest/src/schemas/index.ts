@@ -1,7 +1,6 @@
 export * from "./activity";
 export * from "./coin";
 export * from "./defi";
-export * from "./gas";
 export * from "./metadata";
 export * from "./profile";
 export * from "./vault";

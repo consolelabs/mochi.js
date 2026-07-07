@@ -25,8 +25,6 @@ import {
   TransferRequest,
   TransferResult,
   TransferResultSchema,
-  Gas,
-  ListGasSchema,
   SimplifiedToken,
   SimplifiedTokensSchema,
   TrackWalletList,
@@ -97,7 +95,6 @@ export class BaseModule extends Module {
   };
 
   defi: {
-    getGasTrackers: Fetcher<void, Array<Gas>>;
     compareCoins: Fetcher<
       { base: string; target: string; interval: number },
       CompareCoin
@@ -250,12 +247,6 @@ export class BaseModule extends Module {
     };
 
     this.defi = {
-      getGasTrackers: async () => {
-        return this.api
-          .url(endpoints.MOCHI.GAS_TRACKER)
-          .resolve(parse(ListGasSchema))
-          .get();
-      },
       compareCoins: async ({ base, target, interval }) => {
         return this.api
           .url(endpoints.MOCHI.COMPARE_COINS)
