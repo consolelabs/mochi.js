@@ -1,0 +1,32 @@
+name: Publish package
+
+# Manual publish of a single workspace package to npm. The changesets-based
+# `pnpm release` flow predates this and published every drifted package at
+# once; this dispatch publishes only the package you name.
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: "Workspace package to publish (e.g. @consolelabs/mochi-formatter)"
+        required: true
+        default: "@consolelabs/mochi-formatter"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          version: 8.6.10
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm --filter "$PACKAGE" publish --access public --no-git-checks
+        env:
+          PACKAGE: ${{ github.event.inputs.package }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
