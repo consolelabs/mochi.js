@@ -491,13 +491,13 @@ function mochi(p?: Profile | null, on = Platform.Mochi): UsernameFmt {
     return {
       value: `${on === Platform.Discord ? "\\" : ""}${emojiPrefix}${
         emojiPrefix ? " " : ""
-      }[${textPrefix}${p.profile_name || p.id}](${HOMEPAGE} /profile/${p.id})`,
+      }[${textPrefix}${p.profile_name || p.id}](${HOMEPAGE}/profile/${p.id})`,
       plain: `${on === Platform.Discord ? "\\" : ""}${emojiPrefix}${
         emojiPrefix ? " " : ""
-      }${textPrefix}${p.profile_name || p.id} `,
+      }${textPrefix}${p.profile_name || p.id}`,
       platform: Platform.Mochi,
       id: p.id,
-      url: `${HOMEPAGE} /profile/${p.id} `,
+      url: `${HOMEPAGE}/profile/${p.id}`,
     };
   } catch (e) {
     return { plain: "", value: "", id: "", url: "" };
